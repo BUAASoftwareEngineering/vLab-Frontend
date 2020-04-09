@@ -1,13 +1,13 @@
 <template>
     <Layout :style="{marginLeft: '0px'}">
-        <Sider :style="{height: '100vh', overflow: 'auto'}" width="60">                
+        <Sider :style="{height: '93vh', overflow: 'auto'}" width="60">                
                 <Menu active-name="emmm2" theme="dark" width="50" :open-names="['1']" @on-select="test">
                     <MenuItem name="1-1">
                         <Icon type="ios-navigate"></Icon>
                     </MenuItem>
                 </Menu>
             </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="flodmark" collapsed-width="0">
+        <Sider :style="{height: '93vh', overflow: 'auto'}" collapsible v-model="flodmark" collapsed-width="0">
             <Menu active-name="1-2" theme="dark" width="auto" :open-names="['1']">
                 <Submenu name="1">
                     <template slot="title">

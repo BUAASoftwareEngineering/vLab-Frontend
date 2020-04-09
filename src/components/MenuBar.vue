@@ -1,10 +1,21 @@
+<style>
+    .ivu-btn{
+        border-radius: 0px;
+        color:#f5f7f9;background-color:#f5f7f9;border-color:#464e57
+    }
+    .ivu-layout-header{
+        height:36px;
+        line-height:36px;
+        padding:0;
+    }
+</style>
 
 <template>
     <div id="menubar">
         <Layout>
-            <Header>
+            <Header :style="{height: '7vh', padding:'0'}">
             <Dropdown placement="top" transfer trigger="click">
-                <Button type="primary">
+                <Button type="text" class="ivu-btn" ghost>
                     文件
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 150px">
@@ -24,7 +35,7 @@
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="top" transfer trigger="click">
-                <Button type="primary" round="false">
+                <Button type="text" class="ivu-btn" ghost>
                     编辑
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 150px">
@@ -37,6 +48,7 @@
             </Dropdown>
         
             </Header>
+
         </Layout>
     </div>
 </template>

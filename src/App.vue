@@ -19,7 +19,7 @@
     }
     .ivu-btn{
         border-radius: 0px;
-        color:#fff;background-color:#464e57;border-color:#464e57
+        color:#464e57;background-color:#464e57;border-color:#464e57
     }
     .ivu-layout-header{
         height:36px;
