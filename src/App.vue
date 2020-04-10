@@ -50,13 +50,17 @@
         height:36px;
         line-height:36px;
         padding:0;
-        background-color: #464e57;
+    background-color: #464e57;
         margin: 0;
     }
 	.ivu-select-dropdown{
       border-radius: 0px;
       margin-top: 0px;
       max-height: 200px;
+    }
+    .ivu-tree-title{
+      border-radius:0px;
+      color:#fff;
     }
 </style>
 
