@@ -1,6 +1,6 @@
 
 const http = new XMLHttpRequest()
-const server = "http://127.0.0.1:3000"
+const server = "http://127.0.0.1:8081"
 http.withCredentials = true
 
 function get_request(url, callback) {
@@ -100,12 +100,12 @@ function user_info_update(user_name, password, callback) {
 }
 
 function user_info(callback) {
-    var url = server + '/user/info'
+    var url = server + '/user/info?'
     get_request(url, callback)
 }
 
 function project_info(callback) {
-    var url = server + '/project/info'
+    var url = server + '/project/info?'
     get_request(url, callback)
 }
 
@@ -195,6 +195,15 @@ function dir_delete(project_id, dir_path, callback) {
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&dir_path=' + encodeURIComponent(dir_path)
     post_request(url, data, callback)
+}
+
+function get_user_name() {
+    var name = document.cookie.indexOf("user_name=")
+    if (name != -1 && name != '') {
+        return name
+    } else {
+        return undefined
+    }
 }
 
 export default {

@@ -39,8 +39,9 @@ function example(user_name, password) {
 ## log
 
 - `2020-04-09:` 第一版api完成，本地测试完成，与front-serve对接测试完成，但仍有一些参数不匹配的小问题
+- `2020-04-10:` 第二版api完成，本地测试，服务器测试均通过，目前可以完成用户身份验证功能以及获取user_name，前端不需要操控cookie，并且明确了错误码定义。
 
 ## TODO
 
-- 将参数修改到匹配
-- 新增对Cookie的管理
+- 测试cookie管理
+- 和前端对接
