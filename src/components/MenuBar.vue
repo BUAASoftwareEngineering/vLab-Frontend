@@ -1,14 +1,3 @@
-<style>
-    .ivu-btn{
-        border-radius: 0px;
-        color:#f5f7f9;background-color:#f5f7f9;border-color:#464e57
-    }
-    .ivu-layout-header{
-        height:36px;
-        line-height:36px;
-        padding:0;
-    }
-</style>
 
 <template>
     <div id="menubar">
@@ -34,7 +23,7 @@
                     <DropdownItem>冰糖葫芦</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0px">
+            <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0px">
                 <Button type="primary" style="min-width: 70px">
                     编辑
                 </Button>
@@ -62,37 +51,7 @@
                     <DropdownItem>粘贴</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <Dropdown placement="bottom-start" transfer trigger="click">
-                <Button type="primary" style="min-width: 70px">
-                    运行
-                </Button>
-                <DropdownMenu slot="list" style="min-width: 150px">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem>剪切</DropdownItem>
-                    <DropdownItem>粘贴</DropdownItem>
-                </DropdownMenu>
-            </Dropdown>
-            <Dropdown placement="bottom-start" transfer trigger="click">
-                <Button type="primary" style="min-width: 70px">
-                    视图
-                </Button>
-                <DropdownMenu slot="list" style="min-width: 150px">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem>剪切</DropdownItem>
-                    <DropdownItem>粘贴</DropdownItem>
-                </DropdownMenu>
-            </Dropdown>
-            <Dropdown placement="bottom-start" transfer trigger="click">
-                <Button type="primary" style="min-width: 70px">
-                    帮助
-                </Button>
-            </Dropdown>
             </Header>
-
         </Layout>
     </div>
 </template>
@@ -102,3 +61,16 @@ export default {
     
 }
 </script>
+
+<style>
+    .ivu-btn{
+        border-radius: 0px;
+        color:#f5f7f9;background-color:#464e57;border-color:#464e57;
+        margin: 0px;
+    }
+    .ivu-layout-header{
+        height:36px;
+        line-height:36px;
+        padding:0;
+    }
+</style>
