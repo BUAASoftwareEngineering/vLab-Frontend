@@ -1,5 +1,11 @@
 <template>
-    <Tree :data="data4" show-checkbox multiple></Tree>
+    <Layout style="background-color: #808695" height='80vh'>
+        <Tabs :animated="false" color="white">
+            <TabPane label="文件管理器" ></TabPane>
+            
+        </Tabs>
+        <Tree :data="data4" show-checkbox multiple></Tree>
+    </Layout>
 </template>
 <script>
     export default {

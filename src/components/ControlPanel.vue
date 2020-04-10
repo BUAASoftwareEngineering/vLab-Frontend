@@ -11,62 +11,30 @@
                     <Icon type="md-build" />
                 </MenuItem>
             </Menu>
-            <Menu active-name="upload" theme="dark" width="50" :open-names="['1']">
+            <Menu active-name="upload" theme="dark" width="50" :open-names="['1']" @on-select="changeUpload">
                 <MenuItem name="3-1">
                     <Icon type="md-cloud-upload" />
                 </MenuItem>
             </Menu>
-            <Menu active-name="download" theme="dark" width="50" :open-names="['1']">
+            <Menu active-name="download" theme="dark" width="50" :open-names="['1']" @on-select="changeDownload">
                 <MenuItem name="4-1">
                     <Icon type="md-cloud-download" />
                 </MenuItem>
             </Menu>
+            
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0">
+
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695">
             <MyTree></MyTree>
-        </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="isCollapsed" collapsed-width="0">
-            <Menu active-name="1-2" theme="dark" width="auto" :open-names="['1']">
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="ios-navigate"></Icon>
-                        Item 1
-                    </template>
-                    <MenuItem name="1-1">Option 1</MenuItem>
-                    <MenuItem name="1-2">Option 2</MenuItem>
-                    <MenuItem name="1-3">Option 3</MenuItem>
-                    <Menu active-name="1-3" theme="dark" width="auto" :open-names="['1']">
-                        <Submenu name="666">
-                            <template slot="title">
-                                <Icon type="ios-navigate"></Icon>
-                                Item 1
-                            </template>
-                            <MenuItem name="1-8">Option 1</MenuItem>
-                            <MenuItem name="1-9">Option 2</MenuItem>
-                            <MenuItem name="1-10">Option 3</MenuItem>
-                        </Submenu>
-                    </Menu>
-                </Submenu>
-                <Submenu name="2">
-                    <template slot="title">
-                        <Icon type="ios-keypad"></Icon>
-                        Item 2
-                    </template>
-                    <MenuItem name="2-1">Option 1</MenuItem>
-                    <MenuItem name="2-2">Option 2</MenuItem>
-                </Submenu>
-                <Submenu name="123">
-                    <template slot="title">
-                        <Icon type="ios-analytics"></Icon>
-                        Item 3
-                    </template>
-                    <MenuItem name="3-1">Option 1</MenuItem>
-                    <MenuItem name="3-2">Option 2</MenuItem>
-                </Submenu>
-            </Menu>
         </Sider>
         <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0">
             <MySetting></MySetting>
+        </Sider>
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" >
+            <MyCloudUpload></MyCloudUpload>
+        </Sider>
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0">
+            <MyCloudDownload></MyCloudDownload>
         </Sider>
         <Layout>
             <Split v-model="split2" mode="vertical">
@@ -85,27 +53,46 @@
 import FootTerminal from "./FootTerminal"
 import MyTree from "./MySider/MyTree"
 import MySetting from "./MySider/MySetting"
+import MyCloudUpload from "./MySider/MyCloudUpload"
+import MyCloudDownload from "./MySider/MyCloudDownload"
     export default{
         components: {
-            FootTerminal,MyTree,MySetting
+            FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload
         },
         data(){
             return{
                 split2:0.5,
                 treemark:true,
                 settingmark:true,
-                isCollapsed: true,
-                
+                uploadmark:true,
+                downloadmark:true,
+                isCollapsed: true
             }
         },
         methods:{
             changeTree:function(){
                 this.treemark = !this.treemark;
+                this.uploadmark = true;
+                this.downloadmark = true;
                 this.settingmark = true;
             },
             changeSetting:function(){
-                this.settingmark = !this.settingmark;
                 this.treemark = true;
+                this.uploadmark = true;
+                this.downloadmark = true;
+                this.settingmark = !this.settingmark;
+            },
+            changeUpload:function(){
+                this.treemark = true;
+                this.uploadmark = !this.uploadmark;
+                this.downloadmark = true;
+                this.settingmark = true;
+            },
+            changeDownload:function(){
+                this.treemark = true;
+                this.uploadmark = true;
+                this.downloadmark = !this.downloadmark;
+                this.settingmark = true;
             }
         },
         computed: {
@@ -118,3 +105,10 @@ import MySetting from "./MySider/MySetting"
         }
     }
 </script>
+
+<style>
+.my-setting .ivu-tabs-bar{
+    margin-bottom: 0px;
+}
+
+</style>
