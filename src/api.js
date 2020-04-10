@@ -8,7 +8,7 @@ function get_request(url, callback) {
     http.send()
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
-            console.log('333')
+            console.log('get success')
             var obj = eval("("+http.responseText+")")
             if (obj.code == undefined) {
                 obj.code = -100
@@ -21,7 +21,7 @@ function get_request(url, callback) {
             }
             callback(obj)
         } else if (http.readyState == 4) {
-            console.log('wtf')
+            console.log('get fail')
             console.log(eval("(" + http.responseText + ")"))
             var obj = {
                 code: http.status,
@@ -42,10 +42,10 @@ function post_request(url, data, callback) {
     http.send(data)
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
-            console.log('333')
+            console.log('post success')
             var obj = eval("("+http.responseText+")")
             // console.log(http.getResponseHeader('Set-Cookie'))
-            console.log(document.cookie.length)
+            // console.log(document.cookie.length)
             if (obj.code == undefined) {
                 obj.code = -100
             }
@@ -55,10 +55,10 @@ function post_request(url, data, callback) {
             if (obj.data == undefined) {
                 obj.data = {}
             }
-            console.log(document.cookie)
+            // console.log(document.cookie)
             callback(obj)
         } else if (http.readyState == 4) {
-            console.log('wtf')
+            console.log('post fail')
             console.log(http.responseText)
             var obj = {
                 code: http.status,
@@ -72,43 +72,46 @@ function post_request(url, data, callback) {
     }
 }
 
-function user_auth(user_id, password, callback) {
-    var url = server + '/user/auth'
-    var data =  'user_id=' + encodeURIComponent(user_id) + 
+function user_login(user_name, password, callback) {
+    var url = server + '/user/login'
+    var data =  'user_name=' + encodeURIComponent(user_name) + 
                 '&password=' + encodeURIComponent(password)
     post_request(url, data, callback)
 }
 
-function user_register(user_id, user_name, password, callback) {
+function user_logout(callback) {
+    var url = server + '/user/logout'
+    var data = ''
+    post_request(url, data, callback)
+}
+
+function user_register(user_name, password, callback) {
     var url = server + '/user/register'
-    var data =  'user_id=' + encodeURIComponent(user_id) + 
-                '&user_name=' + encodeURIComponent(user_name) + 
+    var data =  'user_name=' + encodeURIComponent(user_name) + 
                 '&password=' + encodeURIComponent(password)
     post_request(url, data, callback)
 }
 
-function user_info_update(user_id, user_name, password, callback) {
+function user_info_update(user_name, password, callback) {
     var url = server + '/user/info_update'
-    var data =  'user_id=' + encodeURIComponent(user_id) + 
-                '&user_name=' + encodeURIComponent(user_name) + 
+    var data =  'user_name=' + encodeURIComponent(user_name) + 
                 '&password=' + encodeURIComponent(password)
     post_request(url, data, callback)
 }
 
-function user_info(user_id, callback) {
-    var url = server + '/user/info?user_id=' + encodeURIComponent(user_id)
+function user_info(callback) {
+    var url = server + '/user/info'
     get_request(url, callback)
 }
 
-function project_info(user_id, callback) {
-    var url = server + '/project/info?user_id=' + encodeURIComponent(user_id)
+function project_info(callback) {
+    var url = server + '/project/info'
     get_request(url, callback)
 }
 
-function project_new(user_id, project_name, project_type, callback) {
+function project_new(project_name, project_type, callback) {
     var url = server + '/project/new'
-    var data =  'user_id=' + encodeURIComponent(user_id) + 
-                '&project_name=' + encodeURIComponent(project_name) + 
+    var data =  'project_name=' + encodeURIComponent(project_name) + 
                 '&project_type=' + encodeURIComponent(project_type)
     post_request(url, data, callback) 
 }
@@ -195,7 +198,8 @@ function dir_delete(project_id, dir_path, callback) {
 }
 
 export default {
-    user_auth,
+    user_login,
+    user_logout,
     user_register,
     user_info_update,
     user_info,
