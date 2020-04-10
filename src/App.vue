@@ -19,11 +19,11 @@
     .ivu-btn{
         border-radius: 0px;
         color:#fff;background-color:#464e57;border-color:#464e57;
-		border: 0px solid transparent;
+		    border: 0px solid transparent;
         padding: 6px 16px 6px;
         margin:-3px;
     }
-	.ivu-btn:hover{
+	  .ivu-btn:hover{
       background-color: dimgrey;
     }
     .ivu-dropdown-rel{
@@ -31,19 +31,20 @@
     }
     .ivu-dropdown-menu{
         max-height: 400px;
+        overflow: hidden;
     }
     .ivu-dropdown-item{
-     padding: 0px 16px;
+     padding: 0px 5px 0px 8px;
       height: 20px;
         float: none;
     }
     .ivu-dropdown-item-divided{
       height: 20px;
-      margin-top: 4px;
-      margin-bottom: 7px;
-      padding: 0px 16px 0px;
+      margin-top: 0px;
+      margin-bottom: 2px;
+      padding: 0px 5px 0px 8px;
       line-height: 20px;
-      border-top: 2px solid #e8eaec;
+      border-top: 1px solid #e8eaec;
         float: none;
     }
     .ivu-layout-header{
@@ -55,8 +56,9 @@
     }
 	.ivu-select-dropdown{
       border-radius: 0px;
-      margin-top: 0px;
+      margin-top: 2px;
       max-height: 200px;
+      padding: 0px;
     }
     .ivu-tree-title{
       border-radius:0px;
