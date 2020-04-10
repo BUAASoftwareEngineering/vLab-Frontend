@@ -13,9 +13,9 @@
 <template>
     <div id="menubar">
         <Layout>
-            <Header :style="{height: '7vh', padding:'0'}">
-            <Dropdown placement="top" transfer trigger="click">
-                <Button type="text" class="ivu-btn" ghost>
+            <Header :style="{height: '36px', padding: '0'}">
+            <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0px">
+                <Button type="primary" style="min-width: 70px">
                     文件
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 150px">
@@ -34,9 +34,25 @@
                     <DropdownItem>冰糖葫芦</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <Dropdown placement="top" transfer trigger="click">
-                <Button type="text" class="ivu-btn" ghost>
+             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0px">
+                <Button type="primary" style="min-width: 70px">
                     编辑
+                </Button>
+                <DropdownMenu slot="list" style="min-width: 150px">
+                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
+                    <DropdownItem>重做<span style="float: right">Ctrl+Y</span></DropdownItem>
+                    <DropdownItem divided>拷贝<span style="float: right">Ctrl+C</span></DropdownItem>
+                    <DropdownItem>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
+                    <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>
+                    <DropdownItem divided>查找<span style="float: right">Ctrl+F</span></DropdownItem>
+                    <DropdownItem>替换<span style="float: right">Ctrl+H</span></DropdownItem>
+                    <DropdownItem>全局查找<span style="float: right">Ctrl+Shift+F</span></DropdownItem>
+                    <DropdownItem>全局替换<span style="float: right">Ctrl+Shift+H</span></DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+            <Dropdown placement="bottom-start" transfer trigger="click">
+                <Button type="primary" style="min-width: 70px">
+                    代码操作
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 150px">
                     <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
@@ -46,7 +62,35 @@
                     <DropdownItem>粘贴</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-        
+            <Dropdown placement="bottom-start" transfer trigger="click">
+                <Button type="primary" style="min-width: 70px">
+                    运行
+                </Button>
+                <DropdownMenu slot="list" style="min-width: 150px">
+                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
+                    <DropdownItem>重做</DropdownItem>
+                    <DropdownItem divided>拷贝</DropdownItem>
+                    <DropdownItem>剪切</DropdownItem>
+                    <DropdownItem>粘贴</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+            <Dropdown placement="bottom-start" transfer trigger="click">
+                <Button type="primary" style="min-width: 70px">
+                    视图
+                </Button>
+                <DropdownMenu slot="list" style="min-width: 150px">
+                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
+                    <DropdownItem>重做</DropdownItem>
+                    <DropdownItem divided>拷贝</DropdownItem>
+                    <DropdownItem>剪切</DropdownItem>
+                    <DropdownItem>粘贴</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+            <Dropdown placement="bottom-start" transfer trigger="click">
+                <Button type="primary" style="min-width: 70px">
+                    帮助
+                </Button>
+            </Dropdown>
             </Header>
 
         </Layout>

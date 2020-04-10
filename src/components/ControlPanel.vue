@@ -1,13 +1,31 @@
 <template>
     <Layout :style="{marginLeft: '0px'}">
-        <Sider :style="{height: '93vh', overflow: 'auto'}" width="60">                
-                <Menu active-name="emmm2" theme="dark" width="50" :open-names="['1']" @on-select="test">
-                    <MenuItem name="1-1">
-                        <Icon type="ios-navigate"></Icon>
-                    </MenuItem>
-                </Menu>
-            </Sider>
-        <Sider :style="{height: '93vh', overflow: 'auto'}" collapsible v-model="flodmark" collapsed-width="0">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" width="60">                
+            <Menu active-name="floder" theme="dark" width="50" :open-names="['1']" @on-select="changeTree">
+                <MenuItem name="1-1">
+                    <Icon type="md-folder" />
+                </MenuItem>
+            </Menu>
+            <Menu active-name="build" theme="dark" width="50" :open-names="['1']" @on-select="changeSetting">
+                <MenuItem name="2-1">
+                    <Icon type="md-build" />
+                </MenuItem>
+            </Menu>
+            <Menu active-name="upload" theme="dark" width="50" :open-names="['1']">
+                <MenuItem name="3-1">
+                    <Icon type="md-cloud-upload" />
+                </MenuItem>
+            </Menu>
+            <Menu active-name="download" theme="dark" width="50" :open-names="['1']">
+                <MenuItem name="4-1">
+                    <Icon type="md-cloud-download" />
+                </MenuItem>
+            </Menu>
+        </Sider>
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0">
+            <MyTree></MyTree>
+        </Sider>
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="isCollapsed" collapsed-width="0">
             <Menu active-name="1-2" theme="dark" width="auto" :open-names="['1']">
                 <Submenu name="1">
                     <template slot="title">
@@ -47,6 +65,9 @@
                 </Submenu>
             </Menu>
         </Sider>
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0">
+            <MySetting></MySetting>
+        </Sider>
         <Layout>
             <Split v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane">
@@ -62,20 +83,29 @@
 
 <script>
 import FootTerminal from "./FootTerminal"
+import MyTree from "./MySider/MyTree"
+import MySetting from "./MySider/MySetting"
     export default{
         components: {
-            FootTerminal
+            FootTerminal,MyTree,MySetting
         },
         data(){
             return{
                 split2:0.5,
-                flodmark:true,
+                treemark:true,
+                settingmark:true,
                 isCollapsed: true,
+                
             }
         },
         methods:{
-            test:function(){
-                this.flodmark = !this.flodmark
+            changeTree:function(){
+                this.treemark = !this.treemark;
+                this.settingmark = true;
+            },
+            changeSetting:function(){
+                this.settingmark = !this.settingmark;
+                this.treemark = true;
             }
         },
         computed: {
