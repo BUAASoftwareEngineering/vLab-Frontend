@@ -69,7 +69,7 @@
                 </Sider>
                 <Content>
                     <div style="margin-top:80px;">
-                        <Input suffix="ios-search" placeholder=" Search for Notebooks..." style="width: 800px" />                  
+                        <Input search  placeholder=" Search for Notebooks..." style="width: 800px" />                  
                     </div>
                     <Footer>
                     <div style="margin-top:20px;">
@@ -101,7 +101,7 @@
     </div>
 </template>
 <script>
-import { setCookie,getCookie,delCookie } from '../assets/js/cookie.js'
+import api from '../assets/js/api.js'
     export default {
         data(){
             return{
@@ -110,16 +110,19 @@ import { setCookie,getCookie,delCookie } from '../assets/js/cookie.js'
         },
       
         mounted(){
-			let uname = getCookie('username')
-			this.name = uname
-			if(uname == ""){
-				this.$router.push('/')
-			}
+			api.user_info(function(response){
+            if(response.code!=0){
+                this.$router.push('/')
+            }
+        })
 		},
 		methods:{
 			quit(){
-				delCookie('username')
-				this.$router.push('/')
+				api.user_logout(function(response){
+                    if(response.code==0){
+                        this.$router.push('/')
+                    }
+                })
 			}
 		}
 

@@ -57,7 +57,8 @@
  
 
 <script>
-import {setCookie,getCookie} from '../assets/js/cookie.js'
+import {PassIsleagal}from '../assets/js/checking.js'
+import api from '../assets/js/api.js'
 export default{
 
     data(){
@@ -76,9 +77,13 @@ export default{
 
   mounted(){
   /*页面挂载获取cookie，如果存在username的cookie，则跳转到主页，不需登录*/
-    if(getCookie('username')){
-       this.$router.push('/home')
-    }
+    api.user_info(function(response){
+            if(response.code==0){
+                this.$router.push('/home')
+            }
+    })
+       
+    
   },
   methods:{
       
@@ -101,43 +106,53 @@ export default{
         if(this.username == "" || this.password == ""){
             alert("请输入用户名或密码")
         }else{
-           
-                  this.tishi = "登录成功"
+           api.user_login(this.username,this.password,function(response){
+                if(response.code==0){
+                    this.tishi = "登录成功"
                   this.showTishi = true
-                  setCookie('username',this.username,1000*60)
-                  this.$router.push('/home')
+                   this.$router.push('/home')
+                }
+                else if(response.code==-101){
+                     alert("用户名或密码不正确")
+                     
+                }else{
+                    alert('未知错误')
+                }
+           })
                   
               
           }
       
     },
+    
     register(){
     if(this.newUsername == "" || this.newPassword == ""){
         alert("请输入用户名或密码")
     }else{
-        let data = {'username':this.newUsername,'password':this.newPassword}
-        this.$http.post('http://localhost/vueapi/index.php/Home/user/register',data).then((res)=>{
-            console.log(res)
-            if(res.data == "ok"){
-                this.tishi = "注册成功"
-                this.showTishi = true
-                this.username = ''
-                this.password = ''
-                 /*注册成功之后再跳回登录页*/
-                setTimeout(function(){
-                    this.showRegister = false
-                    this.showLogin = true
-                    this.showTishi = false
-                }.bind(this),1000)
-            }
-        })
+        if(!PassIsleagal(this.newPassword)){
+            alert('密码格式错误')
+        }else{
+
+            api.user_register(this.newUsername,this.newPassword,function(response){
+                        if(response.code==0){
+                            this.tishi='注册成功'
+                            this.showTishi=true
+                            
+
+                        }else if(response.code==-103){
+                            alert('用户名重复')
+                        }else{
+                            alert('未知错误')
+                        }
+                    })
+        }
     }
     },
     update(){
         if(this.username==""||this.password == ""|| this.newPassword == ""){
             alert("请输入用户名或密码")
         }else{
-
+           
         }
     }
 }
