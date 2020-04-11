@@ -19,11 +19,7 @@ server.on('request', function(req, res) {
         console.log(data.toString())
         // console.log(req.headers.cookie)
     })
-    if (req.url == "/user/info?") {
-        res.setHeader("Access-Control-Allow-Credentials","true")
-        res.setHeader("Access-Control-Allow-Origin", req.headers.origin)
-        res.end('{code: -101,message: "auth fail,data: {}"}')
-    }
+    
     //res.setHeader("Content-Type", "text/html");
     //或者使用数组形式
     if (counter.counter % 2 == 0) {
@@ -32,7 +28,13 @@ server.on('request', function(req, res) {
         res.setHeader("Set-Cookie", ["type=lpx; path=/", "language=python; path=/"])
     }
     counter.counter += 1
-    res.setHeader("Access-Control-Allow-Credentials","true")
-    res.setHeader("Access-Control-Allow-Origin", req.headers.origin)
-    res.end('{code: 0,message: "success",data:{user_id: 0, user_name: "test"}}')
+    if (req.url == "/user/info?") {
+        res.setHeader("Access-Control-Allow-Credentials","true")
+        res.setHeader("Access-Control-Allow-Origin", req.headers.origin)
+        res.end('{code: -101,message: "auth fail,data: {}"}')
+    } else {
+        res.setHeader("Access-Control-Allow-Credentials","true")
+        res.setHeader("Access-Control-Allow-Origin", req.headers.origin)
+        res.end('{code: 0,message: "success",data:{user_id: 0, user_name: "test"}}')
+    }
 })
