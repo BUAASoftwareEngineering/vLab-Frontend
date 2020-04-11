@@ -106,11 +106,13 @@ export default{
         if(this.username == "" || this.password == ""){
             alert("请输入用户名或密码")
         }else{
+            var _this=this
            api.user_login(this.username,this.password,function(response){
+               
                 if(response.code==0){
-                    this.tishi = "登录成功"
-                  this.showTishi = true
-                   this.$router.push('/home')
+                  _this.tishi = '登录成功'
+                  _this.showTishi = true
+                   _this.$router.push('/home')
                 }
                 else if(response.code==-101){
                      alert("用户名或密码不正确")
@@ -132,11 +134,11 @@ export default{
         if(!PassIsleagal(this.newPassword)){
             alert('密码格式错误')
         }else{
-
+             var _this=this
             api.user_register(this.newUsername,this.newPassword,function(response){
                         if(response.code==0){
-                            this.tishi='注册成功'
-                            this.showTishi=true
+                            _this.tishi='注册成功'
+                            _this.showTishi=true
                             
 
                         }else if(response.code==-103){

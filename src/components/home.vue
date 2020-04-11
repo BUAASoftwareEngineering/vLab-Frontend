@@ -114,15 +114,13 @@ import api from '../assets/js/api.js'
             if(response.code!=0){
                 this.$router.push('/')
             }
+            
         })
+        
 		},
 		methods:{
 			quit(){
-				api.user_logout(function(response){
-                    if(response.code==0){
-                        this.$router.push('/')
-                    }
-                })
+				api.user_logout()
 			}
 		}
 
