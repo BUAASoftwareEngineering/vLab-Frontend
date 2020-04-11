@@ -2,18 +2,13 @@
     <Layout style="background-color: #808695" height='80vh'>
         <Row>
             <Col span="24">
-            <Card style="border-radius: 0px">
-                <p slot="title">文件管理器</p>
-                <p style="height:24px;padding-left:4px;color:white">My first notebook</p>
-            </Card>
-                
+                <Card style="border-radius: 0px">
+                    <p slot="title">文件管理器</p>
+                    <p style="height:24px;padding-left:4px;color:white">My first notebook</p>
+                </Card>
             </Col>
         </Row>
-        <br>
-        <Row>
-            
-        </Row>
-        <Tree :data="data4" show-checkbox multiple></Tree>
+        <Tree :data="data4" multiple></Tree>
     </Layout>
 </template>
 <script>
@@ -24,7 +19,6 @@
                     {
                         title: 'parent 1',
                         expand: true,
-                        selected: true,
                         children: [
                             {
                                 title: 'parent 1-1',
@@ -56,7 +50,6 @@
                     {
                         title: 'parent 2',
                         expand: true,
-                        selected: true,
                         children: [
                             {
                                 title: 'parent 2-1',

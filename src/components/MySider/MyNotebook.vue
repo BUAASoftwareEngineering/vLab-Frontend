@@ -11,9 +11,7 @@
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 30.4px">
-                <Upload action="//jsonplaceholder.typicode.com/posts/">
                     <Button type="primary" style="border-radius: 4px; margin: 0 20px 0 20px; width: 160px">更改Kernel...</Button>
-                </Upload>
             </Col>
         </Row>
         <br>
