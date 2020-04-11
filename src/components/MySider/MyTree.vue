@@ -1,9 +1,18 @@
 <template>
     <Layout style="background-color: #808695" height='80vh'>
-        <Tabs :animated="false" color="white">
-            <TabPane label="文件管理器" ></TabPane>
+        <Row>
+            <Col span="24">
+            <Card style="border-radius: 0px">
+                <p slot="title">文件管理器</p>
+                <p style="height:24px;padding-left:4px;color:white">My first notebook</p>
+            </Card>
+                
+            </Col>
+        </Row>
+        <br>
+        <Row>
             
-        </Tabs>
+        </Row>
         <Tree :data="data4" show-checkbox multiple></Tree>
     </Layout>
 </template>

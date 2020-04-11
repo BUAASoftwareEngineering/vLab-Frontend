@@ -1,8 +1,15 @@
 <template>
     <Layout style="background-color: #808695">
-        <Tabs :animated="false">
-            <TabPane label="构建设置"></TabPane>
-        </Tabs>
+        <Row>
+            <Col span="24">
+            <Card style="border-radius: 0px">
+                <p slot="title">构建设置</p>
+                <p style="height:24px;padding-left:4px;color:white">My first notebook</p>
+            </Card>
+                
+            </Col>
+        </Row>
+        <br>
          <Select v-model="model1" style="width:200px">
             <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
