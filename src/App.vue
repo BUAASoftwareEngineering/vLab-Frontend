@@ -1,9 +1,9 @@
 <style >
     .layout{
-        border: 0.2vh solid #d7dde4;
+        border: 1px solid #d7dde4;
         background: #f5f7f9;
         position: relative;
-        border-radius: 0.5vh;
+        border-radius: 4px;
         overflow: hidden;
     }
     .layout-header-bar{
@@ -17,52 +17,52 @@
         padding: 10px;
     }
     .ivu-btn{
-        border-radius: 0vh;
+        border-radius: 0px;
         color:#fff;background-color:#464e57;border-color:#464e57;
-		    border: 0vh solid transparent;
-        padding: 0vh 0vh 0.5vh;
-        margin:-1vh;
+		    border: 0px solid transparent;
+        padding: 6px 16px 6px;
+        margin:-3px;
     }
 	  .ivu-btn:hover{
       background-color: dimgrey;
     }
     .ivu-dropdown-rel{
-        padding: -1vh;
+        padding: -3px;
     }
     .ivu-dropdown-menu{
+        max-height: 500px;
         overflow: hidden;
     }
     .ivu-dropdown-item{
-     padding: 0vh 1vh 0vh 1vh;
-      height: 2.5vh;
+     padding: 0px 5px 0px 8px;
+      height: 24px;
         float: none;
-        font-size: 1.8vh;
     }
     .ivu-dropdown-item-divided{
-      height: 2.5vh;
-      margin-top: 0vh;
-      margin-bottom: 0.5vh;
-      padding: 0.1vh 1vh 0vh 1vh;
-      line-height: 2.5vh;
-      border-top: 0.2vh solid #e8eaec;
+      height: 20px;
+      margin-top: 0px;
+      margin-bottom: 2px;
+      padding: 0px 5px 0px 8px;
+      line-height: 20px;
+      border-top: 1px solid #e8eaec;
         float: none;
-        font-size: 1.8vh;
     }
     .ivu-layout-header{
-        height:3.6vh;
-        line-height:3.6vh;
+        height:36px;
+        line-height:36px;
         padding:0;
     background-color: #464e57;
         margin: 0;
     }
 	.ivu-select-dropdown{
-      border-radius: 0vh;
-      margin-top: 0.2vh;
-      padding: 0vh;
+      border-radius: 0px;
+      margin-top: 2px;
+      max-height: 400px;
+      padding: 0px;
       z-index: 20000;
     }
     .ivu-tree-title{
-      border-radius:0vh;
+      border-radius:0px;
       color:#fff;
     }
 </style>

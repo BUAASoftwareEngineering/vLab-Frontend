@@ -11,19 +11,19 @@
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">从Notebook下载文件...</Button>
+                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">从Notebook下载文件...</Button>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">导出Notebook到网盘...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">导出Notebook到网盘...</Button>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">保存Notebook到GitHub...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">保存Notebook到GitHub...</Button>
             </Col>
         </Row>
     </Layout>

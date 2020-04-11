@@ -2,15 +2,15 @@
 <template>
     <div id="menubar">
         <Layout>
-            <Header :style="{height: '3.6vh', padding: '0'}">
+            <Header :style="{height: '4vh', padding: '0'}">
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
                 <Button type="primary" style="min-width: 9vh" height='3.6vh'>
                     文件
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>新建文件</DropdownItem>
                     <DropdownItem>豆汁儿</DropdownItem>
-                    <Dropdown placement="right-start" transfer style="min-width: 18vh">
+                    <Dropdown placement="right-start" transfer style="min-width: 20vh">
                         <DropdownItem>
                             北京烤鸭
                             <Icon type="ios-arrow-forward" style="float: right"></Icon>
@@ -27,7 +27,7 @@
                 <Button type="primary" style="min-width: 9vh" height='3.6vh'>
                     编辑
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
                     <DropdownItem>重做<span style="float: right">Ctrl+Y</span></DropdownItem>
                     <DropdownItem divided style="line-height: 80%">拷贝<span style="float: right">Ctrl+C</span></DropdownItem>
@@ -43,7 +43,7 @@
                 <Button type="primary" style="min-width: 9vh">
                     代码操作
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
                     <DropdownItem>重做</DropdownItem>
                     <DropdownItem divided style="line-height: 80%">拷贝</DropdownItem>
@@ -55,7 +55,7 @@
                 <Button type="primary" style="min-width: 9vh">
                     运行
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem >撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
                     <DropdownItem >重做</DropdownItem>
                     <DropdownItem divided style="line-height: 80%">拷贝</DropdownItem>
@@ -67,7 +67,7 @@
                 <Button type="primary" style="min-width: 9vh">
                     视图
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
                     <DropdownItem>重做</DropdownItem>
                     <DropdownItem divided style="line-height: 80%">拷贝</DropdownItem>
@@ -79,7 +79,7 @@
                 <Button type="primary" style="min-width: 9vh">
                     帮助
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 18vh">
+                <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
                     <DropdownItem>重做</DropdownItem>
                     <DropdownItem divided style="line-height: 80%">拷贝</DropdownItem>

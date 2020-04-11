@@ -12,20 +12,20 @@
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
                 <Upload action="//jsonplaceholder.typicode.com/posts/">
-                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">上传文件到Notebook...</Button>
+                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">上传文件到Notebook...</Button>
                 </Upload>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">从网盘导入Notebook...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">从网盘导入Notebook...</Button>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">从GitHub导入到Notebook...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">从GitHub导入到Notebook...</Button>
             </Col>
         </Row>
     </Layout>

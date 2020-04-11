@@ -23,22 +23,22 @@
             </Menu>
         </Sider>
 
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyTree></MyTree>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MySetting></MySetting>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudUpload></MyCloudUpload>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudDownload></MyCloudDownload>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyPreference></MyPreference>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695">
+        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyNotebook></MyNotebook>
         </Sider>
         <Layout>

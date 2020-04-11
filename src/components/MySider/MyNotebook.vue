@@ -11,19 +11,19 @@
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">更改Kernel...</Button>
+                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">更改Kernel...</Button>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">自动同步设置...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">自动同步设置...</Button>
             </Col>
         </Row>
         <br>
         <Row>
             <Col :span="24" style="margin: 0 auto; height: 3.04vh">
-                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">共享Notebook...</Button>
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 25vh; height: 4vh">共享Notebook...</Button>
             </Col>
         </Row>
     </Layout>
