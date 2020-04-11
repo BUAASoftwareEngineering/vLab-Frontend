@@ -2,30 +2,28 @@
     <Layout style="background-color: #808695">
         <Row>
             <Col span="24">
-                <Card style="border-radius: 0px">
+                <Card style="border-radius: 0vh">
                     <p slot="title">下载与导出</p>
-                    <p style="height:24px;padding-left:4px;color:white">My first notebook</p>
+                    <p style="height:2.4vh;padding-left:0.4vh;color:white">My first notebook</p>
                 </Card>
             </Col>
         </Row>
         <br>
         <Row>
-            <Col :span="24" style="margin: 0 auto; height: 30.4px">
-                <Upload action="//jsonplaceholder.typicode.com/posts/">
-                    <Button type="primary" style="border-radius: 4px; margin: 0 20px 0 20px; width: 160px">从Notebook下载文件...</Button>
-                </Upload>
+            <Col :span="24" style="margin: 0 auto; height: 3.04vh">
+                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">从Notebook下载文件...</Button>
             </Col>
         </Row>
         <br>
         <Row>
-            <Col :span="24" style="margin: 0 auto; height: 30.4px">
-                <Button type="primary" style="border-radius: 4px; margin: 0 20px 0 20px; width: 160px">导出Notebook到网盘...</Button>
+            <Col :span="24" style="margin: 0 auto; height: 3.04vh">
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">导出Notebook到网盘...</Button>
             </Col>
         </Row>
         <br>
         <Row>
-            <Col :span="24" style="margin: 0 auto; height: 30.4px">
-                <Button type="primary" style="border-radius: 4px; margin: 0 20px 0 20px; width: 160px">保存Notebook到GitHub...</Button>
+            <Col :span="24" style="margin: 0 auto; height: 3.04vh">
+                <Button type="primary" style="border-radius: 0.4vh; margin: 0 3vh 0 3vh; width: 20vh; height: 4vh">保存Notebook到GitHub...</Button>
             </Col>
         </Row>
     </Layout>

@@ -1,5 +1,5 @@
 <template>
-    <Layout :style="{marginLeft: '0px'}">
+    <Layout :style="{marginLeft: '0vh'}">
         <Sider :style="{height: '100vh', overflow: 'auto'}" width="60">                
             <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
                 <MenuItem name="1-1" @click.native="changeTree">
@@ -141,16 +141,16 @@ import MyNotebook from "./MySider/MyNotebook"
 
 <style>
 .my-setting .ivu-tabs-bar{
-    margin-bottom: 0px;
+    margin-bottom: 0vh;
 }
 .ivu-card-head{
-    padding: 4px;
+    padding: 0.4vh;
 }
 .ivu-card-body{
-    padding: 0px;
-    height: 24px;
+    padding: 0vh;
+    height: 2.4vh;
     background: #363e4f;;
-    margin: -1px;
+    margin: -0.1vh;
 }
 
 </style>
