@@ -1,33 +1,23 @@
 <template>
     <Layout :style="{marginLeft: '0px'}">
         <Sider :style="{height: '100vh', overflow: 'auto'}" width="60">                
-            <Menu active-name="floder" theme="dark" width="50" :open-names="['1']" @on-select="changeTree">
-                <MenuItem name="1-1">
+            <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
+                <MenuItem name="1-1" @click.native="changeTree">
                     <Icon type="md-folder" />
                 </MenuItem>
-            </Menu>
-            <Menu active-name="build" theme="dark" width="50" :open-names="['1']" @on-select="changeSetting">
-                <MenuItem name="2-1">
+                <MenuItem name="2-1" @click.native="changeSetting">
                     <Icon type="md-build" />
                 </MenuItem>
-            </Menu>
-            <Menu active-name="upload" theme="dark" width="50" :open-names="['1']" @on-select="changeUpload">
-                <MenuItem name="3-1">
+                <MenuItem name="3-1" @click.native="changeUpload">
                     <Icon type="md-cloud-upload" />
                 </MenuItem>
-            </Menu>
-            <Menu active-name="download" theme="dark" width="50" :open-names="['1']" @on-select="changeDownload">
-                <MenuItem name="4-1">
+                <MenuItem name="4-1" @click.native="changeDownload">
                     <Icon type="md-cloud-download" />
                 </MenuItem>
-            </Menu>
-            <Menu active-name="preference" theme="dark" width="50" :open-names="['1']" @on-select="changePreference" style="margin-top:420px">
-                <MenuItem name="5-1">
+                <MenuItem name="5-1" @click.native="changePreference" style="margin-top:59vh">
                     <Icon type="md-contact" />
                 </MenuItem>
-            </Menu>
-            <Menu active-name="notebook" theme="dark" width="50" :open-names="['1']" @on-select="changeNotebook">
-                <MenuItem name="6-1">
+                <MenuItem name="6-1" @click.native="changeNotebook">
                     <Icon type="md-settings" />
                 </MenuItem>
             </Menu>
