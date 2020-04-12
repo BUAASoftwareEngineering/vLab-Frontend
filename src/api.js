@@ -1,6 +1,10 @@
 
 const http = new XMLHttpRequest()
-const server = "http://127.0.0.1:8081"
+const server = "http://114.116.135.181:8081"
+const CPP = 'CPP'
+const PYTHON3 = 'PYTHON3'
+const PYTHON2 = 'PYTHON2'
+const JAVA = 'JAVA'
 http.withCredentials = true
 
 function get_request(url, callback) {
@@ -22,10 +26,9 @@ function get_request(url, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
-            // console.log(eval("(" + http.responseText + ")"))
-            let code = (http.status == 0) ? -100 : http.status
+            console.log(eval("(" + http.responseText + ")"))
             var obj = {
-                code: code,
+                code: http.status,
                 message: "Http request fail!",
                 data: {}
             }
@@ -60,10 +63,9 @@ function post_request(url, data, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('post fail')
-            // console.log(http.responseText)
-            let code = (http.status == 0) ? -100 : http.status
+            console.log(http.responseText)
             var obj = {
-                code: code,
+                code: http.status,
                 message: "Http request fail!",
                 data: {}
             }
@@ -199,6 +201,15 @@ function dir_delete(project_id, dir_path, callback) {
     post_request(url, data, callback)
 }
 
+function get_user_name() {
+    var name = document.cookie.indexOf("user_name=")
+    if (name != -1 && name != '') {
+        return name
+    } else {
+        return undefined
+    }
+}
+
 export default {
     user_login,
     user_logout,
@@ -218,5 +229,9 @@ export default {
     file_move,
     file_copy,
     dir_new,
-    dir_delete
+    dir_delete,
+    CPP,
+    PYTHON2,
+    PYTHON3,
+    JAVA
 }

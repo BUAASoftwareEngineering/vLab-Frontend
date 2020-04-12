@@ -10,7 +10,7 @@ import api from '/src/api.js'
 // ...
 
 function example(user_name, password) {
-    api.user_auth(user_name, password, function (response) {
+    api.user_login(user_name, password, function (response) {
         if (response.code == 0) {
             // success
         }
@@ -31,17 +31,15 @@ function example(user_name, password) {
         - 字母>=0个 数字>=0个 特殊字符（.@#$-）>=0个
         - 6位以上
 - project：
-    - -201：project_name重名（和当前用户的所有project里）
-    - -202：project_type不存在（c++，c，python）
-    - -203：项目已进入，不可重入项目，请先退出项目
-    - -204：并未进入项目
+    - 无特别的错误码
 
 ## log
 
 - `2020-04-09:` 第一版api完成，本地测试完成，与front-serve对接测试完成，但仍有一些参数不匹配的小问题
 - `2020-04-10:` 第二版api完成，本地测试，服务器测试均通过，目前可以完成用户身份验证功能以及获取user_name，前端不需要操控cookie，并且明确了错误码定义。
+- `2020-04-12:` user和project的请求和服务器对接完成，可以投入使用，并且新加了对project_type的限制
 
 ## TODO
 
-- 测试cookie管理
-- 和前端对接
+- 和前端对接project
+- 定义file错误码
