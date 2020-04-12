@@ -5,9 +5,6 @@ import App from './App'
 import router from './router'
 import ViewUI from 'view-design'
 import 'view-design/dist/styles/iview.css'
-//import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
-//import * as ide from './components/hello'
-
 
 Vue.config.productionTip = false
 Vue.use(ViewUI)
@@ -19,3 +16,5 @@ new Vue({
   template: '<App/>'
 })
 
+import {initEditor} from './editor/app'
+initEditor()

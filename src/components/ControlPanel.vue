@@ -43,7 +43,7 @@
         </Sider>
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
-                <div ref="editorRoot" id="editorRoot" slot="top" class="demo-split-pane">
+                <div ref="editorRoot" id="editorRoot" slot="top" class="demo-split-pane" style="width:100%;height:100%">
 
 
 
@@ -57,7 +57,6 @@
 </template>
 
 <script>
-//import Editor from "./Editor"
 import FootTerminal from "./FootTerminal"
 import MyTree from "./MySider/MyTree"
 import MySetting from "./MySider/MySetting"
@@ -65,12 +64,10 @@ import MyCloudUpload from "./MySider/MyCloudUpload"
 import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
-import * as ide from './hello'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
             MyPreference, MyNotebook,
-            //Editor
         },
         data(){
             return{
@@ -133,12 +130,6 @@ import * as ide from './hello'
                 this.preferencemark = true;
                 this.notebookmark = !this.notebookmark;
             },
-            hhh:function(){
-                let text = document.createTextNode('emmmmm');
-                //document.getElementById("#editorRoot").appendChild(text);
-                document.getElementById("wtf").appendChild(text);
-                //ide.hhh()
-            }
         },
         computed: {
             menuitemClasses: function () {
