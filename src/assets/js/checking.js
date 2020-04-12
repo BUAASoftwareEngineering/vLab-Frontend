@@ -9,3 +9,5 @@ export function PassIsleagal(newPassword){
         
     }
  }
+
+ 

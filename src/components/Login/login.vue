@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <img src="../assets/logo.png">
+    <div style="text-align:center">
+        <img src="../../assets/logo.png">
        
         <div class="login-wrap" v-show="showLogin">
         
@@ -49,7 +49,7 @@
     </div>
 </template>
  
-<style>
+<style scoped>
     .login-wrap{text-align:center;}
     .register-wrap{text-align:center;}
     p{color:red;}
@@ -59,18 +59,14 @@
  
 
 <script>
-import {PassIsleagal}from '../assets/js/checking.js'
-import api from '../assets/js/api.js'
+import {PassIsleagal}from '../../assets/js/checking.js'
+import api from '../../assets/js/api.js'
 export default{
 
     data(){
             return{
                 showLogin: true,
-                showRegister: false,
-                showUpdate:false,
-               
-                
-               
+                showRegister: false,                       
                 username: '',
                 password: '',
                 newUsername: '',

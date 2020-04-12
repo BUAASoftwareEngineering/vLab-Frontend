@@ -5,6 +5,7 @@
     position: relative;
     border-radius: 4px;
     overflow: hidden;
+    text-align: center;
 }
 .layout-logo{
     width: 100px;
@@ -58,42 +59,20 @@
             <Layout  >
                 <Sider hide-trigger :style="{background: '#fff'}">
                     <div style="margin-top:200px;">
-                    <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
+                    <Menu active-name="1-1" theme="light" width="auto" :open-names="['1']">
                         
-                            <MenuItem name="1-1">My Notebooks</MenuItem>
-                            <MenuItem name="1-2">Account</MenuItem>
+                            <MenuItem name="1-1" @click.native="ToNotebooks">My Notebooks</MenuItem>
+                            <MenuItem name="1-2" @click.native="ToAccount">Account</MenuItem>
                             <MenuItem name="1-3">Preferences</MenuItem>
                       
                     </Menu>
                     </div>
                 </Sider>
                 <Content>
-                    <div style="margin-top:80px;">
-                        <Input search  placeholder=" Search for Notebooks..." style="width: 800px" />                  
-                    </div>
-                    <Footer>
-                    <div style="margin-top:20px;">
-                        <Tabs value="name1">
-                            <TabPane label="C/C++ Notebooks" name="name1"></TabPane>
-                            <TabPane label="Python Notebooks" name="name2"></TabPane>
-                            <TabPane label="Java Notebooks" name="name3"></TabPane>
-                        </Tabs>
-                        <Card style="width:130px ">
-                            <div style="text-align:center">
-                               <img src="../assets/new.png"/>
-                               <br>
-                                <a >New</a>
-                                <br><br>
-                                
-                            </div>
-                            <div style="text-align:left">
-                                <img src="../assets/import.png" width=20px height=20px>
-                                <a >Import ...</a>
-                            </div>
-                        </Card>
-                    </div>
-                </Footer>
+                        <MyNotebooks v-show="showNotebooks"></MyNotebooks>
+                        <Account v-show="showAccount"></Account>
                 </Content>
+               
                 
             </Layout>
             
@@ -101,12 +80,20 @@
     </div>
 </template>
 <script>
-import api from '../assets/js/api.js'
+import api from '../../assets/js/api.js'
+import MyNotebooks from './MyNotebooks.vue'
+import Account from './Account.vue'
     export default {
         data(){
             return{
-                name: ''
+                name: '',
+                showNotebooks:true,
+                showAccount:false
             }
+        },
+        components:{
+            MyNotebooks,
+            Account
         },
       
         mounted(){
@@ -124,6 +111,15 @@ import api from '../assets/js/api.js'
         
 		},
 		methods:{
+            ToNotebooks(){
+                this.showNotebooks=true
+                this.showAccount=false
+            },
+
+            ToAccount(){
+                this.showNotebooks=false
+                this.showAccount=true
+            },
             
 			quit(){
                  this.$Spin.show();
