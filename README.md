@@ -1,22 +1,28 @@
-# cloud-ide
+# vLab - IDE Page
 
-> A Vue.js project
+> A [Vue.js](https://vuejs.org/index.html) project with [monaco-editor](http://github.com/Microsoft/monaco-editor)
 
-## Build Setup
-新建文件夹吧zip内容解压到该文件夹，到该目录下运行下面的命令。
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-理论上到这里就能运行了
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+## Dependencies
+```javascript
+"monaco-editor": "=0.19.3",
+"monaco-editor-webpack-plugin": "=1.9.0",
+"webpack": "^3.6.0",
+"webpack-dev-server": "^2.9.1",
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Build & Run Setup
+### Install Dependencies (node_modules/)
+``` bash
+npm install .
+```
+
+### Serve Dev Version with Hot Reload at http://localhost:8080 [works well]
+``` bash
+npm run dev
+```
+
+### Build for Production with Minification [not tested]
+``` bash
+npm run build
+```
+Then set the website root to `vLab-Frontend/dist/` and setup local server with Apache.
