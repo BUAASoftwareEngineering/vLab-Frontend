@@ -22,9 +22,10 @@ function get_request(url, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
-            console.log(eval("(" + http.responseText + ")"))
+            // console.log(eval("(" + http.responseText + ")"))
+            let code = (http.status == 0) ? -100 : http.status
             var obj = {
-                code: http.status,
+                code: code,
                 message: "Http request fail!",
                 data: {}
             }
@@ -59,9 +60,10 @@ function post_request(url, data, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('post fail')
-            console.log(http.responseText)
+            // console.log(http.responseText)
+            let code = (http.status == 0) ? -100 : http.status
             var obj = {
-                code: http.status,
+                code: code,
                 message: "Http request fail!",
                 data: {}
             }
