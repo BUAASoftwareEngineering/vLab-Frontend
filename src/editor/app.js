@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import $ from 'jquery';
 
 import * as actions from './Actions.js';
@@ -7,24 +7,7 @@ import * as defaultCodes from './DefaultCodes.js';
 import * as editormanage from './Editor.js';
 
 export function initEditor() {
-	self.MonacoEnvironment = {
-		getWorkerUrl: function (moduleId, label) {
-			if (label === 'json') {
-				return './json.worker.js';
-			}
-			if (label === 'css') {
-				return './css.worker.js';
-			}
-			if (label === 'html') {
-				return './html.worker.js';
-			}
-			if (label === 'typescript' || label === 'javascript') {
-				return './ts.worker.js';
-			}
-			return './editor.worker.js';
-		}
-	}
-
+	
 	editormanage.addNewEditor(defaultCodes.defaultCode_js, 'javascript');
 	var editor = editormanage.editorArray[0];
 
