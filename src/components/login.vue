@@ -79,9 +79,11 @@ export default{
     },
 
   mounted(){
+      this.$Spin.show();
        var _this=this
  
     api.user_info(function(response){
+        _this.$Spin.hide();
             if(response.code==0){
                 _this.$router.push('/home')
             }
@@ -108,12 +110,9 @@ export default{
             this.$Message.warning("请输入用户名或密码")
         }else{
             this.$Spin.show();
-            setTimeout(() => {
-                this.$Spin.hide();
-            }, 800);
             var _this=this
            api.user_login(this.username,this.password,function(response){
-              
+               _this.$Spin.hide();
                 if(response.code==0){
                     _this.$Message.success('登录成功')
                    _this.$router.push('/home')
@@ -139,13 +138,13 @@ export default{
             this.$Message.warning('密码格式错误')
         }else{
              this.$Spin.show();
-            setTimeout(() => {
-                this.$Spin.hide();
-            }, 800);
+           
              var _this=this
             api.user_register(this.newUsername,this.newPassword,function(response){
+                _this.$Spin.hide();
                         if(response.code==0){
                            _this.$Message.success('注册成功')
+                           _this.ToLogin()
                             
                         }else if(response.code==-103){
                            _this.$Message.error('用户名重复')

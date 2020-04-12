@@ -51,7 +51,7 @@
                        
                         
                     </div>
-                    <a href="#" @click="quit">注销</a>
+                    <a  @click="quit">注销</a>
                 </Menu>
                
             </Header>
@@ -110,8 +110,10 @@ import api from '../assets/js/api.js'
         },
       
         mounted(){
+            this.$Spin.show();
              var _this=this
 			api.user_info(function(response){
+                _this.$Spin.hide();
             if(response.code!=0){
                 _this.$router.push('/')
             }else{
@@ -125,11 +127,10 @@ import api from '../assets/js/api.js'
             
 			quit(){
                  this.$Spin.show();
-                setTimeout(() => {
-                    this.$Spin.hide();
-                }, 800);
+               
                  var _this=this
 				api.user_logout(function(response){
+                    _this.$Spin.hide();
                     if(response.code==0){
                         _this.$Message.success('注销成功')
                         _this.$router.push('/')

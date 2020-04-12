@@ -8,6 +8,7 @@ Vue.use(Router)
  
 /*配置路由*/
 export default new Router({
+  mode:'history',
   routes: [
     {
       path: '/',
