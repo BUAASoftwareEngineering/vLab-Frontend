@@ -5,6 +5,7 @@
         <TabPane label="Kernel控制台"></TabPane>
         <TabPane label="调试控制台"></TabPane>
     </Tabs>
+    
 </template>
 <script>
 export default {

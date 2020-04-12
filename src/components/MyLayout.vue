@@ -1,6 +1,6 @@
 
 <template>
-    <div class="layout">
+    <div id='mylayout' ref='mylayout' class="layout">
         <Layout>
             <MenuBar></MenuBar>
             <ControlPanel></ControlPanel>

@@ -1,6 +1,6 @@
 <template>
-    <Layout :style="{marginLeft: '0vh'}">
-        <Sider :style="{height: '100vh', overflow: 'auto'}" width="60">                
+    <Layout :style="{marginLeft: '0vh'}" id='wtf'>
+        <Sider :style="{height: '96vh', overflow: 'auto'}" width="60">                
             <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
                 <MenuItem name="1-1" @click.native="changeTree">
                     <Icon type="md-folder" />
@@ -23,28 +23,30 @@
             </Menu>
         </Sider>
 
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyTree></MyTree>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MySetting></MySetting>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudUpload></MyCloudUpload>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudDownload></MyCloudDownload>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyPreference></MyPreference>
         </Sider>
-        <Sider :style="{height: '100vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyNotebook></MyNotebook>
         </Sider>
         <Layout>
-            <Split v-model="split2" mode="vertical">
-                <div slot="top" class="demo-split-pane">
-                    Top Pane
+            <Split ref="sp" v-model="split2" mode="vertical">
+                <div ref="editorRoot" id="editorRoot" slot="top" class="demo-split-pane">
+
+
+
                 </div>
                 <div slot="bottom" class="demo-split-pane">
                     <FootTerminal></FootTerminal>
@@ -55,6 +57,7 @@
 </template>
 
 <script>
+//import Editor from "./Editor"
 import FootTerminal from "./FootTerminal"
 import MyTree from "./MySider/MyTree"
 import MySetting from "./MySider/MySetting"
@@ -62,9 +65,12 @@ import MyCloudUpload from "./MySider/MyCloudUpload"
 import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
+import * as ide from './hello'
     export default{
         components: {
-            FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload, MyPreference, MyNotebook
+            FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
+            MyPreference, MyNotebook,
+            //Editor
         },
         data(){
             return{
@@ -126,6 +132,12 @@ import MyNotebook from "./MySider/MyNotebook"
                 this.settingmark = true;
                 this.preferencemark = true;
                 this.notebookmark = !this.notebookmark;
+            },
+            hhh:function(){
+                let text = document.createTextNode('emmmmm');
+                //document.getElementById("#editorRoot").appendChild(text);
+                document.getElementById("wtf").appendChild(text);
+                //ide.hhh()
             }
         },
         computed: {

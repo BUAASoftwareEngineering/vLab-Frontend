@@ -68,7 +68,7 @@
 </style>
 
 <template>
-  <div id="app">
+  <div id="app" ref="app">
     <MyLayout></MyLayout>
     
   </div>
