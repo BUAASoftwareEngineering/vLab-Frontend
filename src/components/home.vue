@@ -110,17 +110,26 @@ import api from '../assets/js/api.js'
         },
       
         mounted(){
+             var _this=this
 			api.user_info(function(response){
             if(response.code!=0){
-                this.$router.push('/')
+                _this.$router.push('/')
+            }else{
+                _this.name=response.data.name
             }
             
         })
         
 		},
 		methods:{
+            
 			quit(){
-				api.user_logout()
+                 var _this=this
+				api.user_logout(function(response){
+                    if(response.code==0){
+                        _this.$router.push('/')
+                    }
+                })
 			}
 		}
 

@@ -1,6 +1,6 @@
 
 const http = new XMLHttpRequest()
-const server = "http://127.0.0.1:8081"
+const server = "http://114.116.135.181:8081"
 http.withCredentials = true
 
 function get_request(url, callback) {

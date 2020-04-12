@@ -33,9 +33,9 @@
             <h3>修改密码</h3>
             <br>
             <p v-show="showTishi">{{tishi}}</p>
-            <Input type="text" placeholder="请输入用户名" v-model="Username" style="width: 200px"/>
+            <Input type="text" placeholder="请输入用户名" v-model="username" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入现有密码" v-model="Password" style="width: 200px"/>
+            <Input type="password" placeholder="请输入现有密码" v-model="password" style="width: 200px"/>
             <br><br>
             <Input type="password" placeholder="请输入新密码" v-model="newPassword" style="width: 200px"/>
             <br><br>
@@ -76,10 +76,11 @@ export default{
     },
 
   mounted(){
-  /*页面挂载获取cookie，如果存在username的cookie，则跳转到主页，不需登录*/
+       var _this=this
+ 
     api.user_info(function(response){
             if(response.code==0){
-                this.$router.push('/home')
+                _this.$router.push('/home')
             }
     })
        
@@ -140,7 +141,6 @@ export default{
                             _this.tishi='注册成功'
                             _this.showTishi=true
                             
-
                         }else if(response.code==-103){
                             alert('用户名重复')
                         }else{
