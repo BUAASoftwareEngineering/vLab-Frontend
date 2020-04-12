@@ -199,15 +199,6 @@ function dir_delete(project_id, dir_path, callback) {
     post_request(url, data, callback)
 }
 
-function get_user_name() {
-    var name = document.cookie.indexOf("user_name=")
-    if (name != -1 && name != '') {
-        return name
-    } else {
-        return undefined
-    }
-}
-
 export default {
     user_login,
     user_logout,
