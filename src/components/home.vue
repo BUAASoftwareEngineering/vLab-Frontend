@@ -46,12 +46,12 @@
                     <div class="layout-nav">
                         <MenuItem name="1">
                         
-                           欢迎  {{name}}
+                           欢迎，{{name}}
                         </MenuItem>
                        
                         
                     </div>
-                    <a href="#" @click="quit">注销登录</a>
+                    <a href="#" @click="quit">注销</a>
                 </Menu>
                
             </Header>
@@ -124,10 +124,16 @@ import api from '../assets/js/api.js'
 		methods:{
             
 			quit(){
+                 this.$Spin.show();
+                setTimeout(() => {
+                    this.$Spin.hide();
+                }, 800);
                  var _this=this
 				api.user_logout(function(response){
                     if(response.code==0){
+                        _this.$Message.success('注销成功')
                         _this.$router.push('/')
+
                     }
                 })
 			}

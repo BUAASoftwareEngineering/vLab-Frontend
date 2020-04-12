@@ -1,4 +1,3 @@
-
 const http = new XMLHttpRequest()
 const server = "http://114.116.135.181:8081"
 http.withCredentials = true
@@ -22,9 +21,10 @@ function get_request(url, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
-            console.log(eval("(" + http.responseText + ")"))
+            // console.log(eval("(" + http.responseText + ")"))
+            let code = (http.status == 0) ? -100 : http.status
             var obj = {
-                code: http.status,
+                code: code,
                 message: "Http request fail!",
                 data: {}
             }
@@ -59,9 +59,10 @@ function post_request(url, data, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('post fail')
-            console.log(http.responseText)
+            // console.log(http.responseText)
+            let code = (http.status == 0) ? -100 : http.status
             var obj = {
-                code: http.status,
+                code: code,
                 message: "Http request fail!",
                 data: {}
             }
@@ -195,15 +196,6 @@ function dir_delete(project_id, dir_path, callback) {
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&dir_path=' + encodeURIComponent(dir_path)
     post_request(url, data, callback)
-}
-
-function get_user_name() {
-    var name = document.cookie.indexOf("user_name=")
-    if (name != -1 && name != '') {
-        return name
-    } else {
-        return undefined
-    }
 }
 
 export default {
