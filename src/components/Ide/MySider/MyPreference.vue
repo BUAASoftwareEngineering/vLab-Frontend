@@ -8,27 +8,41 @@
                 </Card>
             </Col>
         </Row>
-        <Tabs :animated="false" type="card">
-            <TabPane label="主题"></TabPane>
-        </Tabs>
-        <Select v-model="model1" style="width:20vh">
-            <Option v-for="item in themeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        </br>
-        <Tabs :animated="false" type="card">
-            <TabPane label="行号"></TabPane>
-        </Tabs>
-        <RadioGroup v-model="openmark">
-            <Radio label="yes" border></Radio>
-            <Radio label="no" border></Radio>
-        </RadioGroup>
-        </br>
-        <Tabs :animated="false" type="card">
-            <TabPane label="字体"></TabPane>
-        </Tabs>
-        <Select v-model="model2" style="width:20vh">
-            <Option v-for="item in fontList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+
+        <br>
+        <h2 style="margin-left:15px">主题</h2>
+        <br>
+        <Row>
+            <Col :span="24" style="text-align:left">
+                <Select v-model="model1" style="width:25vh; margin-left:30px">
+                    <Option v-for="item in themeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+            </Col>
+        </Row>
+        <br>
+
+        <h2 style="margin-left:15px">行号</h2>
+        <br>
+        <Row>
+            <Col :span="24" style="text-align:left">
+                <RadioGroup v-model="openmark" style="margin-left:30px">
+                    <Radio label="yes" border></Radio>
+                    <Radio label="no" border></Radio>
+                </RadioGroup>
+            </Col>
+        </Row>
+        <br>
+
+        <h2 style="margin-left:15px">字体</h2>
+        <br>
+        <Row>
+            <Col :span="24" style="text-align:left">
+                <Select v-model="model2" style="width:25vh; margin-left:30px">
+                    <Option v-for="item in fontList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+            </Col>
+        </Row>
+        <br>
     </Layout>
 </template>
 <script>

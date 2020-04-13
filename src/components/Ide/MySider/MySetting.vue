@@ -10,12 +10,15 @@
             </Col>
         </Row>
 
+        
         <Checkbox>
             <label style="color:white">My first notebook</label>
         </Checkbox>
+        
         <Checkbox>
             <label style="color:white">My second notebook</label>
         </Checkbox>
+        
         <Checkbox>
             <label style="color:white">My third notebook</label>
         </Checkbox><br>

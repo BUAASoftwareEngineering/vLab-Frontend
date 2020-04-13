@@ -253,4 +253,9 @@ import * as ide from './hello'
     .mynotebook >>> .ivu-card-head{
     padding: 0.4vh;
     }
+
+    .mypreference >>> .br{
+        display: inline;
+        line-height: 5px;
+    }
 </style>
