@@ -1,7 +1,7 @@
 
 <template>
         <Layout>
-            <Header :style="{height: '5vh', padding: '0'}">
+            <Header :style="{height: '5.6vh', padding: '0vh'}">
             <Dropdown placement="bottom-start" transfer trigger="click">
                 <Button type="primary" style="min-width: 9vh">
                     文件
