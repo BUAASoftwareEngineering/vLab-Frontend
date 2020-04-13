@@ -55,11 +55,10 @@
         margin: 0;
     }
 	.ivu-select-dropdown{
-      border-radius: 0px;
-      margin-top: 2px;
-      max-height: 400px;
-      padding: 0px;
-      z-index: 20000;
+      overflow: hidden;
+		  border-radius: 0vh;
+		  max-height: 400px;
+		  padding-bottom: 0px;
     }
     .ivu-tree-title{
       border-radius:0px;

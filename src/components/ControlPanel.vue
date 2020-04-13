@@ -1,6 +1,6 @@
 <template>
     <Layout :style="{marginLeft: '0vh'}" id='wtf'>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" width="60">                
+        <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">                
             <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
                 <MenuItem name="1-1" @click.native="changeTree">
                     <Icon type="md-folder" />
@@ -14,7 +14,7 @@
                 <MenuItem name="4-1" @click.native="changeDownload">
                     <Icon type="md-cloud-download" />
                 </MenuItem>
-                <MenuItem name="5-1" @click.native="changePreference" style="margin-top:59vh">
+                <MenuItem name="5-1" @click.native="changePreference" style="margin-top:50vh">
                     <Icon type="md-contact" />
                 </MenuItem>
                 <MenuItem name="6-1" @click.native="changeNotebook">
@@ -24,22 +24,22 @@
         </Sider>
 
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyTree></MyTree>
+            <MyTree class="mytree"></MyTree>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MySetting></MySetting>
+            <MySetting class="mysetting"></MySetting>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudUpload></MyCloudUpload>
+            <MyCloudUpload class="mycloudupload"></MyCloudUpload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudDownload></MyCloudDownload>
+            <MyCloudDownload class="myclouddownload"></MyCloudDownload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyPreference></MyPreference>
+            <MyPreference class="mypreference"></MyPreference>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyNotebook></MyNotebook>
+            <MyNotebook class="mynotebook"></MyNotebook>
         </Sider>
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
@@ -142,18 +142,107 @@ import MyNotebook from "./MySider/MyNotebook"
     }
 </script>
 
-<style>
-.my-setting .ivu-tabs-bar{
-    margin-bottom: 0vh;
-}
-.ivu-card-head{
-    padding: 0.4vh;
-}
-.ivu-card-body{
+<style scoped>
+    .my-setting .ivu-tabs-bar{
+        margin-bottom: 0vh;
+    }
+    .ivu-card-head{
+        padding: 0.4vh;
+    }
+    .ivu-card-body{
     padding: 0vh;
     height: 2.4vh;
     background: #363e4f;;
     margin: -0.1vh;
-}
-
-</style>
+    }
+    .ivu-btn{
+        border-radius: 0px;
+        color:#f5f7f9;background-color:#464e57;border-color:#464e57;
+        margin: 0px;
+		    border: 0px solid transparent;
+        padding: 6px 16px 6px;
+        margin:-3px;
+    }
+    .layout{
+        border: 1px solid #d7dde4;
+        background: #f5f7f9;
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .layout-header-bar{
+        background: #fff;
+    }
+	.ivu-btn:hover{
+      background-color: dimgrey;
+    }
+    .ivu-layout-header{
+        height:36px;
+        line-height:36px;
+        padding:0;
+    background-color: #464e57;
+        margin: 0;
+    }
+    .ivu-tree-title{
+      border-radius:0px;
+      color:#fff;
+    }
+    .mytree >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .mysetting >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .mypreference >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .myclouddownload >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .mycloudupload >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .mynotebook >>> .ivu-card-body{
+    padding: 0.3vh;
+    height: 3.5vh;
+    background: #363e4f;;
+    margin: -0.1vh;
+    }
+    .mytree >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .mysetting >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .mypreference >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .myclouddownload >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .mycloudupload >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .mynotebook >>> .ivu-card-head{
+    padding: 0.4vh;
+    }
+    .mypreference >>> .br{
+        display: inline;
+        line-height: 5px;
+    }
+</style> 
