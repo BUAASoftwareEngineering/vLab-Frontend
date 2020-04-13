@@ -193,7 +193,7 @@ import * as ide from './hello'
     background-color: #464e57;
         margin: 0;
     }
-    .ivu-tree-title{
+    .mytree >>> .ivu-tree-title{
       border-radius:0px;
       color:#fff;
     }
