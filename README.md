@@ -19,6 +19,7 @@ npm install .
 ### Serve Dev Version with Hot Reload at http://localhost:8080 [works well]
 ``` bash
 npm run dev
+node index.js
 ```
 
 ### Build for Production with Minification [not tested]
@@ -26,3 +27,4 @@ npm run dev
 npm run build
 ```
 Then set the website root to `vLab-Frontend/dist/` and setup local server with Apache.
+
