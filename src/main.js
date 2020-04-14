@@ -3,7 +3,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-//import router from './router'
+import router from './router'
 import ViewUI from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import VueResource from 'vue-resource'
@@ -19,7 +19,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-//import {initEditor} from './editor/app'
-//initEditor()
-
-import router from './router'
