@@ -138,7 +138,7 @@ function project_delete(project_id, callback) {
     post_request(url, data, callback)
 }
 
-function file_file_struct(project_id, callback) {
+function file_struct(project_id, callback) {
     var url = server + '/file/file_struct?project_id=' + encodeURIComponent(project_id)
     get_request(url, callback)
 }
@@ -171,16 +171,26 @@ function file_delete(project_id, file_path, callback) {
     post_request(url, data, callback)
 }
 
-function file_move(project_id, old_path, new_path, callback) {
+function file_move(project_id, old_path, new_path, force, callback) {
     var url = server + '/file/move'
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&old_path=' + encodeURIComponent(old_path) + 
-                '&new_path=' + encodeURIComponent(new_path)
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
     post_request(url, data, callback)
 }
 
-function file_copy(project_id, old_path, new_path, callback) {
+function file_copy(project_id, old_path, new_path, force, callback) {
     var url = server + '/file/copy'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function file_rename(project_id, old_path, new_path, callback) {
+    var url = server + '/file/rename'
     var data =  'project_id=' + encodeURIComponent(project_id) + 
                 '&old_path=' + encodeURIComponent(old_path) +
                 '&new_path=' + encodeURIComponent(new_path)
@@ -201,13 +211,30 @@ function dir_delete(project_id, dir_path, callback) {
     post_request(url, data, callback)
 }
 
-function get_user_name() {
-    var name = document.cookie.indexOf("user_name=")
-    if (name != -1 && name != '') {
-        return name
-    } else {
-        return undefined
-    }
+function dir_move(project_id, old_path, new_path, force, callback) {
+    var url = server + '/dir/move'
+    var data =  'project_id=' + encodeURIComponent(project_id) +
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function dir_copy(project_id, old_path, new_path, force, callback) {
+    var url = server + '/dir/copy'
+    var data =  'project_id=' + encodeURIComponent(project_id) +
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function dir_rename(project_id, old_path, new_path, callback) {
+    var url = server + '/dir/rename'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path)
+    post_request(url, data, callback)
 }
 
 export default {
@@ -221,15 +248,19 @@ export default {
     project_delete,
     project_enter,
     project_exit,
-    file_file_struct,
+    file_struct,
     file_content,
     file_update,
     file_new,
     file_delete,
     file_move,
     file_copy,
+    file_rename,
     dir_new,
     dir_delete,
+    dir_move,
+    dir_copy,
+    dir_rename,
     CPP,
     PYTHON2,
     PYTHON3,
