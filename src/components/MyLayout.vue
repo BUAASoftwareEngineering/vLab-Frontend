@@ -10,10 +10,14 @@
 <script>
 import ControlPanel from "./ControlPanel"
 import MenuBar from "./MenuBar"
+import {initEditor} from '../editor/app'
     export default{
         components: {
             MenuBar, ControlPanel
         },
+        mounted(){
+              initEditor()
+          }
     }
 </script>
 
@@ -34,4 +38,10 @@ import MenuBar from "./MenuBar"
     .mymenu >>> .ivu-dropdown{
         height: 5vh;
     }
+    .mymenu >>> .ivu-select-dropdown{ 
+    overflow: hidden; 
+    border-radius: 0vh; 
+    max-height: 400px; 
+    padding-bottom: 0px; 
+    } 
 </style> 

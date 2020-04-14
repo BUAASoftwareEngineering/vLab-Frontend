@@ -160,7 +160,7 @@ export default {
         height:36px;
         line-height:36px;
         padding:0;
-    background-color: #464e57;
+        background-color: #464e57;
         margin: 0;
     }
 	.ivu-select-dropdown {
