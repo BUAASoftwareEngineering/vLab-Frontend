@@ -98,10 +98,20 @@ function user_register(user_name, password, callback) {
     post_request(url, data, callback)
 }
 
-function user_info_update(user_name, password, callback) {
+function user_info_update () {
     var url = server + '/user/info_update'
-    var data =  'user_name=' + encodeURIComponent(user_name) + 
-                '&password=' + encodeURIComponent(password)
+    let callback = console.log
+    if (arguments.length === 3) {
+        let user_name = arguments[0]
+        let password = arguments[1]
+        callback = arguments[2]
+        var data =  'user_name=' + encodeURIComponent(user_name) + 
+                    '&password=' + encodeURIComponent(password)
+    } else {
+        let user_name = arguments[0]
+        callback = arguments[1]
+        var data = 'user_name=' + encodeURIComponent(user_name)
+    }
     post_request(url, data, callback)
 }
 
