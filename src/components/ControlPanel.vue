@@ -45,8 +45,6 @@
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div ref="editorRoot" id="editorRoot" slot="top" class="demo-split-pane" style="width:100%;height:100%">
 
-
-
                 </div>
                 <div slot="bottom" class="demo-split-pane">
                     <FootTerminal></FootTerminal>
