@@ -10,10 +10,14 @@
 <script>
 import ControlPanel from "./ControlPanel"
 import MenuBar from "./MenuBar"
+import {initEditor} from '../editor/app'
     export default{
         components: {
             MenuBar, ControlPanel
         },
+       mounted(){
+              initEditor()
+          }
     }
 </script>
 
