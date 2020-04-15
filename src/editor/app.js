@@ -1,14 +1,12 @@
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import $ from 'jquery';
 
-import * as actions from './Actions.js';
 import * as appearance from './Appearances.js';
 import * as defaultCodes from './DefaultCodes.js';
 import * as editormanage from './Editor.js';
 
 export function initEditor() {
 	
-	editormanage.addNewEditor(defaultCodes.defaultCode_js, 'javascript');
+	editormanage.addNewEditor(defaultCodes.defaultCode_python, 'python');
 	var editor = editormanage.editorArray[0];
 
 	$(document).ready(() => {
@@ -20,15 +18,6 @@ export function initEditor() {
 			}
 		});
 	});
-
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_OPEN_SQUARE_BRACKET, "editor.action.jumpToBracket");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_CLOSE_SQUARE_BRACKET, "editor.action.selectToBracket");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfold");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.fold");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfoldRecursively");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.foldRecursively");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfoldAll");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.foldAll");
 
 	appearance.setTheme('xcode-default');
 }

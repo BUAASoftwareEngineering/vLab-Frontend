@@ -1,15 +1,31 @@
+import * as monaco from 'monaco-editor';
+import {defaultBindings} from './Actions';
 export var fileCounter = 0;
 export var editorArray = [];
 
+import { getPythonReady } from './language/python';
 
 export function newEditor(container_id, code, language) {
+	// when URI provided, editor CANNOT find / go to definitions.
 	let model = monaco.editor.createModel(code, language);
 	let editor = monaco.editor.create(document.getElementById(container_id), {
 		model: model,
 		automaticLayout: true,
-		scrollBeyondLastLine: false
+		glyphMargin: true,
+		lightbulb: {
+			enabled: true
+		}
 	});
 	editorArray.push(editor);
+
+	// Language Client for IntelliSense
+	if (language == 'python') {
+		getPythonReady(editor);
+	}
+
+	// Keyboard Shortcuts binding
+	defaultBindings(editor);
+	
 	return editor;
 }
 
@@ -23,6 +39,10 @@ export function addNewEditor(code, language) {
 	let editor = newEditor(new_container.id, code, language);
 	fileCounter += 1;
 	return editor;
+}
+
+export function getModel(editor) {
+	return editor.getModel();
 }
 
 export function getCode(editor) {

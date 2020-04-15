@@ -27,6 +27,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility')
     }
   },
   module: {
@@ -70,7 +71,7 @@ module.exports = {
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).
-    setImmediate: false,
+    setImmediate: true,
     // prevent webpack from injecting mocks to Node native modules
     // that does not make sense for the client
     dgram: 'empty',
