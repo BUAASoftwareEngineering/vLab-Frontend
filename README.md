@@ -25,6 +25,7 @@ node index.js
 ### Build for Production with Minification [not tested]
 ``` bash
 npm run build
+将.htaccess 放置到dist文件夹下，运行服务器即可正常访问
 ```
 Then set the website root to `vLab-Frontend/dist/` and setup local server with Apache.
 
