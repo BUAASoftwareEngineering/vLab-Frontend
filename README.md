@@ -80,6 +80,7 @@ function example(user_name, password) {
 - `2020-04-10:` 第二版api完成，本地测试，服务器测试均通过，目前可以完成用户身份验证功能以及获取user_name，前端不需要操控cookie，并且明确了错误码定义。
 - `2020-04-12:` user和project的请求和服务器对接完成，可以投入使用，并且新加了对project_type的限制
 - `2020-04-14:` 第三版api完成，本地测试完成，目前可支持所有file操作，服务器尚未进行对接测试。
+- `2020-04-15:` 服务器对接测试完成，容器已配置，新增project_info_update接口
 
 ## TODO
 

@@ -5,6 +5,7 @@ const CPP = 'CPP'
 const PYTHON3 = 'PYTHON3'
 const PYTHON2 = 'PYTHON2'
 const JAVA = 'JAVA'
+const C = 'C'
 http.withCredentials = true
 
 function get_request(url, callback) {
@@ -123,6 +124,13 @@ function user_info(callback) {
 function project_info(callback) {
     var url = server + '/project/info?'
     get_request(url, callback)
+}
+
+function project_info_update(project_id, project_name, callback) {
+    var url = server + '/project/info_update'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&project_name=' + encodeURIComponent(project_name)
+    post_request(url, data, callback)
 }
 
 function project_new(project_name, project_type, callback) {
@@ -257,6 +265,7 @@ export default {
     user_info_update,
     user_info,
     project_info,
+    project_info_update,
     project_new,
     project_delete,
     project_enter,
@@ -275,6 +284,7 @@ export default {
     dir_copy,
     dir_rename,
     CPP,
+    C,
     PYTHON2,
     PYTHON3,
     JAVA
