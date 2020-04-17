@@ -6,9 +6,9 @@ import * as appearance from './Appearances.js';
 import * as defaultCodes from './DefaultCodes.js';
 import * as editormanage from './Editor.js';
 
-export function initEditor() {
+export function initEditor(elementId) {
 	
-	editormanage.addNewEditor(defaultCodes.defaultCode_js, 'javascript');
+	editormanage.addNewEditor(defaultCodes.defaultCode_js, 'javascript', elementId);
 	var editor = editormanage.editorArray[0];
 
 	$(document).ready(() => {

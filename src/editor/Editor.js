@@ -13,13 +13,15 @@ export function newEditor(container_id, code, language) {
 	return editor;
 }
 
-export function addNewEditor(code, language) {
+export function addNewEditor(code, language, elementId) {
+// export function addNewEditor(code, language) {
 	let new_container = document.createElement("DIV");
 	new_container.id = "container-" + fileCounter.toString(10);
 	new_container.className = "container";
 	new_container.style.height = "100%"
 	new_container.style.width = "100%"
-	document.getElementById("editorRoot").appendChild(new_container);
+	// document.getElementById("editorRoot").appendChild(new_container);
+	document.getElementById(elementId).appendChild(new_container);
 	let editor = newEditor(new_container.id, code, language);
 	fileCounter += 1;
 	return editor;

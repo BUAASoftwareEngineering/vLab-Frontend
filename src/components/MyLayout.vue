@@ -15,14 +15,25 @@ import {initEditor} from '../editor/app'
         components: {
             MenuBar, ControlPanel
         },
-        mounted(){
-              initEditor()
-          }
+        //mounted(){
+        //      initEditor()
+        //  }
     }
 </script>
 
 
 <style scoped>
+    .mycontrol >>> .ivu-tabs-content{
+        height: 100%;
+    }
+
+    .mycontrol >>> .ivu-tabs-bar{
+        margin-bottom: 0px;
+    }
+
+    .mycontrol >>> .ivu-tabs-content-animated{
+        height: 100%;
+    }
     .mycontrol >>> .ivu-layout-sider-trigger{
         visibility: hidden;
     }

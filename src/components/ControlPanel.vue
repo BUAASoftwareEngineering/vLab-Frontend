@@ -43,10 +43,16 @@
         </Sider>
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
-                <div ref="editorRoot" id="editorRoot" slot="top" class="demo-split-pane" style="width:100%;height:100%">
-
-
-
+                <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
+                    <Tabs type="card" style="height: 100%" >
+                        <TabPane v-for="tab in tabs" :key="tab" :label="'标签'+tab" closable>
+                            <div :ref="'MyTabPane'+tab" :id="'MyTabPane'+tab" style="width:100%;height:100%" v-if="'tab'+tab">
+                            
+                            </div>
+                        </TabPane>
+                        
+                        <Button @click="handleTabsAdd(InsertIDE)" slot="extra" type="primary">+</Button>
+                    </Tabs>
                 </div>
                 <div slot="bottom" class="demo-split-pane">
                     <FootTerminal></FootTerminal>
@@ -55,7 +61,6 @@
         </Layout>
     </Layout>
 </template>
-
 <script>
 import FootTerminal from "./FootTerminal"
 import MyTree from "./MySider/MyTree"
@@ -64,6 +69,7 @@ import MyCloudUpload from "./MySider/MyCloudUpload"
 import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
+import {initEditor} from '../editor/app'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
@@ -78,10 +84,38 @@ import MyNotebook from "./MySider/MyNotebook"
                 downloadmark:true,
                 preferencemark:true,
                 notebookmark:true,
-                isCollapsed: true
+                isCollapsed: true,
+                tabs: 0,
+                tab0: false,
+                tab1: false,
+                tab2: false,
+                tab3: false,
             }
         },
         methods:{
+            handleTabsAdd(Callback) {
+                this.tabs++;
+                //this['tab'+(this.tabs-1)] = true;
+                this.$nextTick(Callback);
+            },
+            handleTabRemove(name) {
+                // console.log(name);
+                //console.log("emmm");
+                this['tab' + name] = false;
+                //document.getElementById("TabFather").removeChild(document.getElementById('MyTabPane'+tab));
+            },
+            getIDEId(Index){
+                return "editorRoot"+Index;
+            },
+            InsertIDE(){
+                let new_tabPane = document.createElement("DIV");
+                new_tabPane.id = this.getIDEId(this.tabs);
+                new_tabPane.style.height = "100%"
+	            new_tabPane.style.width = "100%"
+                console.log("MyTabPane"+(this.tabs));
+                document.getElementById('MyTabPane'+(this.tabs)).appendChild(new_tabPane);
+                initEditor(new_tabPane.id);
+            },
             changeTree:function(){
                 this.treemark = !this.treemark;
                 this.uploadmark = true;
@@ -150,10 +184,10 @@ import MyNotebook from "./MySider/MyNotebook"
         padding: 0.4vh;
     }
     .ivu-card-body{
-    padding: 0vh;
-    height: 2.4vh;
-    background: #363e4f;;
-    margin: -0.1vh;
+        padding: 0vh;
+        height: 2.4vh;
+        background: #363e4f;;
+        margin: -0.1vh;
     }
     .ivu-btn{
         border-radius: 0px;
