@@ -44,13 +44,13 @@
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
-                    <Tabs type="card" style="height: 100%" >
-                        <TabPane v-for="tab in tabs" :key="tab" :label="'标签'+tab" closable>
-                            <div :ref="'MyTabPane'+tab" :id="'MyTabPane'+tab" style="width:100%;height:100%" v-if="'tab'+tab">
-                            
-                            </div>
-                        </TabPane>
-                        
+                    <Tabs type="card" style="height: 100%" @on-tab-remove="handleTabRemove">
+                        <template v-for="key in tabs">
+                                <TabPane :id="'father'+key" :key="key" :label="key" closable :name="key">
+                                    <div :id="key" style="width:100%;height:100%">
+                                    </div>
+                                </TabPane>
+                        </template>
                         <Button @click="handleTabsAdd(InsertIDE)" slot="extra" type="primary">+</Button>
                     </Tabs>
                 </div>
@@ -85,35 +85,36 @@ import {initEditor} from '../editor/app'
                 preferencemark:true,
                 notebookmark:true,
                 isCollapsed: true,
-                tabs: 0,
-                tab0: false,
-                tab1: false,
-                tab2: false,
-                tab3: false,
+                tabs:[],
+                count: 0,
             }
         },
         methods:{
             handleTabsAdd(Callback) {
-                this.tabs++;
-                //this['tab'+(this.tabs-1)] = true;
+                this.count++;
+                this.tabs.push("MyTabPane"+this.count);
+                console.log(this.tabs);
                 this.$nextTick(Callback);
             },
             handleTabRemove(name) {
-                // console.log(name);
-                //console.log("emmm");
-                this['tab' + name] = false;
-                //document.getElementById("TabFather").removeChild(document.getElementById('MyTabPane'+tab));
+                console.log(name);
+                for(let i=0;i<this.tabs.length;i++){
+                    if(this.tabs[i]==name){
+                        this.tabs.splice(i,1);
+                    }
+                }
+                //document.getElementById("father"+name).innerHTML="";
             },
             getIDEId(Index){
-                return "editorRoot"+Index;
+                return "editor_"+Index;
             },
             InsertIDE(){
                 let new_tabPane = document.createElement("DIV");
-                new_tabPane.id = this.getIDEId(this.tabs);
+                new_tabPane.id = this.getIDEId("MyTabPane"+this.count);
                 new_tabPane.style.height = "100%"
 	            new_tabPane.style.width = "100%"
-                console.log("MyTabPane"+(this.tabs));
-                document.getElementById('MyTabPane'+(this.tabs)).appendChild(new_tabPane);
+                console.log("MyTabPane"+(this.count));
+                document.getElementById('MyTabPane'+(this.count)).appendChild(new_tabPane);
                 initEditor(new_tabPane.id);
             },
             changeTree:function(){
