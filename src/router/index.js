@@ -3,7 +3,7 @@ import Router from 'vue-router'
 /*引入页面*/
 import Login from '@/components/Login/login.vue'
 import Home from '@/components/Home/home.vue'
-import Ide from '@/components/Ide/MyLayout.vue' 
+//import Ide from '@/components/MyLayout.vue' 
 
 Vue.use(Router)
  
@@ -22,10 +22,12 @@ export default new Router({
       name: 'Home',
       component: Home
     },
+    /*
     {
       path:'/ide',
       name:'Ide',
       component:Ide
     }
+    */
   ]
 })
