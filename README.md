@@ -44,7 +44,8 @@ function example(user_name, password) {
             - 例如将`./a.txt`移动到`./A/`目录下，则new_path为`./A/a.txt`
     - file_struct：负责查询以某个根目录下的文件结构，返回的res.data结构和iview的tree组件需要的JSON结构基本一致（除了没有expand分量）
         - 建议前端可以每5-10s查询一次file_struct，不要使用返回的data直接替换原结构
-        - 项目根目录`/home/project/user/`
+        - 项目根目录`/home/work/`
+        - 目前容器仍处于开发阶段，因此`/home/work/`目录不一定存在，但是`/home/`目录一定存在，建议先以`/home/`目录为根目录进行测试
     - file_content：负责查询某个文件的内容，返回的data：
         - path：文件路径
         - content：文件内容，字符串形式
@@ -81,6 +82,7 @@ function example(user_name, password) {
 - `2020-04-12:` user和project的请求和服务器对接完成，可以投入使用，并且新加了对project_type的限制
 - `2020-04-14:` 第三版api完成，本地测试完成，目前可支持所有file操作，服务器尚未进行对接测试。
 - `2020-04-15:` 服务器对接测试完成，容器已配置，新增project_info_update接口
+- `2020-04-19:` 修复file_update和file_content的bug
 
 ## TODO
 
