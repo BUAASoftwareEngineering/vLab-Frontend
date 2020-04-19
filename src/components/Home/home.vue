@@ -24,6 +24,7 @@
     margin-right: 20px;
 }
 .ivu-layout-header {
+        background:#515a6e;
 		padding: 0;
 	}
 
@@ -37,23 +38,27 @@
     z-index: 1;
 
 }
+.title{
+   float:right;
+    margin-right:100px;
+    color:#ffffff
+}
+a{
+    color:#7ed4fc
+}
 </style>
 <template>
     <div class="layout">
         <Layout  :style="{minHeight: '100vh'}">
             <Header >
-                <Menu mode="horizontal" theme="dark" active-name="1">
+                <div class='title'>
+                     欢迎&ensp;	{{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
+                      
+
+                     <a  @click="quit">注销</a>
+                </div>
                     
-                    <div class="layout-nav">
-                        <MenuItem name="1">
-                        
-                           欢迎，{{username}}
-                        </MenuItem>
-                       
-                        
-                    </div>
-                    <a  @click="quit">注销</a>
-                </Menu>
+                
                
             </Header>
             <Layout  >
@@ -69,7 +74,7 @@
                     </div>
                 </Sider>
                 <Content>
-                        <MyNotebooks :c_books='c_books' :p2_books='p2_books' 
+                        <MyNotebooks :c_books='c_books' :cpp_books='cpp_books' :p2_books='p2_books' 
                         :p3_books='p3_books' :j_books='j_books'
                         v-show="showNotebooks"></MyNotebooks>
                         <Account :username='username' :newusername='[username]' 
@@ -93,7 +98,8 @@ import Account from './Account.vue'
                
                 showNotebooks:true,
                 showAccount:false,
-                c_books: [],
+                c_books: [{projectId:1,name:'C1'},{projectId:2,name:'C2'}],
+                cpp_books:[{projectId:3,name:'CPP1'}],
                 p2_books:[],
                 p3_books:[],
                 j_books:[]
@@ -114,7 +120,6 @@ import Account from './Account.vue'
                 _this.$router.push('/')
             }else{
                 _this.username=response.data.name
-               // _this.newusername=[response.data.name]
                 _this.$Spin.show()
                 api.project_info(function(response){
               _this.$Spin.hide()
@@ -122,8 +127,13 @@ import Account from './Account.vue'
                  
                  var projects=response.data
                  for(var i=0;i<projects.length;i++){
-                     if(projects[i].imageType==api.CPP){
+                     if(projects[i].imageType==api.C){
                          _this.c_books.push(
+                             {projectId:projects[i].projectId,
+                             name:projects[i].name})
+                        
+                     }else if(projects[i].imageType==api.CPP){
+                         _this.cpp_books.push(
                              {projectId:projects[i].projectId,
                              name:projects[i].name})
                         
@@ -176,7 +186,7 @@ import Account from './Account.vue'
                         _this.$router.push('/')
 
                     }
-                })
+                }) 
 			}
 		}
 

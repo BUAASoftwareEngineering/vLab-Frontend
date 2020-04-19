@@ -2,9 +2,7 @@
 
 <template>
   <div id="app" >
-    
-      <router-view></router-view>
-   
+    <router-view></router-view>
   </div>
 </template>
 
@@ -15,7 +13,7 @@
   }
 </script>
  
-<style>
+<style scope>
   #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,12 +22,12 @@
   color: #2c3e50;
   margin-top: 0px;
   }
-    .ivu-select-dropdown{ 
-      overflow: hidden; 
-      border-radius: 0vh; 
-      max-height: 400px; 
-      padding-bottom: 0px; 
-      } 
+  .ivu-select-dropdown{ 
+    overflow: hidden; 
+    border-radius: 0vh; 
+    max-height: 400px; 
+    padding-bottom: 0px; 
+    } 
 
 </style>
 

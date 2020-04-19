@@ -4,8 +4,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import ViewUI from 'view-design'// 引入iview依赖
-import 'view-design/dist/styles/iview.css' // 引入iview css样式
+import ViewUI from 'view-design'
+import 'view-design/dist/styles/iview.css'
 import VueResource from 'vue-resource'
 
 Vue.use(VueResource)
