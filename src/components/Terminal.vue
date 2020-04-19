@@ -18,7 +18,8 @@ export default {
   props: {
     socketURI: {
       type: String,
-      default: 'ws://127.0.0.1:4001'
+      default: 'ws://120.53.27.31:32809'
+      // default: 'ws://127.0.0.1:4000'
     },
   },
   mounted() {
@@ -33,7 +34,7 @@ export default {
       const term = new Terminal({
         fontSize: 14,
         cols: 92,
-        rows: 50,
+        rows: 40,
         cursorBlink: true,
         scrollback: 800, 
         tabStopWidth: 8, 
@@ -46,8 +47,19 @@ export default {
       term.open(document.getElementById('xterm'));
       fitAddon.fit();
       term.focus();
-      term.fit()
+      //term.fit()
       this.term = term
+      let _this = this
+      window.onresize = function() {
+        fitAddon.fit();
+        term.focus();
+        //term.scrollToButtom();
+      }
+      // setTimeout(function() {
+      //   //console.log('wtf')
+      //   _this.socket.send(new TextEncoder().encode("\x00  \r"))
+      // }, 2000)
+      
     },
     fitin() {
         this.socket.send(new TextEncoder().encode("\x00ls\r"))
@@ -57,6 +69,9 @@ export default {
       this.socketOnClose();
       this.socketOnOpen();
       this.socketOnError();
+    //   this.socket.onmessage = () => {
+    //       this.term.resize()
+    //   }
     },
     socketOnOpen() {
       this.socket.onopen = () => {
