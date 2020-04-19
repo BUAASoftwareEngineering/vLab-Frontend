@@ -44,14 +44,14 @@
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
-                    <Tabs type="card" style="height: 100%" @on-tab-remove="handleTabRemove">
+                    <Tabs type="card" style="height: 100%" @on-tab-remove="handleTabRemove" >
                         <template v-for="key in tabs">
-                                <TabPane :id="'father'+key" :key="key" :label="key" closable :name="key">
+                                <TabPane :id="'father'+key" :key="key" :label="tabsMap[key]" closable :name="key">
                                     <div :id="key" style="width:100%;height:100%">
                                     </div>
                                 </TabPane>
                         </template>
-                        <Button @click="handleTabsAdd(InsertIDE)" slot="extra" type="primary">+</Button>
+                        <Button @click="handleTabsAdd('new')" slot="extra" type="primary">+</Button>
                     </Tabs>
                 </div>
                 <div slot="bottom" class="demo-split-pane">
@@ -70,7 +70,9 @@ import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
 import {initEditor} from '../editor/app'
-    export default{
+// import * as treeEditor from './tree-editor'
+import bridge from './bridge'
+export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
             MyPreference, MyNotebook,
@@ -86,36 +88,36 @@ import {initEditor} from '../editor/app'
                 notebookmark:true,
                 isCollapsed: true,
                 tabs:[],
+                tabsMap:{},
                 count: 0,
             }
         },
         methods:{
-            handleTabsAdd(Callback) {
+            handleTabsAdd(id, label) {
                 this.count++;
-                this.tabs.push("MyTabPane"+this.count);
+                this.tabs.push(id);
                 console.log(this.tabs);
-                this.$nextTick(Callback);
+                this.$nextTick(function(){
+                    let new_tabPane = document.createElement("DIV");
+                    new_tabPane.id = this.getIDEId(id);
+                    new_tabPane.style.height = "100%"
+	                new_tabPane.style.width = "100%"
+                    console.log(id);
+                    document.getElementById(id).appendChild(new_tabPane);
+                    initEditor(new_tabPane.id);
+                });
             },
             handleTabRemove(name) {
-                console.log(name);
                 for(let i=0;i<this.tabs.length;i++){
                     if(this.tabs[i]==name){
                         this.tabs.splice(i,1);
                     }
                 }
-                //document.getElementById("father"+name).innerHTML="";
+                delete this.tabsMap[name];
+                console.log(this.tabsMap);
             },
             getIDEId(Index){
                 return "editor_"+Index;
-            },
-            InsertIDE(){
-                let new_tabPane = document.createElement("DIV");
-                new_tabPane.id = this.getIDEId("MyTabPane"+this.count);
-                new_tabPane.style.height = "100%"
-	            new_tabPane.style.width = "100%"
-                console.log("MyTabPane"+(this.count));
-                document.getElementById('MyTabPane'+(this.count)).appendChild(new_tabPane);
-                initEditor(new_tabPane.id);
             },
             changeTree:function(){
                 this.treemark = !this.treemark;
@@ -173,6 +175,21 @@ import {initEditor} from '../editor/app'
                     this.isCollapsed ? 'collapsed-menu' : ''
                 ]
             }
+        },
+        mounted(){
+            bridge.$on('add',(path)=>{
+                // console.log(path[0]);
+                // console.log(path[1]);
+                if(!this.tabsMap.hasOwnProperty(path[0])){
+                    this.handleTabsAdd(path[0],path[1]);
+                    this.tabsMap[path[0]] = path[1];
+                }
+            }),
+            bridge.$on('deleteFile',(path)=>{
+                if(this.tabsMap.hasOwnProperty(path)){
+                    this.handleTabRemove(path);
+                }
+            })
         }
     }
 </script>
