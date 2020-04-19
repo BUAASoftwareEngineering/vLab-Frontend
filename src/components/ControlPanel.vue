@@ -70,9 +70,9 @@ import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
 import {initEditor} from '../editor/app'
-// import * as treeEditor from './tree-editor'
 import bridge from './bridge'
-export default{
+import api from '../assets/js/api.js';
+    export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
             MyPreference, MyNotebook,
@@ -190,6 +190,7 @@ export default{
                     this.handleTabRemove(path);
                 }
             })
+
         }
     }
 </script>

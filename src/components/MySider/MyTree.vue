@@ -1,6 +1,5 @@
 <template>
     <Layout style="background-color: #808695" height='80vh' visible="visible" width="1000px">
-        
         <Row>
             <Col span="24">
             <Card style="border-radius: 0vh; width:100%" visible="visible">
@@ -14,10 +13,13 @@
 </template>
 
 <script>
-import bridge from '../bridge';
+import api from '../../assets/js/api.js';
+import bridge from '../bridge'
     export default {
         data () {
             return {
+                newfiletag:false,
+                newfoldertag:false,
                 editState:false,
                 data4: [
                     {
@@ -61,8 +63,6 @@ import bridge from '../bridge';
                             lineHeight:'20px',   
                             width: '100%', 
                             cursor: 'pointer' 
-                        },
-                        on:{
                         }
                     }, [  
                         h('span', [
@@ -89,7 +89,7 @@ import bridge from '../bridge';
                                         change:(event)=>{ 
                                             this.inputContent=event.target.value 
                                         }
-                                    }
+                                    },
                                 }
                             ),
                         ]), 
@@ -132,7 +132,9 @@ import bridge from '../bridge';
                                         height: '1.4rem',
                                     },
                                     on: {
-                                        click: () => { this.appendfile(root, node, data) }
+                                        click: () => { 
+                                            this.saveEdit(root);
+                                            this.appendfile(root, node.nodeKey, data) }
                                     }
                                 }),
 
@@ -150,12 +152,12 @@ import bridge from '../bridge';
                                         height: '1.4rem',
                                     },
                                     on: {
-                                        click: () => { this.appendfolder(root, node, data) }
+                                        click: () => { 
+                                            this.saveEdit(root);
+                                            this.appendfolder(root, node.nodeKey, data) }
                                     }
                                 }),
-
                                     // 删除按钮
-
                                 h('Button', {
                                     props: Object.assign({}, this.buttonProps, {
                                         icon: 'ios-remove'
@@ -169,7 +171,7 @@ import bridge from '../bridge';
                                         height: '1.4rem',
                                     },
                                     on: {
-                                        click: () => { this.remove(root, node, data) }
+                                        click: () => { this.remove(root, node.nodeKey, data) }
                                     }
                                 })
                             ]
@@ -196,7 +198,7 @@ import bridge from '../bridge';
                                     },
                                     on: {
                                         click: (event) => {  
-                                            this.confirmTheChange(root, node, data) 
+                                            this.confirmTheChange(root, node.nodeKey, data) 
                                         }
                                     }
                                 }),
@@ -230,7 +232,7 @@ import bridge from '../bridge';
                         },
                         on:{
                             dblclick:()=>{
-                                data.editState ? '' :  this.handleDbClickTreeNode(root, node, data)
+                                data.editState ? '' :  this.handleDbClickTreeNode(root, node.nodeKey, data)
                             }
                         }
                     }, [  
@@ -301,7 +303,7 @@ import bridge from '../bridge';
                                         height: '1.4rem',
                                     },
                                     on: {
-                                        click: () => { this.remove(root, node, data) }
+                                        click: () => { this.remove(root, node.nodeKey, data) }
                                     }
                                 })
                             ]
@@ -328,7 +330,7 @@ import bridge from '../bridge';
                                     },
                                     on: {
                                         click: (event) => {  
-                                            this.confirmTheChange(root, node, data) 
+                                            this.confirmTheChange(root, node.nodeKey, data) 
                                         }
                                     }
                                 }),
@@ -352,6 +354,23 @@ import bridge from '../bridge';
                     ]);
                 }
             },
+
+            saveEdit(root){
+                var i;
+                var findnode = undefined;
+                for (i = 0; i < root.length; i++) {
+                    var shownode = root.find(el => el.nodeKey === i).node;
+                    if (shownode.editState === true) {
+                        findnode = shownode;
+                        break;
+                    }
+                }
+                if (findnode != undefined) {
+                    console.log(6666)
+                    this.confirmTheChange(root, i, findnode);
+                }
+            },
+
             // 控制Tree当前状态函数
             setStates(data){
                 var editState=data.editState
@@ -366,7 +385,7 @@ import bridge from '../bridge';
                 this.setStates(data)  
             },
             // 添加文件按钮
-            appendfile (root, node, data) {
+            appendfile (root, nodekey, data) {
                 event.stopPropagation()
                 const children = data.children || [];
                 children.push({
@@ -378,7 +397,7 @@ import bridge from '../bridge';
 
 
                 var path = "";
-                var findkey = node.nodeKey;
+                var findkey = nodekey;
                 while (findkey !== root[0].nodeKey) {
                     var parentKey = root.find(el => el.nodeKey === findkey).parent;
                     var parent = root.find(el => el.nodeKey === parentKey).node;
@@ -388,7 +407,7 @@ import bridge from '../bridge';
                 console.log("当前新建文件》》" + path + data.title + "/新建文件");
             },
             // 添加文件夹按钮
-            appendfolder (root, node, data) {
+            appendfolder (root, nodekey, data) {
                 event.stopPropagation()
                 const children = data.children || [];
                 children.push({
@@ -399,7 +418,7 @@ import bridge from '../bridge';
                 this.editTree(children[children.length-1])
 
                 var path = "";
-                var findkey = node.nodeKey;
+                var findkey = nodekey;
                 while (findkey !== root[0].nodeKey) {
                     var parentKey = root.find(el => el.nodeKey === findkey).parent;
                     var parent = root.find(el => el.nodeKey === parentKey).node;
@@ -409,21 +428,21 @@ import bridge from '../bridge';
                 console.log("当前新建文件夹》》"+path+data.title + "/新建文件夹");
             },
             // 删除按钮
-            remove (root, node, data) {
+            remove (root, nodekey, data) {
                 event.stopPropagation()
                 
                 this.$Modal.confirm({
                     title:"提示",
                     content:`您确定删除 “${data.title}” 吗？`,
                     onOk: () => {
-                        var parentKey = root.find(el => el === node).parent;
+                        var parentKey = root.find(el => el.nodeKey === nodekey).parent;
                         var parent = root.find(el => el.nodeKey === parentKey).node;
                         const index = parent.children.indexOf(data);
                         parent.children.splice(index, 1);
                         this.$Message.info('删除成功');
 
                         var path = "";
-                        var findkey = node.nodeKey;
+                        var findkey = nodekey;
                         while (findkey !== root[0].nodeKey) {
                             parentKey = root.find(el => el.nodeKey === findkey).parent;
                             parent = root.find(el => el.nodeKey === parentKey).node;
@@ -434,7 +453,7 @@ import bridge from '../bridge';
                             console.log("当前删除文件夹》》" + path + data.title);
                         } else {
                             console.log("当前删除文件》》" + path + data.title);
-                            bridge.$emit('deleteFile',path + data.title)
+                            bridge.$emit('deleteFile',path + data.title);
                         }
                     },
                     onCancel: () => {
@@ -443,7 +462,7 @@ import bridge from '../bridge';
                 });
             }, 
             // 确认修改树节点
-            confirmTheChange(root, node, data){   
+            confirmTheChange(root, nodekey, data){   
                 if(!this.inputContent){
                     this.$Notice.warning({
                         title: '当前输入有误', 
@@ -453,7 +472,7 @@ import bridge from '../bridge';
                         
                         var path = "";
                         //console.log(root[4].title);
-                        var findkey = node.nodeKey;
+                        var findkey = nodekey;
                         while (findkey !== root[0].nodeKey) {
                             var parentKey = root.find(el => el.nodeKey === findkey).parent;
                             var parent = root.find(el => el.nodeKey === parentKey).node;
@@ -502,11 +521,11 @@ import bridge from '../bridge';
                 console.log("当前点击》》"+data.title);
             },
             // 双击Tree节点时触发
-            handleDbClickTreeNode(root, node, data){
+            handleDbClickTreeNode(root, nodekey, data){
                 var path = "";
                 
                 //console.log(root[4].title);
-                var findkey = node.nodeKey;
+                var findkey = nodekey;
                 while (findkey !== root[0].nodeKey) {
                     var parentKey = root.find(el => el.nodeKey === findkey).parent;
                     var parent = root.find(el => el.nodeKey === parentKey).node;
@@ -515,7 +534,7 @@ import bridge from '../bridge';
                 }
                 //index = parent.children.indexOf(data);
                 //parent.children.splice(index, 1);
-                console.log("当前双击》》"+path+data.title);
+                console.log("当前双击》》"+path+"/"+data.title);
                 bridge.$emit('add',[path+data.title, data.title]);
             }
         }
