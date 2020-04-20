@@ -44,7 +44,7 @@
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
-                    <Tabs type="card" style="height: 100%" @on-tab-remove="handleTabRemove" >
+                    <Tabs type="card" style="height: 100%" v-model="currentTab" @on-tab-remove="handleTabRemove" >
                         <template v-for="key in tabs">
                                 <TabPane :id="'father'+key" :key="key" :label="tabsMap[key]" closable :name="key">
                                     <div :id="key" style="width:100%;height:100%">
@@ -90,12 +90,14 @@ import api from '../assets/js/api.js';
                 tabs:[],
                 tabsMap:{},
                 count: 0,
+                currentTab:''
             }
         },
         methods:{
             handleTabsAdd(id, label) {
                 this.count++;
                 this.tabs.push(id);
+                this.tabsMap[id] = label;
                 console.log(this.tabs);
                 this.$nextTick(function(){
                     let new_tabPane = document.createElement("DIV");
@@ -106,6 +108,7 @@ import api from '../assets/js/api.js';
                     document.getElementById(id).appendChild(new_tabPane);
                     initEditor(new_tabPane.id);
                 });
+                this.currentTab = id;
             },
             handleTabRemove(name) {
                 for(let i=0;i<this.tabs.length;i++){
@@ -177,20 +180,26 @@ import api from '../assets/js/api.js';
             }
         },
         mounted(){
-            bridge.$on('add',(path)=>{
-                // console.log(path[0]);
-                // console.log(path[1]);
-                if(!this.tabsMap.hasOwnProperty(path[0])){
-                    this.handleTabsAdd(path[0],path[1]);
-                    this.tabsMap[path[0]] = path[1];
+            bridge.$on('add',(path_label)=>{
+                if(!this.tabsMap.hasOwnProperty(path_label[0])){
+                    this.handleTabsAdd(path_label[0],path_label[1]);
                 }
+                this.currentTab=path_label[0];
             }),
             bridge.$on('deleteFile',(path)=>{
                 if(this.tabsMap.hasOwnProperty(path)){
                     this.handleTabRemove(path);
                 }
             })
-
+            bridge.$on('rename',(IDmap)=>{
+                console.log(IDmap);
+                for(var key in IDmap){
+                    if(this.tabsMap.hasOwnProperty(key)){
+                        this.handleTabRemove(key);
+                        this.handleTabsAdd(IDmap[key][0],IDmap[key][1]);
+                    }
+                }
+            })
         }
     }
 </script>
