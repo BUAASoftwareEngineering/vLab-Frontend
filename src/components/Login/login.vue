@@ -1,7 +1,12 @@
 <template>
-    <div style="text-align:center">
-        <img src="../../assets/logo.png">
-       
+    <div class="center-in-center">
+        
+        <div style="text-align:center" >
+            <h1 >
+             Visual Lab Online
+            </h1>
+            <br><br><br>
+        </div>
         <div class="login-wrap" v-show="showLogin">
         
             <h3>登录</h3>
@@ -9,13 +14,13 @@
             
             <Input type="text" placeholder="请输入用户名" v-model="username" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入密码" v-model="password" style="width: 200px"/>
+            <Input type="password" placeholder="请输入密码" v-model="password" style="width: 200px" @keyup.enter.native="login"/>
             <br><br>
             <Button type="success"  v-on:click="login">登录</Button>
             <br><br>
             <span v-on:click="ToRegister">没有账号？马上注册</span>
-            <br><br>
-           <!-- <span v-on:click="ToUpdate">修改密码</span>-->
+            
+          
         </div>
  
         <div class="register-wrap" v-show="showRegister">
@@ -24,35 +29,31 @@
           
             <Input type="text" placeholder="请输入用户名" v-model="newUsername" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px"/>
+            <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px" @keyup.enter.native="register"/>
             <br><br>
            <Button type="success"  v-on:click="register">注册</Button>
            <br><br>
             <span v-on:click="ToLogin">已有账号？马上登录</span>
         </div>
-    <!--
-        <div class="update-wrap" v-show="showUpdate">
-            <h3>修改密码</h3>
-            <br>
-            <p v-show="showTishi">{{tishi}}</p>
-            <Input type="text" placeholder="请输入用户名" v-model="username" style="width: 200px"/>
-            <br><br>
-            <Input type="password" placeholder="请输入现有密码" v-model="password" style="width: 200px"/>
-            <br><br>
-            <Input type="password" placeholder="请输入新密码" v-model="newPassword" style="width: 200px"/>
-            <br><br>
-            <Button type="error"  v-on:click="update">修改密码</Button>
-            <br><br>
-            <span v-on:click="ToLogin">返回登录</span>
-        </div>
--->
+    
     </div>
 </template>
  
 <style scoped>
+    .center-in-center{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
     .login-wrap{text-align:center;}
     .register-wrap{text-align:center;}
     p{color:red;}
+    h1{font-family: "Helvetica Neue";font-size: 50px;color:rgb(69, 88, 109)}
     span{cursor:pointer;}
     span:hover{color:#41b883;}
 </style>
@@ -131,7 +132,7 @@ export default{
         this.$Message.warning("请输入用户名或密码")
     }else{
         if(!PassIsleagal(this.newPassword)){
-            this.$Message.warning('密码格式错误')
+            this.$Message.error('密码格式错误')
         }else{
              this.$Spin.show();
            
@@ -151,16 +152,11 @@ export default{
         }
     }
     },
-    /*
-    update(){
-        if(this.username==""||this.password == ""|| this.newPassword == ""){
-            alert("请输入用户名或密码")
-        }else{
-           
+    keyLogin(){
+        if (event.keyCode==13)  
+        document.getElementByIdx_x("input1").click(); 
         }
     }
-    */
-}
   }
 
 </script>

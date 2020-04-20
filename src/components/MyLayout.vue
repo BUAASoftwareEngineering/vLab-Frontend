@@ -11,13 +11,29 @@
 import ControlPanel from "./ControlPanel"
 import MenuBar from "./MenuBar"
 import {initEditor} from '../editor/app'
+import bridge from './bridge.js'
     export default{
+        data(){
+            return{
+                username:'',
+                projectId:0,
+                projectName:''
+            }
+        },
         components: {
             MenuBar, ControlPanel
         },
-        //mounted(){
-        //      initEditor()
-        //  }
+        mounted(){
+              bridge.$on('listenUsername',(username)=>{
+                  this.username=username
+              }),
+              bridge.$on('listenProjectId',(projectId)=>{
+                  this.projectId=projectId
+              }),
+              bridge.$on('listenProjectName',(projectName)=>{
+                  this.projectName=projectName
+              })
+          }
     }
 </script>
 
