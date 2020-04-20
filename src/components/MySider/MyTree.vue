@@ -485,6 +485,11 @@ import bridge from '../bridge'
                             console.log("当前修改文件夹》》" + path + data.title + "为" + path  + this.inputContent);
                         } else {
                             console.log("当前修改文件》》" + path + data.title + "为" + path  + this.inputContent);
+                            var oldID = path + data.title;
+                            var newID = path + this.inputContent;
+                            var IDmap = {};
+                            IDmap[oldID] = [newID, this.inputContent];
+                            bridge.$emit('rename',IDmap)
                         }
 
                         data.title=this.inputContent 
