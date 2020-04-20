@@ -354,6 +354,33 @@ import bridge from '../bridge'
                     ]);
                 }
             },
+            // 获得某文件夹下所有叶子节点
+            getLeafPath(root, nodekey){
+                var i;
+                var pathList = [];
+                for (i = 0; i < root.length; i++) {
+                    var findkey = i;
+                    var searchnode = root.find(el => el.nodeKey === i).node;
+                    if (searchnode.children != undefined){
+                        continue;
+                    }
+                    var path = searchnode.title;
+                    
+                    while (findkey !== root[0].nodeKey) {
+                        var parentKey = root.find(el => el.nodeKey === findkey).parent;
+                        var parent = root.find(el => el.nodeKey === parentKey).node;
+                        if (parentKey === nodekey) {
+                            pathList.push(path);
+                            console.log(path);
+                            break;
+                        } else {
+                            path = parent.title+"/"+path;
+                            var findkey = parentKey;
+                        }
+                    }
+                }
+                return pathList;
+            },
 
             saveEdit(root){
                 var i;
@@ -451,6 +478,12 @@ import bridge from '../bridge'
                         }
                         if (data.children != undefined){
                             console.log("当前删除文件夹》》" + path + data.title);
+                            var leaves = this.getLeafPath(root, nodekey);
+                            var oldID = [];
+                            for(let i = 0; i < leaves.length ;i++){
+                                oldID.push(path + data.title + '/' +leaves[i]);
+                            }
+                            bridge.$emit('deleteFloder', oldID);
                         } else {
                             console.log("当前删除文件》》" + path + data.title);
                             bridge.$emit('deleteFile',path + data.title);
@@ -483,13 +516,24 @@ import bridge from '../bridge'
                         //parent.children.splice(index, 1);
                         if (data.children != undefined){
                             console.log("当前修改文件夹》》" + path + data.title + "为" + path  + this.inputContent);
+                            var leaves = this.getLeafPath(root, nodekey);
+                            var IDmap = {};
+                            var oldID = '';
+                            var newID = '';
+                            for(let i = 0; i < leaves.length ;i++){
+                                oldID = path + data.title + '/' +leaves[i];
+                                newID = path + this.inputContent + '/' + leaves[i];
+                                IDmap[oldID] = newID;
+                            }
+                            // console.log(this.getLeafPath(root, nodekey));
+                            bridge.$emit('renameFloder', IDmap);
                         } else {
                             console.log("当前修改文件》》" + path + data.title + "为" + path  + this.inputContent);
                             var oldID = path + data.title;
                             var newID = path + this.inputContent;
                             var IDmap = {};
                             IDmap[oldID] = [newID, this.inputContent];
-                            bridge.$emit('rename',IDmap)
+                            bridge.$emit('renameFile', IDmap)
                         }
 
                         data.title=this.inputContent 

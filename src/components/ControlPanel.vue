@@ -190,13 +190,31 @@ import api from '../assets/js/api.js';
                 if(this.tabsMap.hasOwnProperty(path)){
                     this.handleTabRemove(path);
                 }
-            })
-            bridge.$on('rename',(IDmap)=>{
+            }),
+            bridge.$on('deleteFloder',(paths)=>{
+                for(let i=0; i < paths.length; i++){
+                    if(this.tabsMap.hasOwnProperty(paths[i])){
+                        this.handleTabRemove(paths[i]);
+                    }
+                }
+            }),
+            bridge.$on('renameFile',(IDmap)=>{
                 console.log(IDmap);
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.handleTabRemove(key);
                         this.handleTabsAdd(IDmap[key][0],IDmap[key][1]);
+                    }
+                }
+            }),
+            bridge.$on('renameFloder',(IDmap)=>{
+                console.log(IDmap);
+                for(var key in IDmap){
+                    if(this.tabsMap.hasOwnProperty(key)){
+                        this.tabsMap[IDmap[key]] = this.tabsMap[key];
+                        delete this.tabsMap[key];
+                        this.handleTabRemove(key);
+                        this.handleTabsAdd(IDmap[key], this.tabsMap[IDmap[key]]);
                     }
                 }
             })
