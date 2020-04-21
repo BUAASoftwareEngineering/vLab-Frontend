@@ -21,12 +21,12 @@
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
                 <Select v-model="search_type" slot="prepend" style="width: 100px">
-                    <Option value="All" @click.native="search">Show All</Option>
+                    <Option value="All" @click.native="search" >Show All</Option>
                     <Option value="C" @click.native="search">C</Option>
                     <Option value="CPP" @click.native="search">C++</Option>
-                    <Option value="PYTHON2" @click.native="search">Python2</Option>
-                    <Option value="PYTHON3" @click.native="search">Python3</Option>
-                    <Option value="JAVA" @click.native="search">Java</Option>
+                    <Option value="PYTHON2" @click.native="search" >Python2</Option>
+                    <Option value="PYTHON3" @click.native="search" >Python3</Option>
+                    <Option value="JAVA" @click.native="search" >Java</Option>
                 </Select>
                 <Button slot="append" icon="ios-search" @click="search" ></Button>
             </Input>        
@@ -216,30 +216,34 @@ export default {
                 iconshow:false,
                 note_type:'C',
                 search_name:'',
-                search_type:'All'            
-
+                search_type:'All',            
+                c_books:this.fc_books,
+                cpp_books:this.fcpp_books,
+                p2_books:this.fp2_books,
+                p3_books:this.fp3_books,
+                j_books:this.fj_books
             }
         },
        
 
    props:{
-       c_books:{
+       fc_books:{
            type:Array,
            required:true
        },
-       cpp_books:{
+       fcpp_books:{
            type:Array,
            required:true
        },
-       p2_books:{
+       fp2_books:{
            type:Array,
            required:true
        },
-       p3_books:{
+       fp3_books:{
            type:Array,
            required:true
        },
-       j_books:{
+       fj_books:{
            type:Array,
            required:true
        },
@@ -349,7 +353,7 @@ export default {
                    }
                   
                     _this.$Message.success('新建成功')                   
-                   // _this.etrProject(data)
+                    _this.etrProject(data)
                }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')
@@ -403,7 +407,7 @@ export default {
                  _this.$Message.error('未知错误')
                 }
            })
-            this.modal3=false
+            this.modal2=false
        },
 
        update_ok(){
@@ -427,17 +431,17 @@ export default {
                if(response.code==0){
                   
                    if(_this.project_type==api.C){
-                     _this.c_books[this.project_index]={projectId:del_id,name:_this.project_name}
+                     _this.c_books[_this.project_index]={projectId:del_id,name:_this.project_name}
                    }else if(_this.project_type==api.CPP){
-                     _this.cpp_books[this.project_index]={projectId:del_id,name:_this.project_name}
+                     _this.cpp_books[_this.project_index]={projectId:del_id,name:_this.project_name}
                    }else if(_this.project_type==api.PYTHON2){
-                    _this.p2_books[this.project_index]={projectId:del_id,name:_this.project_name}
+                    _this.p2_books[_this.project_index]={projectId:del_id,name:_this.project_name}
                    }else if(_this.project_type==api.PYTHON3){
-                     _this.p3_books[this.project_index]={projectId:del_id,name:_this.project_name}
+                     _this.p3_books[_this.project_index]={projectId:del_id,name:_this.project_name}
                    }else{
-                     _this.j_books[this.project_index]={projectId:del_id,name:_this.project_name}
+                     _this.j_books[_this.project_index]={projectId:del_id,name:_this.project_name}
                    }
-                   _this.$Message.success('更新成功')
+                   _this.$Message.success('重命名成功')
                }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')
@@ -447,13 +451,14 @@ export default {
                  _this.$Message.error('未知错误')
                 }
            })
+           this.modal3=false
        },
        search(){
-           this.c_books=[]
-           this.cpp_books=[]
-           this.p2_books=[]
-           this.p3_books=[]
-           this.j_books=[]
+           this.c_books.length=[]
+           this.cpp_books.length=[]
+           this.p2_books.length=[]
+           this.p3_books.length=[]
+           this.j_books.length=[]
            var _this=this
             this.$Spin.show()
                 api.project_info(function(response){
@@ -483,6 +488,72 @@ export default {
                              name:projects[i].name})
                      }
                  }
+                 if(_this.search_type==api.C){
+               _this.note_type='C'
+               if(_this.search_name=='')return
+                for(var i=0;i<_this.c_books.length;i++){
+                    if(_this.c_books[i].name==_this.search_name){
+                        var search_project=_this.c_books[i]                       
+                        _this.c_books=[search_project]
+                        return
+                    }
+                }
+                _this.c_books=[]
+                return
+           }else if(_this.search_type==api.CPP){
+               _this.note_type='CPP'
+               if(_this.search_name=='')return
+                for(var i=0;i<_this.cpp_books.length;i++){
+                    if(_this.cpp_books[i].name==_this.search_name){
+                        var search_project=_this.cpp_books[i]
+                        _this.cpp_books=[search_project]
+                                   
+                        return
+                    }
+                }
+                _this.cpp_books=[]                         
+
+                return
+           }else if(_this.search_type==api.PYTHON2){
+               _this.note_type='PYTHON2'
+               if(_this.search_name=='')return
+                for(var i=0;i<_this.p2_books.length;i++){
+                    if(_this.p2_books[i].name==_this.search_name){
+                        var search_project=_this.p2_books[i]
+                        _this.p2_books=[search_project]
+                        return
+                    }
+                }
+                _this.p2_books=[]
+                return
+           }else if(_this.search_type==api.PYTHON3){
+               _this.note_type='PYTHON3'
+               if(_this.search_name=='')return
+                for(var i=0;i<_this.p3_books.length;i++){
+                    if(_this.p3_books[i].name==_this.search_name){
+                        var search_project=_this.p3_books[i]
+                        _this.p3_books=[search_project]
+                        return
+                    }
+                }
+                this.p3_books=[]
+                return
+           }else if(_this.search_type==api.JAVA){
+               _this.note_type='JAVA'
+               if(_this.search_name=='')return
+                for(var i=0;i<_this.j_books.length;i++){
+                    if(_this.j_books[i].name==_this.search_name){
+                        var search_project=_this.j_books[i]
+                        _this.j_books=[search_project]
+                        return
+                    }
+                }
+                _this.j_books=[]
+                return
+           }else{
+               _this.note_type='C'
+               _this.search_name=''
+           }
              }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')
@@ -490,87 +561,21 @@ export default {
                  _this.$Message.error('未知错误')
              }
          })
-         
-           if(this.search_type==api.C){
-               this.note_type='C'
-               if(this.search_name=='')return
-                for(var i=0;i<this.c_books.length;i++){
-                    if(this.c_books[i].name==this.search_name){
-                        var search_project=this.c_books[i]
-                        this.c_books=[search_project]
-                        return
-                    }
-                }
-                this.c_books=[]
-                return
-           }else if(this.search_type==api.CPP){
-               this.note_type='CPP'
-               if(this.search_name=='')return
-                for(var i=0;i<this.cpp_books.length;i++){
-                    if(this.cpp_books[i].name==this.search_name){
-                        var search_project=this.cpp_books[i]
-                        this.cpp_books=[search_project]
-                        return
-                    }
-                }
-                this.cpp_books=[]
-                return
-           }else if(this.search_type==api.PYTHON2){
-               this.note_type='PYTHON2'
-               if(this.search_name=='')return
-                for(var i=0;i<this.p2_books.length;i++){
-                    if(this.p2_books[i].name==this.search_name){
-                        var search_project=this.p2_books[i]
-                        this.p2_books=[search_project]
-                        return
-                    }
-                }
-                this.p2_books=[]
-                return
-           }else if(this.search_type==api.PYTHON3){
-               this.note_type='PYTHON3'
-               if(this.search_name=='')return
-                for(var i=0;i<this.p3_books.length;i++){
-                    if(this.p3_books[i].name==this.search_name){
-                        var search_project=this.p3_books[i]
-                        this.p3_books=[search_project]
-                        return
-                    }
-                }
-                this.p3_books=[]
-                return
-           }else if(this.search_type==api.JAVA){
-               this.note_type='JAVA'
-               if(this.search_name=='')return
-                for(var i=0;i<this.j_books.length;i++){
-                    if(this.j_books[i].name==this.search_name){
-                        var search_project=this.j_books[i]
-                        this.j_books=[search_project]
-                        return
-                    }
-                }
-                this.j_books=[]
-                return
-           }else{
-               this.note_type='C'
-               this.search_name=''
-           }
+        
+           
        } ,
        etrProject(data){
            var _this=this
            this.$Spin.show()
            api.project_enter(data.projectId,function(response){
                _this.$Spin.hide()
-               if(response.code==0){
-                   //bridge.$emit('listenUsername',_this.username)
-                  // bridge.$emit('listenProjectId',data.projectId)
-                   //bridge.$emit('listenProjectName',data.name)
+               if(response.code==0){                   
                     _this.$router.push({
                         name:'Ide',
                         params:{
                             username:_this.username,
                             projectId:data.projectId,
-                            peojectName:data.name
+                            projectName:data.name
                         }
                     })
                }else if(response.code==-101){

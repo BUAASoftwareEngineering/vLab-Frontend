@@ -74,8 +74,8 @@ a{
                     </div>
                 </Sider>
                 <Content>
-                        <MyNotebooks :c_books='c_books' :cpp_books='cpp_books' :p2_books='p2_books' 
-                        :p3_books='p3_books' :j_books='j_books' :username='username'
+                        <MyNotebooks :fc_books='c_books' :fcpp_books='cpp_books' :fp2_books='p2_books' 
+                        :fp3_books='p3_books' :fj_books='j_books' :username='username'
                         v-show="showNotebooks"></MyNotebooks>
                         <Account :username='username' :newusername='[username]' 
                         v-show="showAccount"></Account>

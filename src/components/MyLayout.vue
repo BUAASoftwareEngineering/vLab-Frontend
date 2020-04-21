@@ -27,18 +27,16 @@ import api from '../assets/js/api'
         mounted(){  
              this.username=this.$route.params.username
              this.projectId=this.$route.params.projectId
-             this.projectName=this.$route.params.projectName
+             this.projectName=this.$route.params.name
 
           },
-          beforedestroyed(){     
-                  
+        destroyed(){           
               var _this=this
               this.$Spin.show()
               api.project_exit(this.projectId,function(response){
-                  _this.$Spin.hide()
-                  
+                  _this.$Spin.hide()                  
                   if(response.code==0){
-                      console.log('exit_sucess')
+                      
                   }
               })
           }
