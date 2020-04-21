@@ -98,8 +98,8 @@ import Account from './Account.vue'
                
                 showNotebooks:true,
                 showAccount:false,
-                c_books: [{projectId:1,name:'C1'},{projectId:2,name:'C2'}],
-                cpp_books:[{projectId:3,name:'CPP1'}],
+                c_books: [],
+                cpp_books:[],
                 p2_books:[],
                 p3_books:[],
                 j_books:[]

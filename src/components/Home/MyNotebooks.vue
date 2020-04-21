@@ -4,7 +4,7 @@
        
         <Modal v-model="modal1" title="新建工程"
         @on-ok='new_ok'>                          
-            <Input v-model="project_name" style="width:200px" placeholder="请输入Project Name"></Input>
+            <Input v-model="project_name" style="width:200px" placeholder="请输入Project Name" @keyup.enter.native="new_ok"></Input>
         </Modal>
 
         <Modal v-model="modal2"
@@ -14,19 +14,19 @@
 
         <Modal v-model="modal3" title="重命名"
         @on-ok="update_ok">
-            <Input v-model="project_name" style="width:200px" ></Input>
+            <Input v-model="project_name" style="width:200px" @keyup.enter.native="update_ok"></Input>
         </Modal>  
         
         <div style="margin-top:80px;margin-left:20vh">                            
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
                 <Select v-model="search_type" slot="prepend" style="width: 100px">
-                    <Option value="All">Show All</Option>
-                    <Option value="C">C</Option>
-                    <Option value="CPP">C++</Option>
-                    <Option value="PYTHON2">Python2</Option>
-                    <Option value="PYTHON3">Python3</Option>
-                    <Option value="JAVA">Java</Option>
+                    <Option value="All" @click.native="search">Show All</Option>
+                    <Option value="C" @click.native="search">C</Option>
+                    <Option value="CPP" @click.native="search">C++</Option>
+                    <Option value="PYTHON2" @click.native="search">Python2</Option>
+                    <Option value="PYTHON3" @click.native="search">Python3</Option>
+                    <Option value="JAVA" @click.native="search">Java</Option>
                 </Select>
                 <Button slot="append" icon="ios-search" @click="search" ></Button>
             </Input>        
@@ -348,8 +348,8 @@ export default {
                              name:data.name})
                    }
                   
-                    _this.$Message.success('新建成功')
-                    _this.etrProject(data)
+                    _this.$Message.success('新建成功')                   
+                   // _this.etrProject(data)
                }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')
@@ -358,6 +358,7 @@ export default {
                   
              }
            })
+            this.modal1=false
            
        },
       
@@ -379,7 +380,6 @@ export default {
            this.$Spin.show()
            api.project_delete(del_id,function(response){
                _this.$Spin.hide()
-               console.log(response.code)
                if(response.code==0){
                   
                    if(_this.project_type==api.C){
@@ -403,6 +403,7 @@ export default {
                  _this.$Message.error('未知错误')
                 }
            })
+            this.modal3=false
        },
 
        update_ok(){
@@ -448,6 +449,11 @@ export default {
            })
        },
        search(){
+           this.c_books=[]
+           this.cpp_books=[]
+           this.p2_books=[]
+           this.p3_books=[]
+           this.j_books=[]
            var _this=this
             this.$Spin.show()
                 api.project_info(function(response){
@@ -556,10 +562,17 @@ export default {
            api.project_enter(data.projectId,function(response){
                _this.$Spin.hide()
                if(response.code==0){
-                   bridge.$emit('listenUsername',this.username)
-                   bridge.$emit('listenProjectId',data.projectId)
-                   bridge.$emit('listenProjectName',data.name)
-                    _this.$router.push('/ide')
+                   //bridge.$emit('listenUsername',_this.username)
+                  // bridge.$emit('listenProjectId',data.projectId)
+                   //bridge.$emit('listenProjectName',data.name)
+                    _this.$router.push({
+                        name:'Ide',
+                        params:{
+                            username:_this.username,
+                            projectId:data.projectId,
+                            peojectName:data.name
+                        }
+                    })
                }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')

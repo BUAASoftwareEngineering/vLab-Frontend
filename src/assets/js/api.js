@@ -1,5 +1,10 @@
 const http = new XMLHttpRequest()
-const server = "http://114.116.135.181:8081"
+const server = "http://62.234.28.61:8081"
+const CPP = 'CPP'
+const PYTHON3 = 'PYTHON3'
+const PYTHON2 = 'PYTHON2'
+const JAVA = 'JAVA'
+const C = 'C'
 http.withCredentials = true
 
 function get_request(url, callback) {
@@ -93,10 +98,20 @@ function user_register(user_name, password, callback) {
     post_request(url, data, callback)
 }
 
-function user_info_update(user_name, password, callback) {
+function user_info_update () {
     var url = server + '/user/info_update'
-    var data =  'user_name=' + encodeURIComponent(user_name) + 
-                '&password=' + encodeURIComponent(password)
+    let callback = console.log
+    if (arguments.length === 3) {
+        let user_name = arguments[0]
+        let password = arguments[1]
+        callback = arguments[2]
+        var data =  'user_name=' + encodeURIComponent(user_name) + 
+                    '&password=' + encodeURIComponent(password)
+    } else {
+        let user_name = arguments[0]
+        callback = arguments[1]
+        var data = 'user_name=' + encodeURIComponent(user_name)
+    }
     post_request(url, data, callback)
 }
 
@@ -108,6 +123,13 @@ function user_info(callback) {
 function project_info(callback) {
     var url = server + '/project/info?'
     get_request(url, callback)
+}
+
+function project_info_update(project_id, project_name, callback) {
+    var url = server + '/project/info_update'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&project_name=' + encodeURIComponent(project_name)
+    post_request(url, data, callback)
 }
 
 function project_new(project_name, project_type, callback) {
@@ -135,8 +157,9 @@ function project_delete(project_id, callback) {
     post_request(url, data, callback)
 }
 
-function file_file_struct(project_id, callback) {
-    var url = server + '/file/file_struct?project_id=' + encodeURIComponent(project_id)
+function file_struct(project_id, root_path, callback) {
+    var url = server + '/file/struct?project_id=' + encodeURIComponent(project_id) +
+                                    '&root_path=' + encodeURIComponent(root_path)
     get_request(url, callback)
 }
 
@@ -168,16 +191,26 @@ function file_delete(project_id, file_path, callback) {
     post_request(url, data, callback)
 }
 
-function file_move(project_id, old_path, new_path, callback) {
+function file_move(project_id, old_path, new_path, force, callback) {
     var url = server + '/file/move'
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&old_path=' + encodeURIComponent(old_path) + 
-                '&new_path=' + encodeURIComponent(new_path)
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
     post_request(url, data, callback)
 }
 
-function file_copy(project_id, old_path, new_path, callback) {
+function file_copy(project_id, old_path, new_path, force, callback) {
     var url = server + '/file/copy'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function file_rename(project_id, old_path, new_path, callback) {
+    var url = server + '/file/rename'
     var data =  'project_id=' + encodeURIComponent(project_id) + 
                 '&old_path=' + encodeURIComponent(old_path) +
                 '&new_path=' + encodeURIComponent(new_path)
@@ -198,6 +231,32 @@ function dir_delete(project_id, dir_path, callback) {
     post_request(url, data, callback)
 }
 
+function dir_move(project_id, old_path, new_path, force, callback) {
+    var url = server + '/dir/move'
+    var data =  'project_id=' + encodeURIComponent(project_id) +
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function dir_copy(project_id, old_path, new_path, force, callback) {
+    var url = server + '/dir/copy'
+    var data =  'project_id=' + encodeURIComponent(project_id) +
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path) +
+                '&force=' + encodeURIComponent(force)
+    post_request(url, data, callback)
+}
+
+function dir_rename(project_id, old_path, new_path, callback) {
+    var url = server + '/dir/rename'
+    var data =  'project_id=' + encodeURIComponent(project_id) + 
+                '&old_path=' + encodeURIComponent(old_path) +
+                '&new_path=' + encodeURIComponent(new_path)
+    post_request(url, data, callback)
+}
+
 export default {
     user_login,
     user_logout,
@@ -205,17 +264,27 @@ export default {
     user_info_update,
     user_info,
     project_info,
+    project_info_update,
     project_new,
     project_delete,
     project_enter,
     project_exit,
-    file_file_struct,
+    file_struct,
     file_content,
     file_update,
     file_new,
     file_delete,
     file_move,
     file_copy,
+    file_rename,
     dir_new,
-    dir_delete
+    dir_delete,
+    dir_move,
+    dir_copy,
+    dir_rename,
+    CPP,
+    C,
+    PYTHON2,
+    PYTHON3,
+    JAVA
 }
