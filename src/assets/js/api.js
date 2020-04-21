@@ -1,5 +1,7 @@
 const http = new XMLHttpRequest()
+// const server = "http://114.116.135.181:8081"
 const server = "http://62.234.28.61:8081"
+// const server = "http://127.0.0.1:3000"
 const CPP = 'CPP'
 const PYTHON3 = 'PYTHON3'
 const PYTHON2 = 'PYTHON2'
@@ -23,11 +25,16 @@ function get_request(url, callback) {
             if (obj.data == undefined) {
                 obj.data = {}
             }
+            if (url.split('?')[0] == server + '/file/content') {
+                // console.log(new Buffer(obj.data.content))
+                obj.data.content = new TextDecoder('utf-8').decode(new Buffer(obj.data.content))
+            }
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
             // console.log(eval("(" + http.responseText + ")"))
             let code = (http.status == 0) ? -100 : http.status
+            console.log(http.responseText)
             var obj = {
                 code: code,
                 message: "Http request fail!",
@@ -173,7 +180,7 @@ function file_update(project_id, file_path, file_content, callback) {
     var url = server + '/file/update'
     var data =  'project_id=' + encodeURIComponent(project_id) + 
                 '&file_path=' + encodeURIComponent(file_path) + 
-                '&file_content=' + encodeURIComponent(file_content)
+                '&file_content=' + encodeURIComponent(JSON.stringify(Buffer(new TextEncoder('utf-8').encode(file_content))))
     post_request(url, data, callback)
 }
 

@@ -381,7 +381,16 @@ import bridge from '../bridge'
                 }
                 return pathList;
             },
-
+            getAllLeafPath(){
+                var findkey = nodekey;
+                while (findkey !== root[0].nodeKey) {
+                    var parentKey = root.find(el => el.nodeKey === findkey).parent;
+                    var parent = root.find(el => el.nodeKey === parentKey).node;
+                    path = parent.title+"/"+ path;
+                    var findkey = parentKey;
+                }
+                return getLeafPath(findkey);
+            },
             saveEdit(root){
                 var i;
                 var findnode = undefined;

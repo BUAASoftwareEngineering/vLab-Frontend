@@ -70,8 +70,10 @@ import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
 import {initEditor} from '../editor/app'
+// import editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
+import { editor } from 'monaco-editor'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
@@ -107,6 +109,8 @@ import api from '../assets/js/api.js';
                     console.log(id);
                     document.getElementById(id).appendChild(new_tabPane);
                     initEditor(new_tabPane.id);
+                    // let myEditor = new editor.MonacoApp(project_info_data_element, BASE_DIR, new_tabPane.id);
+                    // myEditor.addEditor(new_tabPane.id, true);
                 });
                 this.currentTab = id;
             },
