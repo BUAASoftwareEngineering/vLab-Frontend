@@ -21,7 +21,6 @@
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
                 <Select v-model="search_type" slot="prepend" style="width: 100px">
-                    <Option value="All" @click.native="search" >Show All</Option>
                     <Option value="C" @click.native="search">C</Option>
                     <Option value="CPP" @click.native="search">C++</Option>
                     <Option value="PYTHON2" @click.native="search" >Python2</Option>
@@ -216,7 +215,7 @@ export default {
                 iconshow:false,
                 note_type:'C',
                 search_name:'',
-                search_type:'All',            
+                search_type:'C',            
                 c_books:this.fc_books,
                 cpp_books:this.fcpp_books,
                 p2_books:this.fp2_books,
@@ -550,9 +549,6 @@ export default {
                 }
                 _this.j_books=[]
                 return
-           }else{
-               _this.note_type='C'
-               _this.search_name=''
            }
              }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
