@@ -11,13 +11,37 @@
 import ControlPanel from "./ControlPanel"
 import MenuBar from "./MenuBar"
 import {initEditor} from '../editor/app'
+import bridge from './bridge.js'
+import api from '../assets/js/api'
     export default{
+        data(){
+            return{
+                username:'21',
+                projectId:0,
+                projectName:''
+            }
+        },
         components: {
             MenuBar, ControlPanel
         },
-        //mounted(){
-        //      initEditor()
-        //  }
+        mounted(){  ``
+             this.username=this.$route.params.username
+             this.projectId=this.$route.params.projectId
+             this.projectName=this.$route.params.projectName
+
+          },
+          beforedestroyed(){       
+              console.log('exit_sucess')       
+              var _this=this
+              this.$Spin.show()
+              api.project_exit(this.projectId,function(response){
+                  _this.$Spin.hide()
+                  
+                  if(response.code==0){
+                      console.log('exit_sucess')
+                  }
+              })
+          }
     }
 </script>
 

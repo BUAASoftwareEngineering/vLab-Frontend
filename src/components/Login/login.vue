@@ -14,13 +14,13 @@
             
             <Input type="text" placeholder="请输入用户名" v-model="username" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入密码" v-model="password" style="width: 200px"/>
+            <Input type="password" placeholder="请输入密码" v-model="password" style="width: 200px" @keyup.enter.native="login"/>
             <br><br>
             <Button type="success"  v-on:click="login">登录</Button>
             <br><br>
             <span v-on:click="ToRegister">没有账号？马上注册</span>
             
-           <!-- <span v-on:click="ToUpdate">修改密码</span>-->
+          
         </div>
  
         <div class="register-wrap" v-show="showRegister">
@@ -29,7 +29,7 @@
           
             <Input type="text" placeholder="请输入用户名" v-model="newUsername" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px"/>
+            <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px" @keyup.enter.native="register"/>
             <br><br>
            <Button type="success"  v-on:click="register">注册</Button>
            <br><br>
@@ -152,16 +152,11 @@ export default{
         }
     }
     },
-    /*
-    update(){
-        if(this.username==""||this.password == ""|| this.newPassword == ""){
-            alert("请输入用户名或密码")
-        }else{
-           
+    keyLogin(){
+        if (event.keyCode==13)  
+        document.getElementByIdx_x("input1").click(); 
         }
     }
-    */
-}
   }
 
 </script>

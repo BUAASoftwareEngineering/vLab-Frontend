@@ -2,13 +2,13 @@
     <div style="text-align:center">
        <Form  label-position="right" :label-width="100" style="margin-top:80px;width:60%">
         <FormItem label="重置用户名">
-            <Input v-model='newusername[0]'></Input>
+            <Input v-model='newusername[0]' @keyup.enter.native="submit"></Input>
         </FormItem>
         <FormItem label="重置密码">
-            <Input type="password" v-model='newpassword1'></Input>
+            <Input type="password" v-model='newpassword1' @keyup.enter.native="submit"></Input>
         </FormItem>
         <FormItem label="确认密码">
-            <Input type="password" v-model='newpassword2'></Input>
+            <Input type="password" v-model='newpassword2' @keyup.enter.native="submit"></Input>
         </FormItem>
        <FormItem>
             <Button type="primary" @click='submit'>确认</Button>
