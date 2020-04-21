@@ -79,6 +79,12 @@ function fit() {
   that.term.scrollToBottom()
 }
 
+function compile(submit) {
+  if (submit.type) {
+    
+  }
+}
+
 
 export default {
   mounted,
