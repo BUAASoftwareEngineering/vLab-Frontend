@@ -225,6 +225,7 @@ export default {
             }
         },
        
+
    props:{
        fc_books:{
            type:Array,
@@ -274,6 +275,8 @@ export default {
                     break
             }
             this.modal1=true 
+
+
         },
         delProject(type,index){
              switch(type){
@@ -326,6 +329,7 @@ export default {
        new_ok(){
            var _this=this
            this.$Spin.show()
+
            
           api.project_new(this.project_name,this.project_type,function(response){
                _this.$Spin.hide()
@@ -405,6 +409,7 @@ export default {
            })
             this.modal2=false
        },
+
        update_ok(){
             var _this=this
            var del_id
@@ -594,6 +599,7 @@ export default {
            
        }      
         
+
     }
    
 }
