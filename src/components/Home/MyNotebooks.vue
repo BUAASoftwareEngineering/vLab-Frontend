@@ -584,15 +584,11 @@ export default {
              }else if(response.code==-102){
                  _this.$Message.error('权限不足')
              }else{
-                 //_this.$Message.error('未知错误')
-                  _this.$router.push({
-                        name:'Ide',
-                        params:{
-                            username:_this.username,
-                            projectId:data.projectId,
-                            projectName:data.name
-                        }
-                    })
+                 _this.$Modal.error({
+                     title: '请求失败',
+                    content: '<p>您的操作太过频繁</p><p>请稍后再试</p>',
+                    
+                 })
                   
              }
            })
