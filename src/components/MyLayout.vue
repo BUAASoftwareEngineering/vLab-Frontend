@@ -28,19 +28,19 @@ import api from '../assets/js/api'
              this.username=this.$route.params.username
              this.projectId=this.$route.params.projectId
              this.projectName=this.$route.params.name
-
+            console.log(this.projectId)
           },
-        destroyed(){           
-              var _this=this
-              this.$Spin.show()
-              api.project_exit(this.projectId,function(response){
-                  _this.$Spin.hide()                  
-                  if(response.code==0){
-                      
-                  }
-              })
+         destroyed(){           
+              var _this=this               
+                
+            api.project_exit(this.projectId,function(response){})             
+                                
           }
+          
     }
+          
+             
+          
 </script>
 
 

@@ -584,12 +584,20 @@ export default {
              }else if(response.code==-102){
                  _this.$Message.error('权限不足')
              }else{
-                 _this.$Message.error('未知错误')
+                 //_this.$Message.error('未知错误')
+                  _this.$router.push({
+                        name:'Ide',
+                        params:{
+                            username:_this.username,
+                            projectId:data.projectId,
+                            projectName:data.name
+                        }
+                    })
                   
              }
            })
            
-       }    
+       }      
         
 
     }
