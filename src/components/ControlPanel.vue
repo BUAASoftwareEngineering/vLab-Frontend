@@ -111,9 +111,6 @@ import api from '../assets/js/api.js';
         methods:{
             handleTabsAdd(id, label, BASE_DIR) {
                 this.count++;
-                
-                // id = "/test2_editor.py";
-                
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
                 console.log(this.tabs);
@@ -141,8 +138,15 @@ import api from '../assets/js/api.js';
                             console.log(project_now);
                             console.log(BASE_DIR);
                             console.log(new_tabPane.id);
-                            let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
-                            myEditor.addEditor(id, true, new_tabPane.id);
+                            api.file_new(_this.projectid, id, function(newfile){
+                                if(newfile.code == 0){
+                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
+                                    myEditor.addEditor(id, true, new_tabPane.id);
+                                } else if(newfile.code == -301){
+                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
+                                    myEditor.addEditor(id, false, new_tabPane.id);
+                                }
+                            })
                             _this.currentTab = id;
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
@@ -153,19 +157,7 @@ import api from '../assets/js/api.js';
                             _this.$Message.error('未知错误')
                         }    
                     });
-                    // console.log(project_info);
-                    // var project_now = project_info.data[0];
-                    // for(let i = 0; i < project_info.data.length; i++){
-                    //     if(this.projectid == project_info.data[i].projectId){
-                    //         project_now = project_info.data[i];
-                    //         break;
-                    //     }
-                    // }
-                    // console.log(project_now);
-                    // let myEditor = new editor.MonacoApp(project_now, BASE_DIR, new_tabPane.id);
-                    // myEditor.addEditor(id, false);
                 });
-                
             },
             handleTabRemove(name) {
                 for(let i=0;i<this.tabs.length;i++){
