@@ -75,7 +75,17 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   ],
   externals: {
 		jquery: 'jQuery'
-	}
+  },
+  node: {
+		fs: 'empty',
+		net: 'empty'
+	},
+	resolve: {
+        alias: {
+            'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility')
+        },
+        extensions: ['.js', '.json', '.ttf']
+	},
 })
 
 module.exports = new Promise((resolve, reject) => {

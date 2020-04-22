@@ -452,7 +452,6 @@ import bridge from '../bridge'
                 this.$set(data, 'children', children)
                 this.editTree(children[children.length-1])
                 */
-
                 var path = "";
                 var findkey = nodekey;
                 while (findkey !== root[0].nodeKey) {
@@ -486,6 +485,8 @@ import bridge from '../bridge'
                         _this.$router.push('/')
                     }else if(response.code==-102){
                         _this.$Message.error('权限不足')
+                    }else if(response.code==-301){
+                        _this.$Message.error('文件重名')
                     }else{
                         _this.$Message.error('未知错误')
                     }
@@ -537,6 +538,8 @@ import bridge from '../bridge'
                         _this.$router.push('/')
                     }else if(response.code==-102){
                         _this.$Message.error('权限不足')
+                    }else if(response.code==-301){
+                        _this.$Message.error('文件夹重命名')
                     }else{
                         _this.$Message.error('未知错误')
                     }
@@ -564,7 +567,7 @@ import bridge from '../bridge'
                             if (parentKey == 0) {
                                 break;
                             }
-                            parent = root.find(el => el.nodeKey === parentKey).node;
+                            var parent = root.find(el => el.nodeKey === parentKey).node;
                             path = parent.title+"/"+ path;
                             var findkey = parentKey;
                         }

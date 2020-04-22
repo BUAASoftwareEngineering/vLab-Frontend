@@ -98,15 +98,15 @@
 <script>
 import api from '../assets/js/api.js';
 export default {
-     props: {
-            projectid:{
-                type:Number,
-                required:true
-            },
-            projectname:{
-                type:String,
-                required:true
-            }
+    props: {
+        projectid:{
+            type:Number,
+            required:true
+        },
+        projectname:{
+            type:String,
+            required:true
+        }
     },
     watch: {
         projectid: function(newVal, oldVal){

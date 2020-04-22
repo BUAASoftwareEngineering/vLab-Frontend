@@ -21,7 +21,6 @@
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
                 <Select v-model="search_type" slot="prepend" style="width: 100px">
-                    <Option value="All" @click.native="search" >Show All</Option>
                     <Option value="C" @click.native="search">C</Option>
                     <Option value="CPP" @click.native="search">C++</Option>
                     <Option value="PYTHON2" @click.native="search" >Python2</Option>
@@ -216,7 +215,7 @@ export default {
                 iconshow:false,
                 note_type:'C',
                 search_name:'',
-                search_type:'All',            
+                search_type:'C',            
                 c_books:this.fc_books,
                 cpp_books:this.fcpp_books,
                 p2_books:this.fp2_books,
@@ -225,6 +224,7 @@ export default {
             }
         },
        
+
    props:{
        fc_books:{
            type:Array,
@@ -274,6 +274,8 @@ export default {
                     break
             }
             this.modal1=true 
+
+
         },
         delProject(type,index){
              switch(type){
@@ -326,6 +328,7 @@ export default {
        new_ok(){
            var _this=this
            this.$Spin.show()
+
            
           api.project_new(this.project_name,this.project_type,function(response){
                _this.$Spin.hide()
@@ -405,6 +408,7 @@ export default {
            })
             this.modal2=false
        },
+
        update_ok(){
             var _this=this
            var del_id
@@ -545,9 +549,6 @@ export default {
                 }
                 _this.j_books=[]
                 return
-           }else{
-               _this.note_type='C'
-               _this.search_name=''
            }
              }else if(response.code==-101){
                  _this.$Message.error('cookie验证失败')
@@ -580,13 +581,18 @@ export default {
              }else if(response.code==-102){
                  _this.$Message.error('权限不足')
              }else{
-                 _this.$Message.error('未知错误')
+                 _this.$Modal.error({
+                     title: '请求失败',
+                    content: '<p>您的操作太过频繁</p><p>请稍后再试</p>',
+                    
+                 })
                   
              }
            })
            
-       }    
+       }      
         
+
     }
    
 }
