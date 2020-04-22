@@ -1,34 +1,120 @@
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import $ from 'jquery';
+// import "./style.css"
 
-import * as actions from './Actions.js';
 import * as appearance from './Appearances.js';
-import * as defaultCodes from './DefaultCodes.js';
-import * as editormanage from './Editor.js';
+import * as File from './File';
+import * as webapi from '../assets/js/api';
 
-export function initEditor(elementId) {
+import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
+
+var overrided = false;
+export var MonacoAppSingleton;
+
+export class MonacoApp {
+	constructor(project_info_data_element, BASE_DIR) {
+		this.currentProject = project_info_data_element;
+		this.BASE_DIR = BASE_DIR;
+		// this.elementId = elementId;
+		this.wsUrl = "ws://" + this.currentProject.ip + ":" + this.currentProject.languagePort;
+		appearance.setTheme('xcode-default');
+		this.model2editor = new Map();
+	}
+
+	async addEditor(filePath, newlyCreated = true, elementId) {
+		if (!overrided)
+			overrideMonaco();
+		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, newlyCreated, elementId);
+		editor.onDidChangeModelContent((e) => {
+			File.saveFile(this.currentProject.projectId, editor, filePath);
+		});
+		this.model2editor.set(editor.getModel(), editor);
+		return editor;
+	}
+}
+
+
+export async function demo() {
+
+	// ENTER THE LAST PROJECT
+	let project_info = await new Promise((resolve) => {
+		webapi.default.project_info((obj) => {
+			console.log("project_info: ", obj);
+			resolve(obj);
+		});
+	});
+	var project_now = project_info.data[project_info.data.length - 1];
+	console.log(project_now);
+	await new Promise((resolve) => {
+		webapi.default.project_enter(project_now.projectId, (obj) => {
+			console.log("project_enter: ", obj);
+			resolve(obj);
+		});
+	});
 	
-	editormanage.addNewEditor(defaultCodes.defaultCode_js, 'javascript', elementId);
-	var editor = editormanage.editorArray[0];
 
-	$(document).ready(() => {
-		$(".container").keydown((event) => {
-			// https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent/keyCode, US keyboard, IE11 / Chrome34 / Safari7 / Gecko29
-			if ((event.ctrlKey == true || event.metaKey == true) &&
-				(event.which == '12' || event.which == '61' || event.which == '107' || event.which == '109' || event.which == '171' || event.which == '173' || event.which == '187' || event.which == '189')) {
-				event.preventDefault();
-			}
+	const testFilePath = "/test2_editor.py";
+
+	// CREATE A FILE
+	let file_new = await new Promise((resolve) => {
+		webapi.default.file_new(project_now.projectId, testFilePath, (obj) => {
+			console.log("file_new: ", obj);
+			resolve(obj);
 		});
 	});
 
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_OPEN_SQUARE_BRACKET, "editor.action.jumpToBracket");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_CLOSE_SQUARE_BRACKET, "editor.action.selectToBracket");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfold");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.fold");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfoldRecursively");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.foldRecursively");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_EQUAL, "editor.unfoldAll");
-	actions.bindKeyWithAction(editor, monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_MINUS, "editor.foldAll");
-
-	appearance.setTheme('xcode-default');
+	let app = new MonacoApp(project_now, "/", "editor_/test2_editor.py");
+	MonacoAppSingleton = app;
+	await app.addEditor(testFilePath, file_new.code == 0 ? true : false);  // code == 0 --> newly created, else --> already exists
+	
+	`
+	webapi.default.project_exit(project_now.projectId, (obj) => {
+		console.log("project_exit: ", obj);
+		resolve(obj);
+	});
+	`
 }
+
+
+function overrideMonaco() {
+	overrided = true;
+
+	console.log("Overriding Monaco StandaloneCodeEditorServiceImpl !");
+	
+	StandaloneCodeEditorServiceImpl.prototype.doOpenEditor = function (editor, input) {
+		let foundedModel = monaco.editor.getModel(input.resource);
+
+		console.log("foundedModel @ Go To Definition = ", foundedModel);
+
+		if (!foundedModel || !MonacoAppSingleton.model2editor.get(foundedModel)) {
+			console.log("model have not been opened");
+
+			if (!input.resource) {
+				return null;
+			}
+			let filePath = input.resource.path;
+			var editor = MonacoAppSingleton.addEditor(filePath, false);
+			editor.focus();
+		} else {
+			console.log("model have been opened");
+
+			var editor = MonacoAppSingleton.model2editor.get(foundedModel);
+			editor.focus();
+		}
+		var selection = input.options.selection;
+		if (selection) {
+			if (typeof selection.endLineNumber === 'number' && typeof selection.endColumn === 'number') {
+				editor.setSelection(selection);
+				editor.revealRangeInCenter(selection, 1 /* Immediate */);
+			}
+			else {
+				var pos = {
+					lineNumber: selection.startLineNumber,
+					column: selection.startColumn
+				};
+				editor.setPosition(pos);
+				editor.revealPositionInCenter(pos, 1 /* Immediate */);
+			}
+		}
+		return editor;
+	};
+}
+demo();

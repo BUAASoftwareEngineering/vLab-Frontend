@@ -2,8 +2,8 @@
 <template>
     <div id='mylayout' ref='mylayout' class="layout">
         <Layout>
-            <MenuBar class="mymenu"></MenuBar>
-            <ControlPanel class="mycontrol"></ControlPanel>
+            <MenuBar class="mymenu" :projectid="projectid" :projectname="projectname"></MenuBar>
+            <ControlPanel class="mycontrol" :username="username" :projectid="projectid" :projectname="projectname"></ControlPanel>
         </Layout>
     </div>
 </template>
@@ -17,26 +17,25 @@ import api from '../assets/js/api'
         data(){
             return{
                 username:'',
-                projectId:0,
-                projectName:''
+                projectid:0,
+                projectname:''
             }
         },
         components: {
             MenuBar, ControlPanel
         },
-        mounted(){  
-             this.username=this.$route.params.username
-             this.projectId=this.$route.params.projectId
-             this.projectName=this.$route.params.name
-
+        mounted(){
+            this.username=this.$route.params.username
+            this.projectid=this.$route.params.projectId
+            this.projectname=this.$route.params.projectName
           },
-        destroyed(){           
+          beforedestroyed(){     
               var _this=this
               this.$Spin.show()
-              api.project_exit(this.projectId,function(response){
-                  _this.$Spin.hide()                  
+              api.project_exit(this.projectid,function(response){
+                  _this.$Spin.hide()
                   if(response.code==0){
-                      
+                      console.log('exit_sucess')
                   }
               })
           }

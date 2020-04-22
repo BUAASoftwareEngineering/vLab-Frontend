@@ -24,22 +24,22 @@
         </Sider>
 
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyTree class="mytree"></MyTree>
+            <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MySetting class="mysetting"></MySetting>
+            <MySetting class="mysetting" :username="username" :projectid="projectid" :projectname="projectname"></MySetting>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudUpload class="mycloudupload"></MyCloudUpload>
+            <MyCloudUpload class="mycloudupload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudUpload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudDownload class="myclouddownload"></MyCloudDownload>
+            <MyCloudDownload class="myclouddownload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudDownload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyPreference class="mypreference"></MyPreference>
+            <MyPreference class="mypreference" :username="username" :projectid="projectid" :projectname="projectname"></MyPreference>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyNotebook class="mynotebook"></MyNotebook>
+            <MyNotebook class="mynotebook" :username="username" :projectid="projectid" :projectname="projectname"></MyNotebook>
         </Sider>
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
@@ -51,7 +51,6 @@
                                     </div>
                                 </TabPane>
                         </template>
-                        <Button @click="handleTabsAdd('new')" slot="extra" type="primary">+</Button>
                     </Tabs>
                 </div>
                 <div slot="bottom" class="demo-split-pane">
@@ -69,15 +68,29 @@ import MyCloudUpload from "./MySider/MyCloudUpload"
 import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
-import {initEditor} from '../editor/app'
-// import editor from '../editor/app'
+// import {initEditor} from '../editor/app'
+import * as editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
-import { editor } from 'monaco-editor'
+// import { editor } from 'monaco-editor'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
             MyPreference, MyNotebook,
+        },
+        props: {
+            username:{
+                type:String,
+                required:true
+            },
+            projectid:{
+                type:Number,
+                required:true
+            },
+            projectname:{
+                type:String,
+                required:true
+            }
         },
         data(){
             return{
@@ -96,8 +109,11 @@ import { editor } from 'monaco-editor'
             }
         },
         methods:{
-            handleTabsAdd(id, label) {
+            handleTabsAdd(id, label, BASE_DIR) {
                 this.count++;
+                
+                // id = "/test2_editor.py";
+                
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
                 console.log(this.tabs);
@@ -108,11 +124,48 @@ import { editor } from 'monaco-editor'
 	                new_tabPane.style.width = "100%"
                     console.log(id);
                     document.getElementById(id).appendChild(new_tabPane);
-                    initEditor(new_tabPane.id);
-                    // let myEditor = new editor.MonacoApp(project_info_data_element, BASE_DIR, new_tabPane.id);
-                    // myEditor.addEditor(new_tabPane.id, true);
+                    var _this=this;
+                    this.$Spin.show();
+	                api.project_info(function(response){
+                        _this.$Spin.hide()
+                        if(response.code==0){
+                            var project_info = response;
+                            console.log(project_info);
+                            var project_now = project_info.data[0];
+                            for(let i = 0; i < project_info.data.length; i++){
+                                if(_this.projectid == project_info.data[i].projectId){
+                                    project_now = project_info.data[i];
+                                    break;
+                                }
+                            }
+                            console.log(project_now);
+                            console.log(BASE_DIR);
+                            console.log(new_tabPane.id);
+                            let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
+                            myEditor.addEditor(id, true, new_tabPane.id);
+                            _this.currentTab = id;
+                        }else if(response.code==-101){
+                            _this.$Message.error('cookie验证失败')
+                            _this.$router.push('/')
+                        }else if(response.code==-102){
+                            _this.$Message.error('权限不足')
+                        }else{
+                            _this.$Message.error('未知错误')
+                        }    
+                    });
+                    // console.log(project_info);
+                    // var project_now = project_info.data[0];
+                    // for(let i = 0; i < project_info.data.length; i++){
+                    //     if(this.projectid == project_info.data[i].projectId){
+                    //         project_now = project_info.data[i];
+                    //         break;
+                    //     }
+                    // }
+                    // console.log(project_now);
+                    // let myEditor = new editor.MonacoApp(project_now, BASE_DIR, new_tabPane.id);
+                    // myEditor.addEditor(id, false);
                 });
-                this.currentTab = id;
+                
             },
             handleTabRemove(name) {
                 for(let i=0;i<this.tabs.length;i++){
@@ -186,7 +239,7 @@ import { editor } from 'monaco-editor'
         mounted(){
             bridge.$on('add',(path_label)=>{
                 if(!this.tabsMap.hasOwnProperty(path_label[0])){
-                    this.handleTabsAdd(path_label[0],path_label[1]);
+                    this.handleTabsAdd(path_label[0],path_label[1], path_label[2]);
                 }
                 this.currentTab=path_label[0];
             }),
@@ -207,7 +260,7 @@ import { editor } from 'monaco-editor'
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.handleTabRemove(key);
-                        this.handleTabsAdd(IDmap[key][0],IDmap[key][1]);
+                        this.handleTabsAdd(IDmap[key][0],IDmap[key][1], IDmap[key][2]);
                     }
                 }
             }),
@@ -218,7 +271,7 @@ import { editor } from 'monaco-editor'
                         this.tabsMap[IDmap[key]] = this.tabsMap[key];
                         delete this.tabsMap[key];
                         this.handleTabRemove(key);
-                        this.handleTabsAdd(IDmap[key], this.tabsMap[IDmap[key]]);
+                        this.handleTabsAdd(IDmap[key][0], this.tabsMap[IDmap[key][0]], IDmap[key][1]);
                     }
                 }
             })

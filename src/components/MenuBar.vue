@@ -87,14 +87,61 @@
                     <DropdownItem>粘贴</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
+            <Button type="primary" style="min-width: 9vh; float: right" @click="exitproject">
+                退出项目{{ this.projectname }}
+            </Button>
             </Header>
         </Layout>
     </div>
 </template>
 
 <script>
+import api from '../assets/js/api.js';
 export default {
-    
+     props: {
+            projectid:{
+                type:Number,
+                required:true
+            },
+            projectname:{
+                type:String,
+                required:true
+            }
+    },
+    watch: {
+        projectid: function(newVal, oldVal){
+            this.projectId = newVal;
+            console.log("已更新projectid")
+        }
+    },
+    data() {
+        return {
+            projectId:0
+        }
+    },
+    methods: {
+        exitproject() {
+            if (this.projectId != 0){
+                var _this=this
+                this.$Spin.show()
+                console.log("退出id为"+this.projectId)
+                api.project_exit(this.projectId, function(response){
+                    _this.$Spin.hide()
+                    console.log("response.code:" + response.code);
+                    if(response.code==0){
+                        console.log("退出项目成功");
+                    }else if(response.code==-101){
+                        _this.$Message.error('cookie验证失败')
+                        _this.$router.push('/')
+                    }else if(response.code==-102){
+                        _this.$Message.error('权限不足')
+                    }else{
+                        _this.$Message.error('未知错误')
+                    }
+                })
+            }
+        }
+    }
 }
 </script>
 

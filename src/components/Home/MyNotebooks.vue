@@ -564,7 +564,8 @@ export default {
            this.$Spin.show()
            api.project_enter(data.projectId,function(response){
                _this.$Spin.hide()
-               if(response.code==0){                   
+            //    if(response.code==0){                   
+               if(1){                   
                     _this.$router.push({
                         name:'Ide',
                         params:{
