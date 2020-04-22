@@ -3,6 +3,7 @@ import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { AttachAddon } from 'xterm-addon-attach'
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
+import api from './api'
 
 const that = {}
 that.socketURL = 'ws://120.53.27.31:'
@@ -50,7 +51,7 @@ function initSocket(port) {
   //   }
 }
 
-function run(command) {
+function runcommand(command) {
   that.socket.send(new TextEncoder().encode('\x00' + command + '\r'))
 }
 
@@ -79,15 +80,89 @@ function fit() {
   that.term.scrollToBottom()
 }
 
-function compile(submit) {
-  if (submit.type) {
-    
-  }
+async function gen_build(id, name, sources) {
+  let base = '/home/user/build/'
+  let content = 'cmake_minimum_required(VERSION 3.10)\n\n'
+  content = await new Promise ((resolve) => {
+    api.dir_new(id, base, function () {
+      // console.log("1")
+      content += 'project(' + name + ')\n\n'
+      content += 'add_executable(' + name + '\n'
+      for (let i = 0; i < sources.length; i += 1) {
+        content += '\t' + sources[i]
+        if (i != sources.length - 1) {
+          content += '\n'
+        }
+      }
+      content += ')\n'
+      resolve(content)
+    })
+  })
+  await new Promise ((resolve) => {
+    api.file_new(id, base + 'CMakeLists.txt', function (obj) {
+      // console.log("2")
+      resolve(obj)
+    })
+  })
+  await new Promise ((resolve) => {
+    api.file_update(id, base + 'CMakeLists.txt', content, function (obj) {
+      // console.log("3")
+      // console.log(obj)
+      resolve(obj)
+    })
+  })
+  return base + name
 }
 
+async function compile(submit) {
+  let ret = undefined
+  switch (submit.type) {
+    case api.CPP:
+      ret = await gen_build(submit.project_id, submit.project_name, submit.sources)
+      // console.log("4")
+      // console.log(ret)
+      runcommand('cd /home/user/build/ && cmake CMakeLists.txt && make')
+      // runcommand('cmake CMakeLists.txt')
+      // runcommand('make')
+      break;
+    case api.PYTHON3:
+
+      break;
+    default:
+      break;
+  }
+  return ret
+}
+
+function run (submit) {
+  let command = ''
+  switch (submit.type) {
+    case api.CPP:
+      command = submit.exec
+      if (submit.args) {
+        for (let i = 0; i < submit.args.length; i += 1) {
+          command += ' ' + args[i]
+        }
+      }
+      runcommand(command)
+      break;
+    case api.PYTHON3:
+      command = 'python3 ' + submit.exec
+      if (submit.args) {
+        for (let i = 0; i < submit.args.length; i += 1) {
+          command += ' ' + args[i]
+        }
+      }
+      runcommand(command)
+      break
+    default:
+      break;
+  }
+}
 
 export default {
   mounted,
   fit,
-  run
+  run,
+  compile
 }

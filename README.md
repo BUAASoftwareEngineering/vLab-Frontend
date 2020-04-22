@@ -19,3 +19,36 @@ npm run build --report
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+## Compile JSON
+
+- CPP:
+```
+{
+    type : "CPP"
+    sources: [a list of .cpp and .h path]
+    project_id:
+    project_name: 
+}
+```
+
+## Run JSON
+
+- CPP:
+```
+{
+    type: "CPP"
+    exec: path of out
+    args: argument list, if empty can be undefined
+}
+```
+
+- PYTHON3:
+```
+{
+    type: "PYTHON3"
+    exec: path of the main.py
+    args: argument list, if empty can be undefined
+}
+```
