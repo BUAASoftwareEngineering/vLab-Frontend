@@ -24,22 +24,22 @@
         </Sider>
 
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyTree class="mytree"></MyTree>
+            <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MySetting class="mysetting"></MySetting>
+            <MySetting class="mysetting" :username="username" :projectid="projectid" :projectname="projectname"></MySetting>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudUpload class="mycloudupload"></MyCloudUpload>
+            <MyCloudUpload class="mycloudupload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudUpload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyCloudDownload class="myclouddownload"></MyCloudDownload>
+            <MyCloudDownload class="myclouddownload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudDownload>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyPreference class="mypreference"></MyPreference>
+            <MyPreference class="mypreference" :username="username" :projectid="projectid" :projectname="projectname"></MyPreference>
         </Sider>
         <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
-            <MyNotebook class="mynotebook"></MyNotebook>
+            <MyNotebook class="mynotebook" :username="username" :projectid="projectid" :projectname="projectname"></MyNotebook>
         </Sider>
         <Layout>
             <Split ref="sp" v-model="split2" mode="vertical">
@@ -70,17 +70,29 @@ import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
 import {initEditor} from '../editor/app'
-// import editor from '../editor/app'
 import bridge from './bridge'
-import api from '../assets/js/api.js';
-import { editor } from 'monaco-editor'
-    export default{
+import api from '../assets/js/api.js'
+    export default {
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
-            MyPreference, MyNotebook,
+            MyPreference, MyNotebook
         },
-        data(){
-            return{
+        props: {
+            username:{
+                type:String,
+                required:true
+            },
+            projectid:{
+                type:Number,
+                required:true
+            },
+            projectname:{
+                type:String,
+                required:true
+            }
+        },
+        data () {
+            return {
                 split2:0.5,
                 treemark:true,
                 settingmark:true,
@@ -109,8 +121,6 @@ import { editor } from 'monaco-editor'
                     console.log(id);
                     document.getElementById(id).appendChild(new_tabPane);
                     initEditor(new_tabPane.id);
-                    // let myEditor = new editor.MonacoApp(project_info_data_element, BASE_DIR, new_tabPane.id);
-                    // myEditor.addEditor(new_tabPane.id, true);
                 });
                 this.currentTab = id;
             },
@@ -185,40 +195,24 @@ import { editor } from 'monaco-editor'
         },
         mounted(){
             bridge.$on('add',(path_label)=>{
+                // console.log(path[0]);
+                // console.log(path[1]);
                 if(!this.tabsMap.hasOwnProperty(path_label[0])){
                     this.handleTabsAdd(path_label[0],path_label[1]);
                 }
-                this.currentTab=path_label[0];
+                this.currentTab = path_label[0];
             }),
             bridge.$on('deleteFile',(path)=>{
                 if(this.tabsMap.hasOwnProperty(path)){
                     this.handleTabRemove(path);
                 }
             }),
-            bridge.$on('deleteFloder',(paths)=>{
-                for(let i=0; i < paths.length; i++){
-                    if(this.tabsMap.hasOwnProperty(paths[i])){
-                        this.handleTabRemove(paths[i]);
-                    }
-                }
-            }),
-            bridge.$on('renameFile',(IDmap)=>{
+            bridge.$on('rename',(IDmap)=>{
                 console.log(IDmap);
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.handleTabRemove(key);
                         this.handleTabsAdd(IDmap[key][0],IDmap[key][1]);
-                    }
-                }
-            }),
-            bridge.$on('renameFloder',(IDmap)=>{
-                console.log(IDmap);
-                for(var key in IDmap){
-                    if(this.tabsMap.hasOwnProperty(key)){
-                        this.tabsMap[IDmap[key]] = this.tabsMap[key];
-                        delete this.tabsMap[key];
-                        this.handleTabRemove(key);
-                        this.handleTabsAdd(IDmap[key], this.tabsMap[IDmap[key]]);
                     }
                 }
             })
