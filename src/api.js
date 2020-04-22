@@ -1,7 +1,9 @@
 
 const http = new XMLHttpRequest()
 const server = "http://62.234.28.61:8081"
+// const server = "http://114.116.135.181:8081"
 // const server = "http://127.0.0.1:3000"
+// const server = "http://120.53.27.31:3000"
 const CPP = 'CPP'
 const PYTHON3 = 'PYTHON3'
 const PYTHON2 = 'PYTHON2'
@@ -15,7 +17,13 @@ function get_request(url, callback) {
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
             console.log('get success')
-            var obj = eval("("+http.responseText+")")
+            var obj = {}
+            try {
+                obj = eval("("+http.responseText+")")
+            } catch (err) {
+                console.log(http.responseText)
+            }
+            
             if (obj.code == undefined) {
                 obj.code = -100
             }
@@ -32,7 +40,6 @@ function get_request(url, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
-            // console.log(eval("(" + http.responseText + ")"))
             let code = (http.status == 0) ? -100 : http.status
             console.log(http.responseText)
             var obj = {
@@ -55,7 +62,12 @@ function post_request(url, data, callback) {
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
             console.log('post success')
-            var obj = eval("("+http.responseText+")")
+            var obj = {}
+            try {
+                obj = eval("("+http.responseText+")")
+            } catch (err) {
+                console.log(http.responseText)
+            }
             // console.log(http.getResponseHeader('Set-Cookie'))
             // console.log(document.cookie.length)
             if (obj.code == undefined) {
