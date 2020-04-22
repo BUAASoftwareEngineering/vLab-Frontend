@@ -27,7 +27,12 @@ export default {
     },
     mounted() {
         console.log('wenhao')
-        Terminal.mounted('33151')
+        Terminal.mounted({
+            projectId : 145,
+            terminalPort : '33473',
+            ip : '120.53.27.31',
+            name : 'pp'
+        }, 'shell')
     },
     methods: {
         fitg() {
@@ -36,9 +41,7 @@ export default {
         async test1() {
             let path = await Terminal.compile({
                 type: "CPP",
-                sources: ['/home/user/include/test.h','/home/user/src/test.cpp', '/home/user/src/main.cpp'],
-                project_id: 100,
-                project_name: 'pp'
+                sources: ['/code/src/main.cpp', '/code/src/test2.cpp','/code/src/test.cpp','/code/include/test.h','/code/include/test2.h']
             })
             Terminal.run({
                 type: "CPP",
@@ -48,7 +51,7 @@ export default {
         test2() {
             Terminal.run({
                 type: "PYTHON3",
-                exec: this.test1place
+                exec: '/code/src/test.py'
             })
         }
     }

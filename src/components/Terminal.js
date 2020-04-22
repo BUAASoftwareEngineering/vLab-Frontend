@@ -7,9 +7,13 @@ import api from './api'
 
 const that = {}
 that.socketURL = 'ws://120.53.27.31:'
+that.project = {}
 
-function mounted(port) {
-    initSocket(port)
+function mounted(project, div_id) {
+    that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
+    that.project = project
+    that.div_id = div_id
+    initSocket()
 }
 
 function beforeDestroy() {
@@ -25,7 +29,7 @@ function initTerm() {
     tabStopWidth: 8, 
     screenKeys: true
   });
-  term.open(document.getElementById('shell'))
+  term.open(document.getElementById(that.div_id))
   const attachAddon = new AttachAddon(that.socket);
   const fitAddon = new FitAddon();
   term.loadAddon(attachAddon);
@@ -34,15 +38,15 @@ function initTerm() {
   term.focus();
   that.term = term
   that.fitAddon = fitAddon
-  let ele = document.getElementById('shell')
+  let ele = document.getElementById(that.div_id)
   new ResizeSensor(ele, fit)
   window.onresize = function() {
     fit()
   }
 }
 
-function initSocket(port) {
-    that.socket = new WebSocket(that.socketURL+port);
+function initSocket() {
+    that.socket = new WebSocket(that.socketURL);
     socketOnClose();
     socketOnOpen();
     socketOnError();
@@ -52,7 +56,7 @@ function initSocket(port) {
 }
 
 function runcommand(command) {
-  that.socket.send(new TextEncoder().encode('\x00' + command + '\r'))
+  that.socket.send(new TextEncoder().encode(command + '\r'))
 }
 
 function socketOnOpen() {
@@ -81,7 +85,7 @@ function fit() {
 }
 
 async function gen_build(id, name, sources) {
-  let base = '/home/user/build/'
+  let base = '/build/'
   let content = 'cmake_minimum_required(VERSION 3.10)\n\n'
   content = await new Promise ((resolve) => {
     api.dir_new(id, base, function () {
@@ -111,17 +115,29 @@ async function gen_build(id, name, sources) {
       resolve(obj)
     })
   })
+  await new Promise((resolve) => {
+    api.file_new(id, base + 'Compile.sh', function (obj) {
+      resolve(obj)
+    })
+  })
+  await new Promise((resolve) => {
+    content = '#!/bin/bash\n\nnow=`pwd`\ncd /build/ && cmake CMakeLists.txt && make\ncd $now\n'
+    api.file_update(id, base + 'Compile.sh', content, function(obj) {
+      resolve(obj)
+    })
+  })
   return base + name
 }
 
 async function compile(submit) {
   let ret = undefined
+  that.term.writeln('Compile project begin ...')
   switch (submit.type) {
     case api.CPP:
-      ret = await gen_build(submit.project_id, submit.project_name, submit.sources)
+      ret = await gen_build(that.project.projectId, that.project.name, submit.sources)
       // console.log("4")
       // console.log(ret)
-      runcommand('cd /home/user/build/ && cmake CMakeLists.txt && make')
+      runcommand('sh /build/Compile.sh')
       // runcommand('cmake CMakeLists.txt')
       // runcommand('make')
       break;
@@ -136,6 +152,7 @@ async function compile(submit) {
 
 function run (submit) {
   let command = ''
+  // that.term.writeln('Run project begin ...')
   switch (submit.type) {
     case api.CPP:
       command = submit.exec
