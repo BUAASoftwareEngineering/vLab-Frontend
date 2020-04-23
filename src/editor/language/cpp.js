@@ -16,6 +16,21 @@ export function getCppReady(editor, BASE_DIR, url) {
         aliases: ['cpp', 'CPP', 'c', 'C'],
     });
 
+    monaco.languages.registerCompletionItemProvider('cpp', {
+        provideCompletionItems: function(model, position) {
+            var word = model.getWordUntilPosition(position);
+            var range = {
+                startLineNumber: position.lineNumber,
+                endLineNumber: position.lineNumber,
+                startColumn: word.startColumn,
+                endColumn: word.endColumn
+            };
+            return {
+                suggestions: createDependencyProposals(range)
+            };
+        }
+    });
+
     MonacoServices.install(editor, {
         rootUri: BASE_DIR
     });
@@ -69,4 +84,50 @@ function createLanguageClient(connection) {
             }
         }
     });
+}
+
+
+function createDependencyProposals(range) {
+    return [
+        {
+            label: 'main',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "int main(int argc, char *argv[])",
+            insertText: 'int main(int argc, char *argv[]) {\n\t${1}\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'cin',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "cin",
+            insertText: 'std::cin >> ${1:value};',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'cout',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "cout with endl",
+            insertText: 'std::cout << ${1:value} << std::endl;',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'forloop',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "for loop with index++",
+            insertText: 'for (auto ${1:i} = 0; ${1:i} < ${2:n}; ++${1:i}) {\n\t${3}\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'foreach',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "for-iter loop",
+            insertText: 'for (auto &${1:element}: ${2:container}) {\n\t${3}\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+    ];
 }
