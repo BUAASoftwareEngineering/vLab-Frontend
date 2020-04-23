@@ -38,7 +38,7 @@ export async function openFile(project_id, filePath, fileDir, wsUrl, newlyCreate
         return editor;
     } else {
         let file_content = await new Promise((resolve) => {
-            console.log(project_id, filePath);
+            console.log("getting file content @ ", project_id, filePath);
             webapi.default.file_content(project_id, filePath, (obj) => {
                 console.log("file_content: ", obj);
                 resolve(obj);

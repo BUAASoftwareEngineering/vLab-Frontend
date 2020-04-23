@@ -8,7 +8,6 @@ import { getCppReady } from './language/cpp';
 import { MonacoAppSingleton } from './app';
 import * as webapi from '../assets/js/api';
 import { filePath2lang } from './File';
-import { ConsoleLogger } from 'vscode-ws-jsonrpc';
 
 
 export function newEditor(container_id, code, language, filePath, fileDir, wsUrlBase) {
@@ -74,8 +73,7 @@ export function newEditor(container_id, code, language, filePath, fileDir, wsUrl
 
 	// Language Client for IntelliSense
 	if (language == 'python') {
-		console.log("this is a python file")
-		getPythonReady(editor, fileDir, wsUrlBase + "/py");
+		getPythonReady(editor, fileDir, wsUrlBase + "/python");
 	}
 	if (language == 'cpp') {
 		getCppReady(editor, fileDir, wsUrlBase + "/cpp");

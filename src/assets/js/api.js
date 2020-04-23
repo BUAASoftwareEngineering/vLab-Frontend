@@ -1,8 +1,5 @@
 const http = new XMLHttpRequest()
-const server = "http://62.234.28.61:8081"
-// const server = "http://114.116.135.181:8081"
-// const server = "http://127.0.0.1:3000"
-// const server = "http://120.53.27.31:3000"
+const server = "https://api.ivlab.xyz:8443"
 const CPP = 'CPP'
 const PYTHON3 = 'PYTHON3'
 const PYTHON2 = 'PYTHON2'
@@ -40,7 +37,7 @@ function get_request(url, callback) {
         } else if (http.readyState == 4) {
             console.log('get fail')
             let code = (http.status == 0) ? -100 : http.status
-            console.log(http.responseText)
+            // console.log(http.responseText)
             var obj = {
                 code: code,
                 message: "Http request fail!",
@@ -82,7 +79,7 @@ function post_request(url, data, callback) {
             callback(obj)
         } else if (http.readyState == 4) {
             console.log('post fail')
-            console.log(http.responseText)
+            // console.log(http.responseText)
             let code = (http.status == 0) ? -100 : http.status
             var obj = {
                 code: code,
