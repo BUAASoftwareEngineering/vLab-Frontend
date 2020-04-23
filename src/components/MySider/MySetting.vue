@@ -11,18 +11,23 @@
         </Row>
 
         <template v-for="file in Files">
-            <Checkbox :id='file' :key="file" @on-change='changeState(file)'>
+            <Checkbox :id='file' :key="file" @on-change='changeState(file)' :value="Show[file]">
                 <label style="color:white">
                     {{file}}
                 </label>
             </Checkbox>
         </template>
-
-         
+        <button @click="compile">
+            <p>Compile</p>
+        </button>
+        <button @click="run">
+            <p>Run</p>
+        </button>
     </Layout>
 </template>
 <script>
 import bridge from '../bridge';
+import terminal from '../Terminal';
     export default {
         data(){
             return {
@@ -32,19 +37,46 @@ import bridge from '../bridge';
         },
         methods:{
             changeState(data){
+                console.log(data, this.Show[data]);
                 this.Show[data] = !this.Show[data];
-                console.log(this.Show);
-            }    
+                console.log(data, this.Show[data]);
+            },
+            compile(){
+                let temp={};
+                temp.sources = [];
+                for(var key in this.Show){
+                    if(this.Show[key]==true){
+                        temp.sources.push('/code/'+key);
+                    }
+                }
+                console.log(temp);
+                terminal.compile(temp);
+            },
+            run(){
+                let temp={};
+                temp.exec = '';
+                for(var key in this.Show){
+                    if(this.Show[key]==true){
+                        // temp.sources.push('/code/'+key);
+                        temp.exec = '/code/' + key;
+                    }
+                }
+                console.log(temp);
+                terminal.run(temp);
+            }
         },
         mounted(){
             bridge.$on('ReturnAllFile',(Files)=>{
+                this.Files = [];
                 console.log(this.Files);
-                this.Files = Files;
-                this.Show = {};
-                for(let i=0; i<Files.length;i++){
-                    this.Show[Files[i]] = false;
-                }
-                console.log(this.Files);
+                this.$nextTick(function(){
+                    this.Show = {};
+                    for(let i=0; i<Files.length;i++){
+                        this.Show[Files[i]] = false;
+                        this.Files.push(Files[i]);
+                    }
+                    console.log(this.Files);
+                })
             })
         }
     }

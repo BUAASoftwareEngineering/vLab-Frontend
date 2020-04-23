@@ -23,25 +23,25 @@
             </Menu>
         </Sider>
 
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="treemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
         </Sider>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="settingmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MySetting class="mysetting" :username="username" :projectid="projectid" :projectname="projectname"></MySetting>
         </Sider>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="uploadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudUpload class="mycloudupload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudUpload>
         </Sider>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="downloadmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyCloudDownload class="myclouddownload" :username="username" :projectid="projectid" :projectname="projectname"></MyCloudDownload>
         </Sider>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="preferencemark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyPreference class="mypreference" :username="username" :projectid="projectid" :projectname="projectname"></MyPreference>
         </Sider>
-        <Sider :style="{height: '96vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
+        <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyNotebook class="mynotebook" :username="username" :projectid="projectid" :projectname="projectname"></MyNotebook>
         </Sider>
-        <Layout>
+        <Layout :style="{height: '95vh', overflow: 'auto'}">
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
                     <Tabs type="card" style="height: 100%" v-model="currentTab" @on-tab-remove="handleTabRemove" >
@@ -53,8 +53,8 @@
                         </template>
                     </Tabs>
                 </div>
-                <div slot="bottom" class="demo-split-pane">
-                    <FootTerminal></FootTerminal>
+                <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%">
+                    <FootTerminal :projectid="projectid" style="width:100%;height:100%"></FootTerminal>
                 </div>
             </Split>
         </Layout>
@@ -72,7 +72,7 @@ import MyNotebook from "./MySider/MyNotebook"
 import * as editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
-// import { editor } from 'monaco-editor'
+import terminal from './Terminal'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
@@ -94,7 +94,7 @@ import api from '../assets/js/api.js';
         },
         data(){
             return{
-                split2:0.3,
+                split2:0.6,
                 treemark:true,
                 settingmark:true,
                 uploadmark:true,
@@ -106,7 +106,7 @@ import api from '../assets/js/api.js';
                 tabsMap:{},
                 editorMap:{},
                 count: 0,
-                currentTab:''
+                currentTab:'',
             }
         },
         methods:{
@@ -184,7 +184,9 @@ import api from '../assets/js/api.js';
                 this.notebookmark = true;
             },
             changeSetting:function(){
-                bridge.$emit('AllFile');
+                if(this.settingmark){
+                    bridge.$emit('AllFile');
+                }
                 this.treemark = true;
                 this.uploadmark = true;
                 this.downloadmark = true;
@@ -271,6 +273,7 @@ import api from '../assets/js/api.js';
                     }
                 }
             })
+            
         }
     }
 </script>

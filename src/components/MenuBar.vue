@@ -87,7 +87,7 @@
                     <DropdownItem>粘贴</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <Button type="primary" style="min-width: 9vh; float: right" @click="exitproject">
+            <Button class='logout' type="text" style="min-width: 8vh; float: right" @click="exitproject">
                 退出项目{{ this.projectname }}
             </Button>
             </Header>
@@ -153,6 +153,14 @@ export default {
         border: 0px solid transparent;
         padding: 6px 16px 6px;
         margin:-3px;
+    }
+    .logout >>> .ivu-btn{
+        border-radius: 0px;
+        color:#f5f7f9;background-color:#464e57;border-color:#464e57;
+        margin: 0px;
+        border: 0px solid transparent;
+        padding: 6px 16px 6px;
+        margin: 0px;
     }
     .ivu-layout-header{
         height:4vh;

@@ -27,6 +27,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility'),
     }
   },
   module: {
