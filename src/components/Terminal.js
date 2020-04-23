@@ -13,6 +13,7 @@ function mounted(project, div_id) {
     that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
     that.project = project
     that.div_id = div_id
+    that.project.name = 'project_' + that.project.name
     initSocket()
 }
 
@@ -40,6 +41,8 @@ function initTerm() {
   that.fitAddon = fitAddon
   let ele = document.getElementById(that.div_id)
   new ResizeSensor(ele, fit)
+  // runcommand('pkill python3')
+  // runcommand('clear')
   window.onresize = function() {
     fit()
   }
@@ -130,6 +133,7 @@ async function gen_build(id, name, sources) {
 }
 
 async function compile(submit) {
+  submit.type = that.project.imageType
   let ret = undefined
   that.term.writeln('Compile project begin ...')
   switch (submit.type) {
@@ -151,11 +155,12 @@ async function compile(submit) {
 }
 
 function run (submit) {
+  submit.type = that.project.imageType
   let command = ''
   // that.term.writeln('Run project begin ...')
   switch (submit.type) {
     case api.CPP:
-      command = submit.exec
+      command = '/build/' + that.project.name
       if (submit.args) {
         for (let i = 0; i < submit.args.length; i += 1) {
           command += ' ' + args[i]
