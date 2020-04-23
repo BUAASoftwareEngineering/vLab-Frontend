@@ -140,10 +140,10 @@ import api from '../assets/js/api.js';
                             console.log(new_tabPane.id);
                             api.file_new(_this.projectid, id, function(newfile){
                                 if(newfile.code == 0){
-                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
+                                    let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
                                     myEditor.addEditor(id, true, new_tabPane.id);
                                 } else if(newfile.code == -301){
-                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
+                                    let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
                                     myEditor.addEditor(id, false, new_tabPane.id);
                                 }
                             })

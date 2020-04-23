@@ -27,6 +27,10 @@ export class MonacoApp {
 	}
 }
 
+export function createMonacoApp(project_info_data_element, BASE_DIR) {
+	MonacoAppSingleton = new MonacoApp(project_info_data_element, BASE_DIR);
+	return MonacoAppSingleton;
+}
 
 function overrideMonaco() {
 	overrided = true;
