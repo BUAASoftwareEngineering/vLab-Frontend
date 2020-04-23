@@ -104,6 +104,7 @@ import api from '../assets/js/api.js';
                 isCollapsed: true,
                 tabs:[],
                 tabsMap:{},
+                editorMap:{},
                 count: 0,
                 currentTab:''
             }
@@ -141,13 +142,14 @@ import api from '../assets/js/api.js';
                             api.file_new(_this.projectid, id, function(newfile){
                                 if(newfile.code == 0){
                                     let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
-                                    myEditor.addEditor(id, true, new_tabPane.id);
+                                    _this.editorMap[id]=myEditor.addEditor(id, true, new_tabPane.id);
                                 } else if(newfile.code == -301){
                                     let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
-                                    myEditor.addEditor(id, false, new_tabPane.id);
+                                    _this.editorMap[id]=myEditor.addEditor(id, false, new_tabPane.id);
                                 }
                             })
                             _this.currentTab = id;
+                            console.log(_this.editorMap);
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
                             _this.$router.push('/')
@@ -166,7 +168,9 @@ import api from '../assets/js/api.js';
                     }
                 }
                 delete this.tabsMap[name];
+                delete this.editorMap[name];
                 console.log(this.tabsMap);
+                console.log(this.editorMap);
             },
             getIDEId(Index){
                 return "editor_"+Index;
@@ -261,7 +265,6 @@ import api from '../assets/js/api.js';
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.tabsMap[IDmap[key]] = this.tabsMap[key];
-                        delete this.tabsMap[key];
                         this.handleTabRemove(key);
                         this.handleTabsAdd(IDmap[key][0], this.tabsMap[IDmap[key][0]], IDmap[key][1]);
                     }

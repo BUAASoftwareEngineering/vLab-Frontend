@@ -1,5 +1,5 @@
 const http = new XMLHttpRequest()
-const server = "http://62.234.28.61:8081"
+const server = "https://api.ivlab.xyz:8443"
 // const server = "http://114.116.135.181:8081"
 // const server = "http://127.0.0.1:3000"
 // const server = "http://120.53.27.31:3000"
