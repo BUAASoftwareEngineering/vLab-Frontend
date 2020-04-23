@@ -10,21 +10,43 @@
             </Col>
         </Row>
 
-        <Checkbox>
-            <label style="color:white">My first notebook</label>
-        </Checkbox>
-        <Checkbox>
-            <label style="color:white">My second notebook</label>
-        </Checkbox>
-        <Checkbox>
-            <label style="color:white">My third notebook</label>
-        </Checkbox><br>
+        <template v-for="file in Files">
+            <Checkbox :id='file' :key="file" @on-change='changeState(file)'>
+                <label style="color:white">
+                    {{file}}
+                </label>
+            </Checkbox>
+        </template>
+
          
     </Layout>
 </template>
 <script>
+import bridge from '../bridge';
     export default {
-        
+        data(){
+            return {
+                Files:[],
+                Show:{},
+            }
+        },
+        methods:{
+            changeState(data){
+                this.Show[data] = !this.Show[data];
+                console.log(this.Show);
+            }    
+        },
+        mounted(){
+            bridge.$on('ReturnAllFile',(Files)=>{
+                console.log(this.Files);
+                this.Files = Files;
+                this.Show = {};
+                for(let i=0; i<Files.length;i++){
+                    this.Show[Files[i]] = false;
+                }
+                console.log(this.Files);
+            })
+        }
     }
 </script>
 

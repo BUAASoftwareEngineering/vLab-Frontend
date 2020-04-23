@@ -94,7 +94,7 @@ import api from '../assets/js/api.js';
         },
         data(){
             return{
-                split2:0.5,
+                split2:0.3,
                 treemark:true,
                 settingmark:true,
                 uploadmark:true,
@@ -184,6 +184,7 @@ import api from '../assets/js/api.js';
                 this.notebookmark = true;
             },
             changeSetting:function(){
+                bridge.$emit('AllFile');
                 this.treemark = true;
                 this.uploadmark = true;
                 this.downloadmark = true;
