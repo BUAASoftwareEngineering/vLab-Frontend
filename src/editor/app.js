@@ -1,5 +1,6 @@
 import * as appearance from './Appearances.js';
 import * as File from './File';
+import { removeUnnecessaryMenu } from './Appearances';
 
 import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
 
@@ -13,6 +14,9 @@ export class MonacoApp {
 		this.wsUrl = "ws://" + this.currentProject.ip + ":" + this.currentProject.languagePort;
 		appearance.setTheme('xcode-default');
 		this.model2editor = new Map();
+		removeUnnecessaryMenu();
+		removeUnnecessaryMenu();
+		removeUnnecessaryMenu();
 	}
 
 	async addEditor(filePath, newlyCreated = true, elementId) {
@@ -36,7 +40,7 @@ function overrideMonaco() {
 	overrided = true;
 
 	console.log("Overriding Monaco StandaloneCodeEditorServiceImpl !");
-	
+
 	StandaloneCodeEditorServiceImpl.prototype.doOpenEditor = async function (editor, input) {
 		let foundedModel = monaco.editor.getModel(input.resource);
 
