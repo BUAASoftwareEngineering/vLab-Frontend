@@ -1,8 +1,10 @@
 import * as appearance from './Appearances.js';
 import * as File from './File';
 import { removeUnnecessaryMenu } from './Appearances';
+import bridge from '../components/bridge';
 
 import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
+import { version } from 'vscode';
 
 var overrided = false;
 export var MonacoAppSingleton;
@@ -29,6 +31,11 @@ export class MonacoApp {
 		this.model2editor.set(editor.getModel(), editor);
 		return editor;
 	}
+
+	closeEditor(editor){
+		this.model2editor.delete(editor.getModel());
+
+	}
 }
 
 export function createMonacoApp(project_info_data_element, BASE_DIR) {
@@ -43,9 +50,9 @@ function overrideMonaco() {
 
 	StandaloneCodeEditorServiceImpl.prototype.doOpenEditor = async function (editor, input) {
 		let foundedModel = monaco.editor.getModel(input.resource);
-
+		
 		console.log("foundedModel @ Go To Definition = ", foundedModel);
-
+		console.log(MonacoAppSingleton.model2editor);
 		if (!foundedModel || !MonacoAppSingleton.model2editor.get(foundedModel)) {
 			console.log("model have not been opened");
 
@@ -53,29 +60,46 @@ function overrideMonaco() {
 				return null;
 			}
 			let filePath = input.resource.path;
-			var editor = await MonacoAppSingleton.addEditor(filePath, false);
-			editor.focus();
+			let temp = filePath.split('/');
+			let label = temp[temp.length - 1];
+			bridge.$emit('overrideMonaco',[filePath, label]);
+			var editor = await new Promise((resolve)=>{
+				bridge.$on('overrideMonacoReturn',(myEditor)=>{
+					myEditor.focus();
+					position(myEditor, input);
+					resolve(myEditor);
+				})
+			})
 		} else {
 			console.log("model have been opened");
+			let filePath = input.resource.path;
+			let temp = filePath.split('/');
+			let label = temp[temp.length - 1];
+			bridge.$emit('add',[filePath, label, '/code/']);
 
 			var editor = MonacoAppSingleton.model2editor.get(foundedModel);
 			editor.focus();
+			position(editor, input);
 		}
-		var selection = input.options.selection;
-		if (selection) {
-			if (typeof selection.endLineNumber === 'number' && typeof selection.endColumn === 'number') {
-				editor.setSelection(selection);
-				editor.revealRangeInCenter(selection, 1 /* Immediate */);
-			}
-			else {
-				var pos = {
-					lineNumber: selection.startLineNumber,
-					column: selection.startColumn
-				};
-				editor.setPosition(pos);
-				editor.revealPositionInCenter(pos, 1 /* Immediate */);
-			}
-		}
+		
 		return editor;
 	};
+}
+
+function position(editor, input){
+	var selection = input.options.selection;
+	if (selection) {
+		if (typeof selection.endLineNumber === 'number' && typeof selection.endColumn === 'number') {
+			editor.setSelection(selection);
+			editor.revealRangeInCenter(selection, 1 /* Immediate */);
+		}
+		else {
+			var pos = {
+				lineNumber: selection.startLineNumber,
+				column: selection.startColumn
+			};
+			editor.setPosition(pos);
+			editor.revealPositionInCenter(pos, 1 /* Immediate */);
+		}
+	}
 }

@@ -68,7 +68,6 @@ import MyCloudUpload from "./MySider/MyCloudUpload"
 import MyCloudDownload from "./MySider/MyCloudDownload"
 import MyPreference from "./MySider/MyPreference"
 import MyNotebook from "./MySider/MyNotebook"
-// import {initEditor} from '../editor/app'
 import * as editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
@@ -113,8 +112,7 @@ import terminal from './Terminal'
             }
         },
         methods:{
-            handleTabsAdd(id, label, BASE_DIR) {
-                
+            handleTabsAdd(id, label, BASE_DIR, overwrite = false) {
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
                 console.log(this.tabs);
@@ -127,7 +125,7 @@ import terminal from './Terminal'
                     document.getElementById(id).appendChild(new_tabPane);
                     var _this=this;
                     this.$Spin.show();
-	                api.project_info(function(response){
+	                api.project_info(async function(response){
                         _this.$Spin.hide()
                         if(response.code==0){
                             var project_info = response;
@@ -143,22 +141,12 @@ import terminal from './Terminal'
                                 _this.firstInto = false;
                                 _this.myEditor = editor.createMonacoApp(project_now, '/code/');
                             }
-                            console.log(project_now);
-                            console.log(BASE_DIR);
-                            console.log(new_tabPane.id);
-                            api.file_new(_this.projectid, id, function(newfile){
-                                if(newfile.code == 0){
-
-                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
-                                    _this.myEditor.addEditor(id, true, new_tabPane.id);
-                                } else if(newfile.code == -301){
-                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
-                                    _this.myEditor.addEditor(id, false, new_tabPane.id);
-
-                                }
-                            })
+                            var tempEditor = await _this.myEditor.addEditor(id, false, new_tabPane.id);
                             _this.currentTab = id;
-                            console.log(_this.editorMap);
+                            _this.editorMap[id] = tempEditor;
+                            if (overwrite == false){
+                                bridge.$emit('overrideMonacoReturn', tempEditor);
+                            }
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
                             _this.$router.push('/')
@@ -177,9 +165,8 @@ import terminal from './Terminal'
                     }
                 }
                 delete this.tabsMap[name];
+                this.myEditor.closeEditor(this.editorMap[name]);
                 delete this.editorMap[name];
-                console.log(this.tabsMap);
-                console.log(this.editorMap);
             },
             getIDEId(Index){
                 return "editor_"+Index;
@@ -281,8 +268,13 @@ import terminal from './Terminal'
                         this.handleTabsAdd(IDmap[key][0], this.tabsMap[IDmap[key][0]], IDmap[key][1]);
                     }
                 }
+            }),
+            bridge.$on('overrideMonaco',(path_label)=>{
+                if(!this.tabsMap.hasOwnProperty(path_label[0])){
+                    this.handleTabsAdd(path_label[0], path_label[1], '/code/', true);
+                }
+                this.currentTab=path_label[0];
             })
-            
         }
     }
 </script>
