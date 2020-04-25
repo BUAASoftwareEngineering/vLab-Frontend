@@ -72,6 +72,7 @@ import * as editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
 import terminal from './Terminal'
+import {bus} from './bus.js'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
@@ -103,7 +104,6 @@ import terminal from './Terminal'
                 isCollapsed: true,
                 tabs:[],
                 tabsMap:{},
-
                 editorMap:{},
                 count: 0,
                 currentTab:'',
@@ -147,6 +147,28 @@ import terminal from './Terminal'
                             if (overwrite == false){
                                 bridge.$emit('overrideMonacoReturn', tempEditor);
                             }
+                            //TODO
+                            /*
+                            console.log(project_now);
+                            console.log(BASE_DIR);
+                            console.log(new_tabPane.id);
+                            api.file_new(_this.projectid, id, function(newfile){
+                                 var a
+                                if(newfile.code == 0){
+                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
+                                    a=_this.myEditor.addEditor(id, true, new_tabPane.id);
+                                } else if(newfile.code == -301){
+                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
+                                    a=_this.myEditor.addEditor(id, false, new_tabPane.id);
+                                }
+                                 a.then((result) =>{ 
+                                   _this.currentTab = id;
+                                   _this.editorMap[id]=result                                       
+                                    bus.$emit('editorMap',_this.editorMap)
+                                    bus.$emit('currentTab',_this.currentTab)
+                                })
+                            })*/
+                            
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
                             _this.$router.push('/')
@@ -167,6 +189,11 @@ import terminal from './Terminal'
                 delete this.tabsMap[name];
                 this.myEditor.closeEditor(this.editorMap[name]);
                 delete this.editorMap[name];
+                //TODO
+                console.log(this.tabsMap);
+                console.log(this.editorMap);
+                bus.$emit('editorMap',this.editorMap)
+                bus.$emit('currentTab',this.currentTab)
             },
             getIDEId(Index){
                 return "editor_"+Index;
@@ -275,6 +302,13 @@ import terminal from './Terminal'
                 }
                 this.currentTab=path_label[0];
             })
+            
+        },
+        //TODO
+          watch:{
+            currentTab:function(){
+                bus.$emit('currentTab',this.currentTab)
+            }
         }
     }
 </script>
