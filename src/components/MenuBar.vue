@@ -28,15 +28,14 @@
                     编辑
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做<span style="float: right">Ctrl+Y</span></DropdownItem>
-                    <DropdownItem divided>拷贝<span style="float: right">Ctrl+C</span></DropdownItem>
-                    <DropdownItem>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
-                    <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>
-                    <DropdownItem divided>查找<span style="float: right">Ctrl+F</span></DropdownItem>
-                    <DropdownItem>替换<span style="float: right">Ctrl+H</span></DropdownItem>
-                    <DropdownItem>全局查找<span style="float: right">Ctrl+Shift+F</span></DropdownItem>
-                    <DropdownItem>全局替换<span style="float: right">Ctrl+Shift+H</span></DropdownItem>
+                    <DropdownItem @click.native="undo(editorMap[currentTab])">撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
+                    <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
+                    <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
+                    <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
+                   <!-- <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
+                    <DropdownItem divided  @click.native='search(editorMap[currentTab])'>查找<span style="float: right">Ctrl+F</span></DropdownItem>
+                    <DropdownItem @click.native='replace(editorMap[currentTab])'>替换<span style="float: right">Ctrl+H</span></DropdownItem>
+                  
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -44,11 +43,14 @@
                     代码操作
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem>剪切</DropdownItem>
-                    <DropdownItem>粘贴</DropdownItem>
+                    <DropdownItem @click.native='fold(editorMap[currentTab])'>折叠当前位置</DropdownItem>
+                    <DropdownItem @click.native='unfold(editorMap[currentTab])'>展开当前位置</DropdownItem>
+                    <DropdownItem @click.native='foldRecursively(editorMap[currentTab])'>从当前位置递归折叠</DropdownItem>
+                    <DropdownItem @click.native='unfoldRecursively(editorMap[currentTab])'>从当前位置递归展开</DropdownItem>
+                    <DropdownItem @click.native='foldAll(editorMap[currentTab])'>折叠全部</DropdownItem>
+                    <DropdownItem @click.native='unfoldAll(editorMap[currentTab])'>展开全部</DropdownItem>
+                    <DropdownItem divided  @click.native='revealDefinition(editorMap[currentTab])'>转到声明/定义</DropdownItem>
+                    <DropdownItem @click.native='referenceSearch(editorMap[currentTab])'>转到引用</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -56,11 +58,9 @@
                     运行
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem >撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem >重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem >剪切</DropdownItem>
-                    <DropdownItem >粘贴</DropdownItem>
+                    <DropdownItem >编译</DropdownItem>
+                    <DropdownItem >运行</DropdownItem>
+                    
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -68,11 +68,8 @@
                     视图
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem>剪切</DropdownItem>
-                    <DropdownItem>粘贴</DropdownItem>
+                    <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>切换行号显示</DropdownItem>
+                  
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -80,14 +77,10 @@
                     帮助
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem>撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem>重做</DropdownItem>
-                    <DropdownItem divided>拷贝</DropdownItem>
-                    <DropdownItem>剪切</DropdownItem>
-                    <DropdownItem>粘贴</DropdownItem>
+                    
                 </DropdownMenu>
             </Dropdown>
-            <Button class='logout' type="text" style="min-width: 8vh; float: right" @click="exitproject">
+            <Button type="primary" style="min-width: 9vh; float: right" @click="exitproject">
                 退出项目{{ this.projectname }}
             </Button>
             </Header>
@@ -97,6 +90,8 @@
 
 <script>
 import api from '../assets/js/api.js';
+import {bus} from './bus.js'
+import * as Editor from '../editor/Appearances.js'
 export default {
     props: {
         projectid:{
@@ -114,10 +109,24 @@ export default {
             console.log("已更新projectid")
         }
     },
+
     data() {
         return {
-            projectId:0
+            projectId:0,
+            editorMap:{},
+            currentTab:'',
+            LineNumberOnOff:true
         }
+    },
+    created(){
+        bus.$on('editorMap',(editorMap)=>{
+            this.editorMap=editorMap
+        }),
+        bus.$on('currentTab',(currentTab)=>{
+            this.currentTab=currentTab
+        })
+        console.log(this.editorMap),
+        console.log(this.currentTab)
     },
     methods: {
         exitproject() {
@@ -140,7 +149,65 @@ export default {
                     }
                 })
             }
-        }
+        },
+        undo(editor){
+           
+           editor.getModel().undo()
+        },
+        redo(editor){
+          
+           editor.getModel().redo()
+        },
+       cut(editor){
+           editor.getAction('editor.action.clipboardCutAction').run()
+       },
+        copy(editor){         
+            editor.getAction('editor.action.clipboardCopyAction').run()
+        },
+        search(editor){
+            editor.getAction('actions.find').run()
+        },
+        replace(editor){
+            editor.getAction('editor.action.startFindReplaceAction').run()
+        },
+        setLineNumberOnOff(editor){
+            this.LineNumberOnOff=!this.LineNumberOnOff
+            if(this.LineNumberOnOff){
+                Editor.setLineNumberOnOff(editor,'on')
+            }else{
+                 Editor.setLineNumberOnOff(editor,'off')
+
+            }
+        },
+        setMinimapOnOff(editor){
+            Editor.setMinimapOnOff(editor,'on')
+        },
+        fold(editor){
+            editor.getAction('editor.fold').run()
+        },
+        unfold(editor){
+            editor.getAction('editor.unfold').run()
+        },
+        foldRecursively(editor){
+            editor.getAction('editor.foldRecursively').run()
+        },
+        unfoldRecursively(editor){
+            editor.getAction('editor.unfoldRecursively').run()
+        },
+        foldAll(editor){
+            editor.getAction('editor.foldAll').run()
+
+        },
+        unfoldAll(editor){
+            editor.getAction('editor.unfoldAll').run()        
+        },
+        revealDefinition(editor){
+            editor.getAction('editor.action.revealDefinition').run()
+        },
+       referenceSearch(editor){
+           editor.getAction('editor.action.referenceSearch.trigger').run()
+       }
+        
     }
 }
 </script>
@@ -153,14 +220,6 @@ export default {
         border: 0px solid transparent;
         padding: 6px 16px 6px;
         margin:-3px;
-    }
-    .logout >>> .ivu-btn{
-        border-radius: 0px;
-        color:#f5f7f9;background-color:#464e57;border-color:#464e57;
-        margin: 0px;
-        border: 0px solid transparent;
-        padding: 6px 16px 6px;
-        margin: 0px;
     }
     .ivu-layout-header{
         height:4vh;
