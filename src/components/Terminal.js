@@ -13,6 +13,7 @@ function mounted(project, div_id) {
     that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
     that.project = project
     that.div_id = div_id
+    that.project.name = 'vlab_project'
     initSocket()
 }
 
@@ -46,7 +47,10 @@ function initTerm() {
 }
 
 function initSocket() {
+  that.socket = new WebSocket(that.socketURL)
+  that.timer = setInterval(function() {
     that.socket = new WebSocket(that.socketURL);
+  }, 2000)
     socketOnClose();
     socketOnOpen();
     socketOnError();
@@ -62,6 +66,7 @@ function runcommand(command) {
 function socketOnOpen() {
     that.socket.onopen = () => {
       // 链接成功后
+      clearInterval(that.timer)
       initTerm()
     }
 }
@@ -130,9 +135,9 @@ async function gen_build(id, name, sources) {
 }
 
 async function compile(submit) {
+  submit.type = that.project.imageType;
   let ret = undefined
   that.term.writeln('Compile project begin ...')
-  submit.type = that.project.imageType;
   switch (submit.type) {
     case api.CPP:
       ret = await gen_build(that.project.projectId, that.project.name, submit.sources)
