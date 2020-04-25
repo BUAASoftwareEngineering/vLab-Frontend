@@ -74,7 +74,9 @@ module.exports = {
     /*
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).
-    setImmediate: false,
+
+    // setImmediate: false,
+
     */
 
     // prevent webpack from injecting mocks to Node native modules

@@ -88,12 +88,14 @@ import bridge from '../bridge'
                 inputContent:"",// 输入框要修改的内容
                 oldName:"",// 修改前的TreeNode名称
                 doculist:[],
+                rootData:[]
             }
         },
         
         methods: {
             // 树渲染逻辑
             renderContent (h, { root, node, data }) { 
+                this.rootData = root;
                 if (data.children != undefined) {
                     return h("span", {
                         class:"hhhaha",
@@ -784,6 +786,16 @@ import bridge from '../bridge'
                 console.log("当前双击》》"+"/"+path+data.title);
                 bridge.$emit('add',["/code/"+path+data.title, data.title, "/code/"+path]);
             }
+        },
+        mounted(){
+            bridge.$on('AllFile',(CallBack)=>{
+                this.doculist = this.getLeafPath(this.rootData, 0);
+                // for (let i = 0; i < this.doculist.length; i++)
+                // {
+                    // console.log(i,this.doculist[i])//暂且验证一下
+                // }
+                bridge.$emit('ReturnAllFile',this.doculist);
+            })
         }
     }
 </script>
