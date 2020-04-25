@@ -13,7 +13,7 @@ function mounted(project, div_id) {
     that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
     that.project = project
     that.div_id = div_id
-    that.project.name = 'project_' + that.project.name
+    that.project.name = 'vlab_project'
     initSocket()
 }
 
@@ -49,7 +49,9 @@ function initTerm() {
 }
 
 function initSocket() {
-    that.socket = new WebSocket(that.socketURL);
+    that.timer = setInterval(function() {
+      that.socket = new WebSocket(that.socketURL);
+    }, 2000)
     socketOnClose();
     socketOnOpen();
     socketOnError();
@@ -64,6 +66,7 @@ function runcommand(command) {
 
 function socketOnOpen() {
     that.socket.onopen = () => {
+      clearInterval(that.timer)
       // 链接成功后
       initTerm()
     }

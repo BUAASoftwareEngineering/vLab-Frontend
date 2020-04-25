@@ -29,8 +29,8 @@ export default {
         console.log('wenhao')
         Terminal.mounted({
             projectId : 145,
-            terminalPort : '4000',
-            ip : 'localhost',
+            terminalPort : '32772',
+            ip : '120.53.27.31',
             name : 'pp'
         }, 'shell')
     },
