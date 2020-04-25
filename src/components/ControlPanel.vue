@@ -73,6 +73,7 @@ import * as editor from '../editor/app'
 import bridge from './bridge'
 import api from '../assets/js/api.js';
 import terminal from './Terminal'
+import {bus} from './bus.js'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
@@ -147,18 +148,24 @@ import terminal from './Terminal'
                             console.log(BASE_DIR);
                             console.log(new_tabPane.id);
                             api.file_new(_this.projectid, id, function(newfile){
+                                 var a
                                 if(newfile.code == 0){
 
                                     // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
-                                    _this.myEditor.addEditor(id, true, new_tabPane.id);
+                                    a=_this.myEditor.addEditor(id, true, new_tabPane.id);
                                 } else if(newfile.code == -301){
                                     // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
-                                    _this.myEditor.addEditor(id, false, new_tabPane.id);
+                                    a=_this.myEditor.addEditor(id, false, new_tabPane.id);
 
                                 }
+                                 a.then((result) =>{ 
+                                   _this.currentTab = id;
+                                   _this.editorMap[id]=result                                       
+                                    bus.$emit('editorMap',_this.editorMap)
+                                    bus.$emit('currentTab',_this.currentTab)
+                                })
                             })
-                            _this.currentTab = id;
-                            console.log(_this.editorMap);
+                            
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
                             _this.$router.push('/')
@@ -180,6 +187,8 @@ import terminal from './Terminal'
                 delete this.editorMap[name];
                 console.log(this.tabsMap);
                 console.log(this.editorMap);
+                bus.$emit('editorMap',this.editorMap)
+                bus.$emit('currentTab',this.currentTab)
             },
             getIDEId(Index){
                 return "editor_"+Index;
@@ -283,6 +292,11 @@ import terminal from './Terminal'
                 }
             })
             
+        },
+          watch:{
+            currentTab:function(){
+                bus.$emit('currentTab',this.currentTab)
+            }
         }
     }
 </script>
