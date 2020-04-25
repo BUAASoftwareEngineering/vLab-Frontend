@@ -281,12 +281,12 @@ import bridge from '../bridge'
                             cursor: 'pointer' 
                         },
                         on:{
-                            dblclick:()=>{
+                            click:()=>{
                                 data.editState ? '' :  this.handleDbClickTreeNode(root, node.nodeKey, data)
                             },
-                            click:()=>{
+                            /*click:()=>{
                                 data.editState ? '' : this.handleClickTreeNode(data)
-                            }
+                            }*/
                         }
                     }, [  
                         h('span', [

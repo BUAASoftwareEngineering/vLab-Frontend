@@ -144,7 +144,7 @@ import {bus} from './bus.js'
                             var tempEditor = await _this.myEditor.addEditor(id, false, new_tabPane.id);
                             _this.currentTab = id;
                             _this.editorMap[id] = tempEditor;
-                            if (overwrite == false){
+                            if (overwrite == true){
                                 bridge.$emit('overrideMonacoReturn', tempEditor);
                             }
                             //TODO
