@@ -15,7 +15,7 @@ const ext2lang = new Map([
 ]);
 
 export function filePath2lang(filePath) {
-    let index= filePath.lastIndexOf(".");
+    let index = filePath.lastIndexOf(".");
     var lang;
     if (index !== -1) {
         let ext = filePath.substr(index + 1);
@@ -38,7 +38,7 @@ export async function openFile(project_id, filePath, fileDir, wsUrl, newlyCreate
         return editor;
     } else {
         let file_content = await new Promise((resolve) => {
-            console.log(project_id, filePath);
+            console.log("getting file content @ ", project_id, filePath);
             webapi.default.file_content(project_id, filePath, (obj) => {
                 console.log("file_content: ", obj);
                 resolve(obj);
@@ -53,9 +53,9 @@ export async function saveFile(project_id, editor, filePath) {
     let content = getCode(editor);
 
     let file_update = await new Promise((resolve) => {
-		webapi.default.file_update(project_id, filePath, content, (obj) => {
-			console.log("file_update: ", obj);
-			resolve(obj);
-		});
+        webapi.default.file_update(project_id, filePath, content, (obj) => {
+            console.log("file_update: ", obj);
+            resolve(obj);
+        });
     });
 }

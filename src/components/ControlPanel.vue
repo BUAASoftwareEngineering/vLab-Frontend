@@ -104,14 +104,17 @@ import terminal from './Terminal'
                 isCollapsed: true,
                 tabs:[],
                 tabsMap:{},
+
                 editorMap:{},
                 count: 0,
                 currentTab:'',
+                firstInto: true,
+                myEditor:undefined
             }
         },
         methods:{
             handleTabsAdd(id, label, BASE_DIR) {
-                this.count++;
+                
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
                 console.log(this.tabs);
@@ -136,16 +139,22 @@ import terminal from './Terminal'
                                     break;
                                 }
                             }
+                            if(_this.firstInto){
+                                _this.firstInto = false;
+                                _this.myEditor = editor.createMonacoApp(project_now, '/code/');
+                            }
                             console.log(project_now);
                             console.log(BASE_DIR);
                             console.log(new_tabPane.id);
                             api.file_new(_this.projectid, id, function(newfile){
                                 if(newfile.code == 0){
-                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
-                                    _this.editorMap[id]=myEditor.addEditor(id, true, new_tabPane.id);
+
+                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
+                                    _this.myEditor.addEditor(id, true, new_tabPane.id);
                                 } else if(newfile.code == -301){
-                                    let myEditor = new editor.MonacoApp(project_now, BASE_DIR);
-                                    _this.editorMap[id]=myEditor.addEditor(id, false, new_tabPane.id);
+                                    // let myEditor = editor.createMonacoApp(project_now, BASE_DIR);
+                                    _this.myEditor.addEditor(id, false, new_tabPane.id);
+
                                 }
                             })
                             _this.currentTab = id;

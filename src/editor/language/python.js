@@ -6,6 +6,7 @@ import {
 } from 'monaco-languageclient';
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
+var connected = false;
 
 export function getPythonReady(editor, BASE_DIR, url) {
 
@@ -15,22 +16,40 @@ export function getPythonReady(editor, BASE_DIR, url) {
         aliases: ['py', 'PY', 'python', 'PYTHON', 'py3', 'PY3', 'python3', 'PYTHON3'],
     });
 
+    monaco.languages.registerCompletionItemProvider('python', {
+        provideCompletionItems: function (model, position) {
+            var word = model.getWordUntilPosition(position);
+            var range = {
+                startLineNumber: position.lineNumber,
+                endLineNumber: position.lineNumber,
+                startColumn: word.startColumn,
+                endColumn: word.endColumn
+            };
+            return {
+                suggestions: createDependencyProposals(range)
+            };
+        }
+    });
+
     MonacoServices.install(editor, {
         rootUri: BASE_DIR
     });
 
     console.log("using Web Socket URL = ", url);
-    const webSocket = createWebSocket(url);
-    listen({
-        webSocket,
-        onConnection: connection => {
-            console.log("onConnection!")
-            // create and start the language client
-            const languageClient = createLanguageClient(connection);
-            const disposable = languageClient.start();
-            connection.onClose(() => disposable.dispose());
-        }
-    });
+    if (!connected) {
+        const webSocket = createWebSocket(url);
+        listen({
+            webSocket,
+            onConnection: connection => {
+                console.log("onConnection!")
+                connected = true;
+                // create and start the language client
+                const languageClient = createLanguageClient(connection);
+                const disposable = languageClient.start();
+                connection.onClose(() => disposable.dispose());
+            }
+        });
+    }
 }
 
 
@@ -56,7 +75,7 @@ function createLanguageClient(connection) {
             errorHandler: {
                 error: () => ErrorAction.Continue,
                 closed: () => CloseAction.DoNotRestart
-            }
+            },
         },
         // create a language client connection from the JSON RPC connection on demand
         connectionProvider: {
@@ -65,4 +84,58 @@ function createLanguageClient(connection) {
             }
         }
     });
+}
+
+
+function createDependencyProposals(range) {
+    return [
+        {
+            label: 'main',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "if __main__",
+            insertText: 'if __name__ == "__main__":\n\t',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'printf',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "print with format",
+            insertText: 'print("{${1}}".format(${2}))',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'forrange',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "for in range",
+            insertText: 'for ${1:i} in range(${2:n}):\n\t',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'forenum',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "for in enumerate",
+            insertText: 'for ${1:index}, ${2:value} in enumerate(${3:seq}):\n\t',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'utf8',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "encoding=utf-8",
+            insertText: '# -*- coding: utf-8 -*-\n',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'method',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "define a method in class",
+            insertText: 'def ${1:method}(self, ${2:*args}):\n\t',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+    ];
 }
