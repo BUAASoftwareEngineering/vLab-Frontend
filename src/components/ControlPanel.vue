@@ -147,6 +147,8 @@ import {bus} from './bus.js'
                             if (overwrite == true){
                                 bridge.$emit('overrideMonacoReturn', tempEditor);
                             }
+                            bus.$emit('editorMap',_this.editorMap)
+                            bus.$emit('currentTab',_this.currentTab)
                             //TODO
                             /*
                             console.log(project_now);

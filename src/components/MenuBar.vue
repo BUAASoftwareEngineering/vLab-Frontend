@@ -69,7 +69,7 @@
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>切换行号显示</DropdownItem>
-                  
+                    <DropdownItem  @click.native='setMinimapOnOff(editorMap[currentTab])'>切换迷你地图显示</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -107,6 +107,19 @@ export default {
         projectid: function(newVal, oldVal){
             this.projectId = newVal;
             console.log("已更新projectid")
+        },
+        currentTab:function(){
+            if(this.LineNumberOnOff){
+                Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'on')
+            }else{
+                 Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'off')
+
+            }
+            if(this.MinimapOnOff){
+                Editor.setMinimapOnOff(this.editorMap[this.currentTab],'on')
+            }else{
+                 Editor.setMinimapOnOff(this.editorMap[this.currentTab],'off')
+            }
         }
     },
 
@@ -115,7 +128,8 @@ export default {
             projectId:0,
             editorMap:{},
             currentTab:'',
-            LineNumberOnOff:true
+            LineNumberOnOff:true,
+            MinimapOnOff:true
         }
     },
     created(){
@@ -180,7 +194,14 @@ export default {
             }
         },
         setMinimapOnOff(editor){
-            Editor.setMinimapOnOff(editor,'on')
+            this.MinimapOnOff=!this.MinimapOnOff
+            if(this.MinimapOnOff){
+                Editor.setMinimapOnOff(editor,'on')
+            }else{
+                 Editor.setMinimapOnOff(editor,'off')
+
+            }
+            
         },
         fold(editor){
             editor.getAction('editor.fold').run()
