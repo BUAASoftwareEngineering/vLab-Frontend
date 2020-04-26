@@ -23,12 +23,23 @@ function beforeDestroy() {
 }
 
 function initTerm() {
+  if (that.project.foreground == undefined) {
+    that.project.foreground = 'white'
+  }
+  if (that.project.background == undefined) {
+    that.project.background = '#000000'
+  }
   const term = new Terminal({
     fontSize: 14,
     cursorBlink: true,
     scrollback: 800, 
     tabStopWidth: 8, 
-    screenKeys: true
+    screenKeys: true,
+    theme: {
+      foreground: that.project.foreground, //字体
+      background: that.project.background, //背景色
+      cursor: 'help',//设置光标
+    }
   });
   term.open(document.getElementById(that.div_id))
   const attachAddon = new AttachAddon(that.socket);
@@ -43,18 +54,24 @@ function initTerm() {
   new ResizeSensor(ele, fit)
   // runcommand('pkill python3')
   // runcommand('clear')
+  runcommand('cd /code/ && clear')
   window.onresize = function() {
     fit()
   }
 }
 
 function initSocket() {
-    that.timer = setInterval(function() {
-      that.socket = new WebSocket(that.socketURL);
-    }, 2000)
+    that.socket = new WebSocket(that.socketURL)
     socketOnClose();
     socketOnOpen();
     socketOnError();
+    that.timer = setInterval(function() {
+      that.socket = new WebSocket(that.socketURL);
+      socketOnClose();
+      socketOnOpen();
+      socketOnError();
+    }, 2000)
+    
   //   that.socket.onmessage = () => {
   //       that.term.resize()
   //   }
