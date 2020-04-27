@@ -29,6 +29,9 @@ function initTerm() {
   if (that.project.background == undefined) {
     that.project.background = '#000000'
   }
+  if (that.project.cursor == undefined) {
+    that.project.cursor = 'black'
+  }
   const term = new Terminal({
     fontSize: 14,
     cursorBlink: true,
@@ -38,7 +41,7 @@ function initTerm() {
     theme: {
       foreground: that.project.foreground, //字体
       background: that.project.background, //背景色
-      cursor: 'help',//设置光标
+      cursor: that.project.cursor,//设置光标
     }
   });
   term.open(document.getElementById(that.div_id))
@@ -58,6 +61,26 @@ function initTerm() {
   window.onresize = function() {
     fit()
   }
+}
+
+function setcolor(setting) {
+  if (setting.background == undefined) {
+    setting.background = that.project.background
+  }
+  if (setting.foreground == undefined) {
+    setting.foreground = that.project.foreground
+  }
+  if (setting.cursor == undefined) {
+    setting.cursor = that.project.cursor
+  }
+  that.term.setOption('theme', {
+    background: setting.background,
+    foreground: setting.foreground,
+    cursor: setting.cursor
+  })
+  that.project.background = setting.background
+  that.project.foreground = setting.foreground
+  that.project.cursor = setting.cursor
 }
 
 function initSocket() {
@@ -206,5 +229,6 @@ export default {
   mounted,
   fit,
   run,
-  compile
+  compile,
+  setcolor
 }

@@ -5,6 +5,7 @@
                 <input v-model="test1place"></input>            
                 <button @click="test1()">cpp_test</button>
                 <button @click="test2()">python_test</button>
+                <button @click="setcolor()">setcolor</button>
             </div>
             <div slot="bottom" class="demo-split-pane" style="width: 100%; height: 100%" id="shell">
 
@@ -29,7 +30,7 @@ export default {
         console.log('wenhao')
         Terminal.mounted({
             projectId : 145,
-            terminalPort : '33026',
+            terminalPort : '33071',
             ip : '120.53.27.31',
             name : 'pp'
         }, 'shell')
@@ -52,6 +53,13 @@ export default {
             Terminal.run({
                 type: "PYTHON3",
                 exec: '/code/src/test.py'
+            })
+        },
+        setcolor() {
+            Terminal.setcolor({
+                background : '#FFFFFF',
+                foreground : 'black',
+                cursor : 'black'
             })
         }
     }

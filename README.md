@@ -63,3 +63,13 @@ function init(project_ele, div_id) {
     args: argument list, if empty can be undefined
 }
 ```
+
+## SetColor
+
+- 支持动态改变xterm的背景颜色，光标颜色，字体颜色，也支持初始化时设定
+- 初始化时请在project_ele属性中增加：
+    - background：背景颜色，格式为css颜色格式
+    - foreground：字体颜色，有：
+        - black, red, green, yellow, blue, magenta, cyan, white, brightBlack, brightRed, brightGreen, brightYellow, brightBlue, brightMagenta, brightCyan, brightWhite
+    - cursor：光标颜色，同上
+- 动态修改时调用setcolor函数，参数为一个object，具有上面三个属性，若属性undefined时默认设置为当前配置
