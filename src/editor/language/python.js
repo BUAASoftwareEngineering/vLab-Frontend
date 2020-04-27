@@ -130,10 +130,26 @@ function createDependencyProposals(range) {
             range: range
         },
         {
-            label: 'method',
+            label: 'defmethod',
             kind: monaco.languages.CompletionItemKind.Snippet,
             documentation: "define a method in class",
             insertText: 'def ${1:method}(self, ${2:*args}):\n\t',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'list2d_basic',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "2D-list with built-in basic type elements",
+            insertText: '[[${1:0}]*${3:cols} for _ in range(${2:rows})]',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'list2d_gen',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "2D-list when List multiplication is not safe",
+            insertText: '[[${1:0} for __ in range(${3:cols})] for _ in range(${2:rows})]',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: range
         },

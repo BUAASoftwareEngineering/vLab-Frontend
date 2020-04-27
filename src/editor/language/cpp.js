@@ -124,8 +124,32 @@ function createDependencyProposals(range) {
         {
             label: 'foreach',
             kind: monaco.languages.CompletionItemKind.Snippet,
-            documentation: "for-iter loop",
+            documentation: "for-each-in loop",
             insertText: 'for (auto &${1:element}: ${2:container}) {\n\t${3}\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'forit',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "for loop with iterator++",
+            insertText: 'for (auto it = ${1:container}.start(); it != ${1:container}.end(); ++it) {\n\t${2}\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'header_wrapper',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "wrapper to include this file only once",
+            insertText: '#ifndef ${1}\n#define ${1}\n\n${2}\n\n#endif /* ${1} */',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: range
+        },
+        {
+            label: 'include_stdcpp',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            documentation: "include all header for std c++",
+            insertText: '#include <bits/stdc++.h>\n',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: range
         },
