@@ -14,12 +14,6 @@
                 <MenuItem name="4-1" @click.native="changeDownload">
                     <Icon type="md-cloud-download" />
                 </MenuItem>
-                <MenuItem name="5-1" @click.native="changePreference" style="margin-top:50vh">
-                    <Icon type="md-contact" />
-                </MenuItem>
-                <MenuItem name="6-1" @click.native="changeNotebook">
-                    <Icon type="md-settings" />
-                </MenuItem>
             </Menu>
         </Sider>
 
@@ -41,7 +35,7 @@
         <Sider :style="{height: '95vh', overflow: 'auto'}" collapsible v-model="notebookmark" collapsed-width="0" style="background-color: #808695" width="250">
             <MyNotebook class="mynotebook" :username="username" :projectid="projectid" :projectname="projectname"></MyNotebook>
         </Sider>
-        <Layout :style="{height: '95vh', overflow: 'auto'}">
+        <Layout :style="{height: '95vh', overflow: 'hidden'}">
             <Split ref="sp" v-model="split2" mode="vertical">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
                     <Tabs type="card" style="height: 100%" v-model="currentTab" @on-tab-remove="handleTabRemove" >
@@ -292,7 +286,7 @@ import {bus} from './bus.js'
                 console.log(IDmap);
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
-                        this.tabsMap[IDmap[key]] = this.tabsMap[key];
+                        this.tabsMap[IDmap[key][0]] = this.tabsMap[key];
                         this.handleTabRemove(key);
                         this.handleTabsAdd(IDmap[key][0], this.tabsMap[IDmap[key][0]], IDmap[key][1]);
                     }
@@ -324,7 +318,7 @@ import {bus} from './bus.js'
     }
     .ivu-card-body{
         padding: 0vh;
-        height: 2.4vh;
+        height: 0vh;
         background: #363e4f;;
         margin: -0.1vh;
     }
@@ -361,10 +355,10 @@ import {bus} from './bus.js'
       color:#fff;
     }
     .mytree >>> .ivu-card-body{
-    padding: 0.3vh;
-    height: 3.5vh;
+    padding: 0vh;
+    height: 0vh;
     background: #363e4f;;
-    margin: -0.1vh;
+    margin: 0vh;
     }
     .mysetting >>> .ivu-card-body{
     padding: 0.3vh;

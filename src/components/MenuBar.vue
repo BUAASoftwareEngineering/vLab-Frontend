@@ -2,9 +2,9 @@
 <template>
     <div id="menubar">
         <Layout>
-            <Header :style="{height: '5.6vh', padding: '0'}">
+            <Header style="height: '4vh', padding: '0'">
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
-                <Button type="primary" style="min-width: 9vh" height='3.6vh'>
+                <Button type="primary" style="min-width: 9vh">
                     文件
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
@@ -24,7 +24,7 @@
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
-                <Button type="primary" style="min-width: 9vh" height='3.6vh'>
+                <Button type="primary" style="min-width: 9vh">
                     编辑
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
@@ -38,11 +38,11 @@
                   
                 </DropdownMenu>
             </Dropdown>
-            <Dropdown placement="bottom-start" transfer trigger="click">
+            <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
                 <Button type="primary" style="min-width: 9vh">
                     代码操作
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 20vh">
+                <DropdownMenu slot="list" style="min-width: 20vh, max-height: 500px, overflow: hidden">
                     <DropdownItem @click.native='fold(editorMap[currentTab])'>折叠当前位置</DropdownItem>
                     <DropdownItem @click.native='unfold(editorMap[currentTab])'>展开当前位置</DropdownItem>
                     <DropdownItem @click.native='foldRecursively(editorMap[currentTab])'>从当前位置递归折叠</DropdownItem>
@@ -80,7 +80,7 @@
                     
                 </DropdownMenu>
             </Dropdown>
-            <Button type="primary" style="min-width: 9vh; float: right" @click="exitproject">
+            <Button type="primary" style="min-width: 9vh; float: right; margin:0px" @click="exitproject">
                 退出项目{{ this.projectname }}
             </Button>
             </Header>

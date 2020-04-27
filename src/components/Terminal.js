@@ -23,12 +23,26 @@ function beforeDestroy() {
 }
 
 function initTerm() {
+  if (that.project.foreground == undefined) {
+    that.project.foreground = 'white'
+  }
+  if (that.project.background == undefined) {
+    that.project.background = '#000000'
+  }
+  if (that.project.cursor == undefined) {
+    that.project.cursor = 'white'
+  }
   const term = new Terminal({
     fontSize: 14,
     cursorBlink: true,
     scrollback: 800, 
     tabStopWidth: 8, 
-    screenKeys: true
+    screenKeys: true,
+    theme: {
+      foreground: that.project.foreground, //字体
+      background: that.project.background, //背景色
+      cursor: that.project.cursor,//设置光标
+    }
   });
   term.open(document.getElementById(that.div_id))
   const attachAddon = new AttachAddon(that.socket);
@@ -41,19 +55,46 @@ function initTerm() {
   that.fitAddon = fitAddon
   let ele = document.getElementById(that.div_id)
   new ResizeSensor(ele, fit)
+  // runcommand('pkill python3')
+  // runcommand('clear')
+  runcommand('cd /code/ && clear')
   window.onresize = function() {
     fit()
   }
 }
 
+function setcolor(setting) {
+  if (setting.background == undefined) {
+    setting.background = that.project.background
+  }
+  if (setting.foreground == undefined) {
+    setting.foreground = that.project.foreground
+  }
+  if (setting.cursor == undefined) {
+    setting.cursor = that.project.cursor
+  }
+  that.term.setOption('theme', {
+    background: setting.background,
+    foreground: setting.foreground,
+    cursor: setting.cursor
+  })
+  that.project.background = setting.background
+  that.project.foreground = setting.foreground
+  that.project.cursor = setting.cursor
+}
+
 function initSocket() {
-  that.socket = new WebSocket(that.socketURL)
-  that.timer = setInterval(function() {
-    that.socket = new WebSocket(that.socketURL);
-  }, 2000)
+    that.socket = new WebSocket(that.socketURL)
     socketOnClose();
     socketOnOpen();
     socketOnError();
+    that.timer = setInterval(function() {
+      that.socket = new WebSocket(that.socketURL);
+      socketOnClose();
+      socketOnOpen();
+      socketOnError();
+    }, 2000)
+    
   //   that.socket.onmessage = () => {
   //       that.term.resize()
   //   }
@@ -65,8 +106,8 @@ function runcommand(command) {
 
 function socketOnOpen() {
     that.socket.onopen = () => {
-      // 链接成功后
       clearInterval(that.timer)
+      // 链接成功后
       initTerm()
     }
 }
@@ -135,7 +176,7 @@ async function gen_build(id, name, sources) {
 }
 
 async function compile(submit) {
-  submit.type = that.project.imageType;
+  submit.type = that.project.imageType
   let ret = undefined
   that.term.writeln('Compile project begin ...')
   switch (submit.type) {
@@ -157,12 +198,12 @@ async function compile(submit) {
 }
 
 function run (submit) {
+  submit.type = that.project.imageType
   let command = ''
   // that.term.writeln('Run project begin ...')
-  submit.type = that.project.imageType;
   switch (submit.type) {
     case api.CPP:
-      command = '/build/'+ that.project.name;
+      command = '/build/' + that.project.name
       if (submit.args) {
         for (let i = 0; i < submit.args.length; i += 1) {
           command += ' ' + args[i]
@@ -188,5 +229,6 @@ export default {
   mounted,
   fit,
   run,
-  compile
+  compile,
+  setcolor
 }
