@@ -49,6 +49,8 @@ import api from '../../assets/js/api'
                 Files:[],
                 Show:{},
                 pythonMark:false,
+                tocompile:false,
+                torun:false
             }
         },
         methods:{
@@ -110,8 +112,31 @@ import api from '../../assets/js/api'
                 if(Project.imageType=='PYTHON3'){
                     this.pythonMark = true;
                 }
-            })
+            }),
 
+            bridge.$on('tocompile',(val)=>{
+                 this.tocompile=val
+                 console.log(this.tocompile)
+            }),
+            bridge.$on('torun',(val)=>{
+                this.torun=val
+            })
+            
+        },
+          watch:{
+            tocompile:function(){
+                if(this.tocompile){
+                    console.log('compile excute')
+                    this.compile()
+                    this.tocompile=false
+                }
+            },
+            torun:function(){
+                if(this.torun){
+                    this.run()
+                    this.torun=false
+                }
+            }
         }
     }
 </script>

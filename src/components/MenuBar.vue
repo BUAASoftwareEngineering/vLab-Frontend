@@ -9,18 +9,7 @@
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>新建文件</DropdownItem>
-                    <DropdownItem>豆汁儿</DropdownItem>
-                    <Dropdown placement="right-start" transfer style="min-width: 20vh">
-                        <DropdownItem>
-                            北京烤鸭
-                            <Icon type="ios-arrow-forward" style="float: right"></Icon>
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>挂炉烤鸭</DropdownItem>
-                            <DropdownItem>焖炉烤鸭</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <DropdownItem>冰糖葫芦</DropdownItem>
+                    <DropdownItem>新建文件夹</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
@@ -32,6 +21,8 @@
                     <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
                     <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
                     <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
+                    <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
+
                    <!-- <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
                     <DropdownItem divided  @click.native='search(editorMap[currentTab])'>查找<span style="float: right">Ctrl+F</span></DropdownItem>
                     <DropdownItem @click.native='replace(editorMap[currentTab])'>替换<span style="float: right">Ctrl+H</span></DropdownItem>
@@ -58,9 +49,8 @@
                     运行
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem >编译</DropdownItem>
-                    <DropdownItem >运行</DropdownItem>
-                    
+                     <DropdownItem @click.native="compile">编译</DropdownItem>
+                    <DropdownItem @click.native="run">运行</DropdownItem>                   
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -68,8 +58,8 @@
                     视图
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>切换行号显示</DropdownItem>
-                    <DropdownItem  @click.native='setMinimapOnOff(editorMap[currentTab])'>切换迷你地图显示</DropdownItem>
+                    <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>显示/隐藏行号</DropdownItem>
+                    <DropdownItem  @click.native='setMinimapOnOff(editorMap[currentTab])'>显示/隐藏迷你地图</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -77,7 +67,8 @@
                     帮助
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    
+                     <DropdownItem @click.native='toDocs'>文档</DropdownItem>
+                    <DropdownItem @click.native='toProblem'>问题</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Button type="primary" style="min-width: 9vh; float: right; margin:0px" @click="exitproject">
@@ -85,13 +76,14 @@
             </Button>
             </Header>
         </Layout>
-    </div>
+    </div> 
 </template>
 
 <script>
 import api from '../assets/js/api.js';
 import {bus} from './bus.js'
 import * as Editor from '../editor/Appearances.js'
+import bridge from './bridge';
 export default {
     props: {
         projectid:{
@@ -178,6 +170,9 @@ export default {
         copy(editor){         
             editor.getAction('editor.action.clipboardCopyAction').run()
         },
+        paste(editor){
+            editor.getAction('editor.action.clipboardPasteAction').run()
+        },
         search(editor){
             editor.getAction('actions.find').run()
         },
@@ -227,6 +222,18 @@ export default {
         },
        referenceSearch(editor){
            editor.getAction('editor.action.referenceSearch.trigger').run()
+       },
+        compile(){
+           bridge.$emit('tocompile',true)
+       },
+       run(){
+           bridge.$emit('torun',true)
+       },
+       toDocs(){
+           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend')
+       },
+       toProblem(){
+           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues')
        }
         
     }
@@ -245,7 +252,7 @@ export default {
     .ivu-layout-header{
         height:4vh;
         line-height:4vh;
-        padding:0;
+        padding:0; 
     }
     .layout{
         border: 1px solid #d7dde4;
