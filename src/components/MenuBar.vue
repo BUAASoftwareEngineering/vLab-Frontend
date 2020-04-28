@@ -9,18 +9,7 @@
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem>新建文件</DropdownItem>
-                    <DropdownItem>豆汁儿</DropdownItem>
-                    <Dropdown placement="right-start" transfer style="min-width: 20vh">
-                        <DropdownItem>
-                            北京烤鸭
-                            <Icon type="ios-arrow-forward" style="float: right"></Icon>
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>挂炉烤鸭</DropdownItem>
-                            <DropdownItem>焖炉烤鸭</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <DropdownItem>冰糖葫芦</DropdownItem>
+                    <DropdownItem>新建文件夹</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
@@ -32,6 +21,8 @@
                     <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
                     <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
                     <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
+                    <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
+
                    <!-- <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
                     <DropdownItem divided  @click.native='search(editorMap[currentTab])'>查找<span style="float: right">Ctrl+F</span></DropdownItem>
                     <DropdownItem @click.native='replace(editorMap[currentTab])'>替换<span style="float: right">Ctrl+H</span></DropdownItem>
@@ -85,7 +76,7 @@
             </Button>
             </Header>
         </Layout>
-    </div>
+    </div> 
 </template>
 
 <script>
@@ -177,6 +168,9 @@ export default {
        },
         copy(editor){         
             editor.getAction('editor.action.clipboardCopyAction').run()
+        },
+        paste(editor){
+            editor.getAction('editor.action.clipboardPasteAction').run()
         },
         search(editor){
             editor.getAction('actions.find').run()
