@@ -1,7 +1,7 @@
 <template>
-    <Tabs :animated="false" style="width:100%;height:94%">
-        <TabPane label="调试控制台" style="width:100%;height:94%">
-            <div id='myFoot' style="width: 100%; height: 94%">
+    <Tabs :animated="false" style="width:100%;height:100%">
+        <TabPane label="调试控制台" style="width:100%;height:100%">
+            <div id='myFoot' style="width: 100%; height: 100%">
 
             </div>
         </TabPane>

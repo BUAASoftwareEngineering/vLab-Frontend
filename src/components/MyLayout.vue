@@ -63,12 +63,12 @@ import api from '../assets/js/api'
         text-align: middle;
     }
     .mymenu >>> .ivu-btn{
-        height: 5vh;
+        height: 3.6vh;
         margin-top: 0vh;
         margin-bottom: 0vh;
     }
     .mymenu >>> .ivu-dropdown{
-        height: 5vh;
+        height: 3.6vh;
     }
     .mymenu >>> .ivu-select-dropdown{ 
     overflow: hidden; 
