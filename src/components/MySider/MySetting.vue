@@ -47,6 +47,8 @@ import terminal from '../Terminal';
             return {
                 Files:[],
                 Show:{},
+                tocompile:false,
+                torun:false
             }
         },
         methods:{
@@ -91,7 +93,30 @@ import terminal from '../Terminal';
                     }
                     console.log(this.Files);
                 })
+            }),
+            bridge.$on('tocompile',(val)=>{
+                 this.tocompile=val
+                 console.log(this.tocompile)
+            }),
+            bridge.$on('torun',(val)=>{
+                this.torun=val
             })
+            
+        },
+          watch:{
+            tocompile:function(){
+                if(this.tocompile){
+                    console.log('compile excute')
+                    this.compile()
+                    this.tocompile=false
+                }
+            },
+            torun:function(){
+                if(this.torun){
+                    this.run()
+                    this.torun=false
+                }
+            }
         }
     }
 </script>
