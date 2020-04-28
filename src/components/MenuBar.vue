@@ -21,9 +21,9 @@
                     <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
                     <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
                     <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
-                    <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
+                  <!--  <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
 
-                   <!-- <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
+                    <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
                     <DropdownItem divided  @click.native='search(editorMap[currentTab])'>查找<span style="float: right">Ctrl+F</span></DropdownItem>
                     <DropdownItem @click.native='replace(editorMap[currentTab])'>替换<span style="float: right">Ctrl+H</span></DropdownItem>
                   
@@ -58,8 +58,8 @@
                     视图
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>显示/隐藏行号</DropdownItem>
-                    <DropdownItem  @click.native='setMinimapOnOff(editorMap[currentTab])'>显示/隐藏迷你地图</DropdownItem>
+                    <DropdownItem  @click.native='setLineNumberOnOff(editorMap[currentTab])'>显示/隐藏&ensp;行号</DropdownItem>
+                    <DropdownItem  @click.native='setMinimapOnOff(editorMap[currentTab])'>显示/隐藏&ensp;迷你地图</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -144,7 +144,9 @@ export default {
                     _this.$Spin.hide()
                     console.log("response.code:" + response.code);
                     if(response.code==0){
+                        _this.$Message.success('退出成功')
                         console.log("退出项目成功");
+                        _this.$router.push('/home')
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
                         _this.$router.push('/')

@@ -58,10 +58,10 @@ import bridge from '../bridge'
                 this.projectId = newVal;
                 console.log("projectid"+this.projectId);
                 var _this=this
-                this.$Spin.show()
+                
                 var timer = setInterval(function(){
                     api.file_struct(newVal, "/code/", function(response){
-                    _this.$Spin.hide()
+                    
                     if(response.code==0){
                         _this.$set(_this.data4[0], 'children', _this.clearFileData(response.data));
                         console.log(newVal+ "获得文件长度"+response.data.length)

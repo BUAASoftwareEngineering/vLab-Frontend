@@ -11,7 +11,8 @@
         <br>
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
-                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">从Notebook下载文件...</Button>
+                    <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+                        @click="download">从Notebook下载文件...</Button>
             </Col>
         </Row>
         <br>
@@ -30,6 +31,7 @@
 </template>
 
 <script>
+import api from '../../assets/js/api'
 export default {
     props: {
             username:{
@@ -45,6 +47,11 @@ export default {
                 required:true
             }
         },
+    methods:{
+        download(){
+            api.file_download(this.projectid)            
+        }
+    }
 }
 </script>
 
