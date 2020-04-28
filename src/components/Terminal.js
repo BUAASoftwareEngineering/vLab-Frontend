@@ -30,7 +30,7 @@ function initTerm() {
     that.project.background = '#000000'
   }
   if (that.project.cursor == undefined) {
-    that.project.cursor = 'black'
+    that.project.cursor = 'white'
   }
   const term = new Terminal({
     fontSize: 14,

@@ -1,6 +1,6 @@
 <template>
     <div class="demo-split">
-        <Split v-model="split2" mode="vertical" >
+        <Split v-model="split2" mode="vertical" @on-moving="Terminal.fit">
             <div slot="top" class="demo-split-pane" >    
                 <input v-model="test1place"></input>            
                 <button @click="test1()">cpp_test</button>
@@ -30,7 +30,7 @@ export default {
         console.log('wenhao')
         Terminal.mounted({
             projectId : 145,
-            terminalPort : '33071',
+            terminalPort : '33077',
             ip : '120.53.27.31',
             name : 'pp'
         }, 'shell')
