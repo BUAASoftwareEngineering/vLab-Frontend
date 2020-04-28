@@ -4,7 +4,7 @@
             <Col span="24">
                 <Card style="border-radius: 0vh">
                     <p slot="title">Notebook设置</p>
-                    <p style="height:2.4vh;padding-left:0.4vh;color:white">My first notebook</p>
+                    <p style="height:2.4vh;padding-left:0.4vh;color:white">{{ this.projectname }}</p>
                 </Card>
             </Col>
         </Row>
@@ -29,6 +29,24 @@
     </Layout>
 </template>
 
+<script>
+export default {
+    props: {
+            username:{
+                type:String,
+                required:true
+            },
+            projectid:{
+                type:Number,
+                required:true
+            },
+            projectname:{
+                type:String,
+                required:true
+            }
+        },
+}
+</script>
 
 <style scoped>
     .my-setting .ivu-tabs-bar{
