@@ -17,11 +17,14 @@
                 </label>
             </Checkbox>
         </template>
+        <button @click="compileAndRun" v-if="pythonMark==false">
+            <p>编译并运行</p>
+        </button>
         <button @click="compile" v-if="pythonMark==false">
-            <p>Compile</p>
+            <p>编译</p>
         </button>
         <button @click="run">
-            <p>Run</p>
+            <p>运行</p>
         </button>
     </Layout>
 </template>
@@ -59,18 +62,29 @@ import api from '../../assets/js/api'
                 this.Show[data] = !this.Show[data];
                 console.log(data, this.Show[data]);
             },
-            compile(){
-                let temp={};
-                temp.sources = [];
-                for(var key in this.Show){
-                    if(this.Show[key]==true){
-                        temp.sources.push('/code/'+key);
+            async compile(){
+                let ret = 'compile'
+                if(this.pythonMark){
+                    this.$Message.error('python类工程下请直接选择一个python类型文件运行')
+                } else {
+                    let temp={};
+                    temp.sources = [];
+                    for(var key in this.Show){
+                        if(this.Show[key]==true){
+                            temp.sources.push('/code/'+key);
+                        }
+                    }
+                    if(temp.sources.length == 0){
+                        this.$Message.error('请在侧边栏的构建选项中选择至少一个cpp类型文件及相关依赖文件')
+                        return false;
+                    } else{
+                        ret = await terminal.compile(temp);
                     }
                 }
-                console.log(temp);
-                terminal.compile(temp);
+                return ret
             },
-            run(){
+            async run(){
+                let ret = 'run'
                 if (this.pythonMark){
                     let temp={};
                     temp.exec = '';
@@ -82,15 +96,26 @@ import api from '../../assets/js/api'
                         }
                     }
                     if(count==0){
-                        this.$Message.error('请选择一个python类文件')
+                        this.$Message.error('请在侧边栏的构建选项中选择一个python类型文件')
                     } else if (count==1){
-                        terminal.run(temp);
+                        ret = await terminal.run(temp);
                     } else if(count > 1){
-                        this.$Message.error('Python 类型工程只能有一个入口，请取消多余勾选')
+                        this.$Message.error('Python类型工程只能有一个入口，请取消多余勾选')
                     }
                 } else {
                     let temp={};
-                    terminal.run(temp);
+                    ret = await terminal.run(temp);
+                }
+                return ret
+            },
+            async compileAndRun(){
+                if(this.pythonMark){
+                    this.$Message.error('python类工程下请直接选择一个python类型文件运行')
+                } else {
+                    let ret = await this.compile()
+                    if(ret != false){
+                        this.run();
+                    }
                 }
             }
         },

@@ -88,7 +88,7 @@ import {bus} from './bus.js'
         },
         data(){
             return{
-                split2:0.6,
+                split2:0.66,
                 treemark:true,
                 settingmark:true,
                 uploadmark:true,
