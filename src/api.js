@@ -1,6 +1,6 @@
 
 const http = new XMLHttpRequest()
-const server = "http://62.234.28.61:8081"
+const server = "https://api.ivlab.xyz:8443"
 // const server = "http://114.116.135.181:8081"
 // const server = "http://127.0.0.1:3000"
 // const server = "http://120.53.27.31:3000"
@@ -10,34 +10,39 @@ const PYTHON2 = 'PYTHON2'
 const JAVA = 'JAVA'
 const C = 'C'
 http.withCredentials = true
-
+    
 function get_request(url, callback) {
     http.open("GET", url, true)
     http.send()
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
-            console.log('get success')
-            var obj = {}
-            try {
-                obj = eval("("+http.responseText+")")
-            } catch (err) {
-                console.log(http.responseText)
+            if (url.split('?')[0] == server + '/file/download') {
+                console.log(new Buffer(data.currentTarget.response))
+                //downloadFile(data.currentTarget.response, 'file.zip')
+            } else {
+                console.log('get success')
+                var obj = {}
+                try {
+                    obj = eval("("+http.responseText+")")
+                } catch (err) {
+                    console.log(http.responseText)
+                }
+
+                if (obj.code == undefined) {
+                    obj.code = -100
+                }
+                if (obj.message == undefined) {
+                    obj.message = "Wrong format message!"
+                }
+                if (obj.data == undefined) {
+                    obj.data = {}
+                }
+                if (url.split('?')[0] == server + '/file/content') {
+                    // console.log(new Buffer(obj.data.content))
+                    obj.data.content = new TextDecoder('utf-8').decode(new Buffer(obj.data.content))
+                }
+                callback(obj)
             }
-            
-            if (obj.code == undefined) {
-                obj.code = -100
-            }
-            if (obj.message == undefined) {
-                obj.message = "Wrong format message!"
-            }
-            if (obj.data == undefined) {
-                obj.data = {}
-            }
-            if (url.split('?')[0] == server + '/file/content') {
-                // console.log(new Buffer(obj.data.content))
-                obj.data.content = new TextDecoder('utf-8').decode(new Buffer(obj.data.content))
-            }
-            callback(obj)
         } else if (http.readyState == 4) {
             console.log('get fail')
             let code = (http.status == 0) ? -100 : http.status
@@ -228,6 +233,14 @@ function file_copy(project_id, old_path, new_path, force, callback) {
     post_request(url, data, callback)
 }
 
+function file_download(project_id) {
+    var url = server + '/file/download?project_id=' + encodeURIComponent(project_id)
+    let aTag = document.createElement('a')
+    aTag.href = url
+    aTag.click()
+    //get_request(url, callback)
+} 
+
 function file_rename(project_id, old_path, new_path, callback) {
     var url = server + '/file/rename'
     var data =  'project_id=' + encodeURIComponent(project_id) + 
@@ -296,6 +309,7 @@ export default {
     file_move,
     file_copy,
     file_rename,
+    file_download,
     dir_new,
     dir_delete,
     dir_move,
