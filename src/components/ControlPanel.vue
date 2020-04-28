@@ -47,8 +47,8 @@
                         </template>
                     </Tabs>
                 </div>
-                <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%">
-                    <FootTerminal :projectid="projectid" style="width:100%;height:100%"></FootTerminal>
+                <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow: 'auto'">
+                    <FootTerminal :projectid="projectid" style="width:100%;height:100%;overflow: 'auto'"></FootTerminal>
                 </div>
             </Split>
         </Layout>

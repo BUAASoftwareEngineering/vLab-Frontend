@@ -17,7 +17,7 @@
                 </label>
             </Checkbox>
         </template>
-        <button @click="compile">
+        <button @click="compile" v-if="pythonMark==false">
             <p>Compile</p>
         </button>
         <button @click="run">
@@ -28,6 +28,7 @@
 <script>
 import bridge from '../bridge';
 import terminal from '../Terminal';
+import api from '../../assets/js/api'
     export default {
         props: {
             username:{
@@ -47,6 +48,7 @@ import terminal from '../Terminal';
             return {
                 Files:[],
                 Show:{},
+                pythonMark:false,
             }
         },
         methods:{
@@ -67,16 +69,27 @@ import terminal from '../Terminal';
                 terminal.compile(temp);
             },
             run(){
-                let temp={};
-                temp.exec = '';
-                for(var key in this.Show){
-                    if(this.Show[key]==true){
-                        // temp.sources.push('/code/'+key);
-                        temp.exec = '/code/' + key;
+                if (this.pythonMark){
+                    let temp={};
+                    temp.exec = '';
+                    let count = 0;
+                    for(var key in this.Show){
+                        if(this.Show[key]==true){
+                            count++;
+                            temp.exec = '/code/' + key;
+                        }
                     }
+                    if(count==0){
+                        this.$Message.error('请选择一个python类文件')
+                    } else if (count==1){
+                        terminal.run(temp);
+                    } else if(count > 1){
+                        this.$Message.error('Python 类型工程只能有一个入口，请取消多余勾选')
+                    }
+                } else {
+                    let temp={};
+                    terminal.run(temp);
                 }
-                console.log(temp);
-                terminal.run(temp);
             }
         },
         mounted(){
@@ -91,7 +104,14 @@ import terminal from '../Terminal';
                     }
                     console.log(this.Files);
                 })
+            }),
+            bridge.$on('settingProject',(Project)=>{
+                console.log(Project.imageType)
+                if(Project.imageType=='PYTHON3'){
+                    this.pythonMark = true;
+                }
             })
+
         }
     }
 </script>
