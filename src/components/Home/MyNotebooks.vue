@@ -20,11 +20,10 @@
         <div style="margin-top:80px;margin-left:20vh">                            
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
-                <Select v-model="search_type" slot="prepend" style="width: 100px">
-                    <Option value="C" @click.native="search">C</Option>
-                    <Option value="CPP" @click.native="search">C++</Option>
-                    <Option value="PYTHON2" @click.native="search" >Python2</Option>
-                    <Option value="PYTHON3" @click.native="search" >Python3</Option>
+                <Select v-model="search_type" slot="prepend" style="width: 100px">                   
+                    <Option value="CPP" @click.native="search">C/C++</Option>
+                    <!--<Option value="PYTHON2" @click.native="search" >Python2</Option>-->
+                    <Option value="PYTHON" @click.native="search" >Python</Option>
                     <Option value="JAVA" @click.native="search" >Java</Option>
                 </Select>
                 <Button slot="append" icon="ios-search" @click="search" ></Button>
@@ -32,40 +31,8 @@
         </div>
         <Footer >
             <div style="margin-top:20px;">
-                <Tabs v-model=note_type>
-                    <TabPane label="C Notebooks" name="C">
-                        <div >
-                            <div class='mycardbody' style="float:left;margin-left:25px">                          
-                                <Card style="width:120px ;float:left">
-                                    <div style="text-align:center">
-                                        <img src="../../assets/new.png"/>
-                                        <br>
-                                        <a @click="newProject('C')">New</a>
-                                        <br><br>                                                                                    
-                                    </div>
-                                    <div style="text-align:left">
-                                        <img src="../../assets/import.png" width=20px height=20px>
-                                        <a >Import ...</a>
-                                    </div>
-                                </Card>   
-                            </div>                           
-                            <div class='mycardbody' style="float:left;margin-left:25px;margin-bottom:10px" 
-                            v-for="(data,index) in c_books" :key='index'
-                            @mouseout="iconshow=false" @mouseover="iconshow=true">
-                                <Card style="width:120px;" >                                                                                    
-                                    <a @click="etrProject(data)">{{data.name}}</a>                                
-                                    <a style="position:absolute;left:5px;bottom:5px" @click="udtProject('C',index)" v-show="iconshow">
-                                        <Icon type="ios-more" />
-                                    </a>
-                                    <a  style="position:absolute;right:5px;bottom:5px" @click="delProject('C',index)" v-show="iconshow">
-                                        <Icon  type="ios-trash-outline"/>
-                                    </a>
-                                    
-                                </Card>
-                            </div>                                   
-                        </div>
-                    </TabPane>
-                    <TabPane label="C++ Notebooks" name="CPP">
+                <Tabs v-model=note_type>                    
+                    <TabPane label="C/C++ Notebooks" name="CPP">
                         <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
@@ -97,7 +64,7 @@
                             </div>                                   
                         </div>
                     </TabPane>
-                    <TabPane label="Python2 Notebooks" name="PYTHON2">
+                    <!--<TabPane label="Python2 Notebooks" name="PYTHON2">
                          <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
@@ -128,8 +95,8 @@
                                 </Card>
                             </div>                                   
                         </div>
-                    </TabPane>
-                    <TabPane label="Python3 Notebooks" name="PYTHON3">
+                    </TabPane>-->
+                    <TabPane label="Python Notebooks" name="PYTHON3">
                          <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
@@ -213,9 +180,9 @@ export default {
                 project_type:'',
                 project_index:0,
                 iconshow:false,
-                note_type:'C',
+                note_type:'CPP',
                 search_name:'',
-                search_type:'C',            
+                search_type:'CPP',            
                 c_books:this.fc_books,
                 cpp_books:this.fcpp_books,
                 p2_books:this.fp2_books,
@@ -561,26 +528,53 @@ export default {
            
        } ,
        etrProject(data){
+           this.$Loading.config({
+                height: 4
+            });
            var _this=this
-           this.$Spin.show()
-           api.project_enter(data.projectId,function(response){
-               _this.$Spin.hide()
-            //    if(response.code==0){                   
-               if(1){                   
-                    _this.$router.push({
-                        name:'Ide',
-                        params:{
-                            username:_this.username,
-                            projectId:data.projectId,
-                            projectName:data.name
+           this.$Loading.start();
+           api.project_enter(data.projectId,function(response){              
+                if(response.code==0){                   
+                    
+                    var timer = setInterval(function(){
+                    api.file_struct(data.projectId, "/code/", function(response){
+                         _this.$Loading.finish()
+                        if(response.code==0){
+                            
+                            clearInterval(timer);
+                             _this.$router.push({
+                                name:'Ide',
+                                params:{
+                                    username:_this.username,
+                                    projectId:data.projectId,
+                                    projectName:data.name
+                                }
+                             })
+                        }else if(response.code==-101){
+                            _this.$Message.error('cookie验证失败')
+                            _this.$router.push('/')
+                            clearInterval(timer);
+                        }else if(response.code==-102){
+                            _this.$Message.error('权限不足')
+                            clearInterval(timer);
+                        }else if(response.code==500){
+                            
+                        }else{
+                            _this.$Message.error('未知错误')
+                            clearInterval(timer);
                         }
-                    })
+                })
+                }, 1000)             
+                   
                }else if(response.code==-101){
+                _this.$Loading.error()
                  _this.$Message.error('cookie验证失败')
                  _this.$router.push('/')
              }else if(response.code==-102){
+                  _this.$Loading.error()
                  _this.$Message.error('权限不足')
              }else{
+                 _this.$Loading.error()
                  _this.$Modal.error({
                      title: '请求失败',
                     content: '<p>您的操作太过频繁</p><p>请稍后再试</p>',
