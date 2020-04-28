@@ -496,9 +496,21 @@ import bridge from '../bridge'
                                     _this.$Spin.hide();
                                     console.log("粘贴返回"+response.code)
                                     if (response.code == 0) {
-                                        const children = data.children || [];
-                                        children.push(_this.copyInfo); 
-                                        _this.$set(data, 'children', children)
+                                        if (data.children == undefined) {
+                                            //若粘贴目标为文件
+                                            var parentKey = root[nodekey].parent;
+                                            var parent = root[parentKey].node;
+                                            const children = parent.children || [];
+                                            children.push(_this.copyInfo);
+                                            _this.$set(parent, 'children', children);
+                                            _this.sort(root, parent.children[0]);
+                                        } else {
+                                            //若粘贴目标为文件夹
+                                            const children = data.children || [];
+                                            children.push(_this.copyInfo); 
+                                            _this.$set(data, 'children', children);
+                                            _this.sort(root, data.children[0]);
+                                        }
                                         _this.$Message.info('粘贴成功')
                                     } else if(response.code==-101){
                                         _this.$Message.error('cookie验证失败')
@@ -514,9 +526,21 @@ import bridge from '../bridge'
                                                     _this.$Spin.hide();
                                                     console.log("粘贴返回"+response.code)
                                                     if (response.code == 0) {
-                                                        const children = data.children || [];
-                                                        children.push(_this.copyInfo); 
-                                                        _this.$set(data, 'children', children)
+                                                        if (data.children == undefined) {
+                                                            //若粘贴目标为文件
+                                                            var parentKey = root[nodekey].parent;
+                                                            var parent = root[parentKey].node;
+                                                            const children = parent.children || [];
+                                                            children.push(_this.copyInfo);
+                                                            _this.$set(parent, 'children', children);
+                                                            _this.sort(root, parent.children[0]);
+                                                        } else {
+                                                            //若粘贴目标为文件夹
+                                                            const children = data.children || [];
+                                                            children.push(_this.copyInfo); 
+                                                           _this.$set(data, 'children', children);
+                                                           _this.sort(root, data.children[0]);
+                                                        }
                                                         _this.$Message.info('粘贴成功')
                                                     } else if(response.code==-101){
                                                         _this.$Message.error('cookie验证失败')
@@ -542,9 +566,21 @@ import bridge from '../bridge'
                                     _this.$Spin.hide();
                                     console.log("粘贴返回"+response.code)
                                     if (response.code == 0) {
-                                        const children = data.children || [];
-                                        children.push(_this.copyInfo); 
-                                        _this.$set(data, 'children', children)
+                                        if (data.children == undefined) {
+                                            //若粘贴目标为文件
+                                            var parentKey = root[nodekey].parent;
+                                            var parent = root[parentKey].node;
+                                            const children = parent.children || [];
+                                            children.push(_this.copyInfo);
+                                            _this.$set(parent, 'children', children);
+                                            _this.sort(root, parent.children[0]);
+                                        } else {
+                                            //若粘贴目标为文件夹
+                                            const children = data.children || [];
+                                            children.push(_this.copyInfo); 
+                                            _this.$set(data, 'children', children);
+                                            _this.sort(root, data.children[0]);
+                                        }
                                         _this.$Message.info('粘贴成功')
                                     } else if(response.code==-101){
                                         _this.$Message.error('cookie验证失败')
@@ -560,9 +596,21 @@ import bridge from '../bridge'
                                                     _this.$Spin.hide();
                                                     console.log("粘贴返回"+response.code)
                                                     if (response.code == 0) {
-                                                        const children = data.children || [];
-                                                        children.push(_this.copyInfo); 
-                                                        _this.$set(data, 'children', children)
+                                                        if (data.children == undefined) {
+                                                            //若粘贴目标为文件
+                                                            var parentKey = root[nodekey].parent;
+                                                            var parent = root[parentKey].node;
+                                                            const children = parent.children || [];
+                                                            children.push(_this.copyInfo);
+                                                            _this.$set(parent, 'children', children);
+                                                            _this.sort(root, parent.children[0]);
+                                                        } else {
+                                                            //若粘贴目标为文件夹
+                                                            const children = data.children || [];
+                                                            children.push(_this.copyInfo); 
+                                                            _this.$set(data, 'children', children);
+                                                            _this.sort(root, data.children[0]);
+                                                        }
                                                         _this.$Message.info('粘贴成功')
                                                     } else if(response.code==-101){
                                                         _this.$Message.error('cookie验证失败')
@@ -599,9 +647,21 @@ import bridge from '../bridge'
                                     bridge.$emit('renameFile', IDmap)
 
                                     _this.removenode(root, _this.copyInfo.nodeKey, _this.copyInfo)
-                                    const children = data.children || [];
-                                    children.push(_this.copyInfo); 
-                                    _this.$set(data, 'children', children)
+                                    if (data.children == undefined) {
+                                        //若粘贴目标为文件
+                                        var parentKey = root[nodekey].parent;
+                                        var parent = root[parentKey].node;
+                                        const children = parent.children || [];
+                                        children.push(_this.copyInfo);
+                                        _this.$set(parent, 'children', children)
+                                        _this.sort(root, parent.children[0]);
+                                    } else {
+                                        //若粘贴目标为文件夹
+                                        const children = data.children || [];
+                                        children.push(_this.copyInfo); 
+                                        _this.$set(data, 'children', children)
+                                        _this.sort(root, data.children[0]);
+                                    }
                                     _this.copyInfo = [];
                                     _this.$Message.info('粘贴成功')
                                 } else if(response.code==-101){
@@ -623,9 +683,21 @@ import bridge from '../bridge'
                                                     bridge.$emit('renameFile', IDmap)
 
                                                     _this.removenode(root, _this.copyInfo.nodeKey, _this.copyInfo)
-                                                    const children = data.children || [];
-                                                    children.push(_this.copyInfo); 
-                                                    _this.$set(data, 'children', children)
+                                                    if (data.children == undefined) {
+                                                        //若粘贴目标为文件
+                                                        var parentKey = root[nodekey].parent;
+                                                        var parent = root[parentKey].node;
+                                                        const children = parent.children || [];
+                                                        children.push(_this.copyInfo);
+                                                        _this.$set(parent, 'children', children)
+                                                        _this.sort(root, parent.children[0]);
+                                                    } else {
+                                                        //若粘贴目标为文件夹
+                                                        const children = data.children || [];
+                                                        children.push(_this.copyInfo); 
+                                                        _this.$set(data, 'children', children)
+                                                        _this.sort(root, data.children[0]);
+                                                    }
                                                     _this.copyInfo = [];
                                                     _this.$Message.info('粘贴成功')
                                                 } else if(response.code==-101){
@@ -665,9 +737,21 @@ import bridge from '../bridge'
                                     bridge.$emit('renameFloder', IDmap);
 
                                     _this.removenode(root, _this.copyInfo.nodeKey, _this.copyInfo)
-                                    const children = data.children || [];
-                                    children.push(_this.copyInfo); 
-                                    _this.$set(data, 'children', children)
+                                    if (data.children == undefined) {
+                                        //若粘贴目标为文件
+                                        var parentKey = root[nodekey].parent;
+                                        var parent = root[parentKey].node;
+                                        const children = parent.children || [];
+                                        children.push(_this.copyInfo);
+                                        _this.$set(parent, 'children', children)
+                                        _this.sort(root, parent.children[0]);
+                                    } else {
+                                        //若粘贴目标为文件夹
+                                        const children = data.children || [];
+                                        children.push(_this.copyInfo); 
+                                        _this.$set(data, 'children', children)
+                                        _this.sort(root, data.children[0]);
+                                    }
                                     _this.$Message.info('粘贴成功')
                                 } else if(response.code==-101){
                                     _this.$Message.error('cookie验证失败')
@@ -695,9 +779,21 @@ import bridge from '../bridge'
                                                     bridge.$emit('renameFloder', IDmap);
 
                                                     _this.removenode(root, _this.copyInfo.nodeKey, _this.copyInfo)
-                                                    const children = data.children || [];
-                                                    children.push(_this.copyInfo); 
-                                                    _this.$set(data, 'children', children)
+                                                    if (data.children == undefined) {
+                                                        //若粘贴目标为文件
+                                                        var parentKey = root[nodekey].parent;
+                                                        var parent = root[parentKey].node;
+                                                        const children = parent.children || [];
+                                                        children.push(_this.copyInfo);
+                                                        _this.$set(parent, 'children', children);
+                                                        _this.sort(root, parent.children[0]);
+                                                    } else {
+                                                        //若粘贴目标为文件夹
+                                                        const children = data.children || [];
+                                                        children.push(_this.copyInfo); 
+                                                        _this.$set(data, 'children', children);
+                                                        _this.sort(root, data.children[0]);
+                                                    }
                                                     _this.$Message.info('粘贴成功')
                                                 } else if(response.code==-101){
                                                     _this.$Message.error('cookie验证失败')
