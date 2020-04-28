@@ -544,8 +544,13 @@ export default {
                             clearInterval(timer);
                              _this.$router.push({
                                 name:'Ide',
-                                params:{
-                                    username:_this.username,
+                                // params:{
+                                //     username:_this.username,
+                                //     projectId:data.projectId,
+                                //     projectName:data.name
+                                // }
+                                query:{
+                                    // username:_this.username,
                                     projectId:data.projectId,
                                     projectName:data.name
                                 }

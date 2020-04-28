@@ -25,9 +25,12 @@ import api from '../assets/js/api'
             MenuBar, ControlPanel
         },
         mounted(){
-            this.username=this.$route.params.username
-            this.projectid=this.$route.params.projectId
-            this.projectname=this.$route.params.projectName
+            // this.username=this.$route.params.username
+            // this.projectid=this.$route.params.projectId
+            // this.projectname=this.$route.params.projectName
+            // this.username=this.$route.query.username
+            this.projectid=Number(this.$route.query.projectId)
+            this.projectname=this.$route.query.projectName
           },
           beforedestroyed(){     
               var _this=this
