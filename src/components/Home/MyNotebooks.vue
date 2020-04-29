@@ -20,10 +20,11 @@
         <div style="margin-top:80px;margin-left:20vh">                            
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
-                <Select v-model="search_type" slot="prepend" style="width: 100px">                   
+                <Select v-model="search_type" slot="prepend" style="width: 100px">
+                    <Option value="PYTHON3" @click.native="search" >Python</Option>                   
                     <Option value="CPP" @click.native="search">C++</Option>
                     <!--<Option value="PYTHON2" @click.native="search" >Python2</Option>-->
-                    <Option value="PYTHON3" @click.native="search" >Python</Option>
+                    
                     <!--<Option value="JAVA" @click.native="search" >Java</Option>-->
                 </Select>
                 <Button slot="append" icon="ios-search" @click="search" ></Button>
@@ -31,7 +32,40 @@
         </div>
         <Footer >
             <div style="margin-top:20px;">
-                <Tabs v-model=note_type>                    
+                <Tabs v-model=note_type>
+                    <TabPane label="Python Notebooks" name="PYTHON3">
+                         <div >
+                            <div class='mycardbody' style="float:left;margin-left:25px">                          
+                                <Card style="width:120px ;float:left">
+                                    <div style="text-align:center">
+                                        <br>
+                                        <img src="../../assets/new.png"/>
+                                        <br>
+                                        <a @click="newProject('PYTHON3')">New</a>
+                                        <br><br>                                                                                    
+                                    </div><!--
+                                    <div style="text-align:left">
+                                        <img src="../../assets/import.png" width=20px height=20px>
+                                        <a >Import ...</a>
+                                    </div>-->
+                                </Card>   
+                            </div>                           
+                            <div class='mycardbody' style="float:left;margin-left:25px;margin-bottom:10px" 
+                            v-for="(data,index) in p3_books" :key='index'
+                            @mouseout="iconshow=false" @mouseover="iconshow=true">
+                                <Card style="width:120px;" >                                                                                    
+                                    <a @click="etrProject(data)">{{data.name}}</a>                                
+                                    <a style="position:absolute;left:5px;bottom:5px" @click='udtProject("PYTHON3",index)' v-show="iconshow">
+                                        <Icon type="ios-more" />
+                                    </a>
+                                    <a  style="position:absolute;right:5px;bottom:5px" @click='delProject("PYTHON3",index)' v-show="iconshow">
+                                        <Icon  type="ios-trash-outline"/>
+                                    </a>
+                                    
+                                </Card>
+                            </div>                                   
+                        </div>
+                    </TabPane>                    
                     <TabPane label="C++ Notebooks" name="CPP">
                         <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
@@ -97,39 +131,7 @@
                             </div>                                   
                         </div>
                     </TabPane>-->
-                    <TabPane label="Python Notebooks" name="PYTHON3">
-                         <div >
-                            <div class='mycardbody' style="float:left;margin-left:25px">                          
-                                <Card style="width:120px ;float:left">
-                                    <div style="text-align:center">
-                                        <br>
-                                        <img src="../../assets/new.png"/>
-                                        <br>
-                                        <a @click="newProject('PYTHON3')">New</a>
-                                        <br><br>                                                                                    
-                                    </div><!--
-                                    <div style="text-align:left">
-                                        <img src="../../assets/import.png" width=20px height=20px>
-                                        <a >Import ...</a>
-                                    </div>-->
-                                </Card>   
-                            </div>                           
-                            <div class='mycardbody' style="float:left;margin-left:25px;margin-bottom:10px" 
-                            v-for="(data,index) in p3_books" :key='index'
-                            @mouseout="iconshow=false" @mouseover="iconshow=true">
-                                <Card style="width:120px;" >                                                                                    
-                                    <a @click="etrProject(data)">{{data.name}}</a>                                
-                                    <a style="position:absolute;left:5px;bottom:5px" @click='udtProject("PYTHON3",index)' v-show="iconshow">
-                                        <Icon type="ios-more" />
-                                    </a>
-                                    <a  style="position:absolute;right:5px;bottom:5px" @click='delProject("PYTHON3",index)' v-show="iconshow">
-                                        <Icon  type="ios-trash-outline"/>
-                                    </a>
-                                    
-                                </Card>
-                            </div>                                   
-                        </div>
-                    </TabPane>
+                    
                     <!--<TabPane label="Java Notebooks" name="JAVA">
                          <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
@@ -182,9 +184,9 @@ export default {
                 project_type:'',
                 project_index:0,
                 iconshow:false,
-                note_type:'CPP',
+                note_type:'PYTHON3',
                 search_name:'',
-                search_type:'CPP',            
+                search_type:'PYTHON3',            
                 c_books:this.fc_books,
                 cpp_books:this.fcpp_books,
                 p2_books:this.fp2_books,
@@ -459,64 +461,69 @@ export default {
                  if(_this.search_type==api.C){
                _this.note_type='C'
                if(_this.search_name=='')return
+               var res=[]
                 for(var i=0;i<_this.c_books.length;i++){
-                    if(_this.c_books[i].name==_this.search_name){
-                        var search_project=_this.c_books[i]                       
-                        _this.c_books=[search_project]
-                        return
+                    if((_this.c_books[i].name.indexOf(_this.search_name))!=-1){
+                        res.push(_this.c_books[i])
+                        
                     }
                 }
-                _this.c_books=[]
+                _this.c_books=res
                 return
            }else if(_this.search_type==api.CPP){
                _this.note_type='CPP'
                if(_this.search_name=='')return
+               var res=[]
                 for(var i=0;i<_this.cpp_books.length;i++){
-                    if(_this.cpp_books[i].name==_this.search_name){
-                        var search_project=_this.cpp_books[i]
-                        _this.cpp_books=[search_project]
-                                   
-                        return
+                   if((_this.cpp_books[i].name.indexOf(_this.search_name))!=-1){
+                        res.push(_this.cpp_books[i])
+                        
                     }
                 }
-                _this.cpp_books=[]                         
+                _this.cpp_books=res                     
 
                 return
            }else if(_this.search_type==api.PYTHON2){
                _this.note_type='PYTHON2'
                if(_this.search_name=='')return
+                var res=[]
                 for(var i=0;i<_this.p2_books.length;i++){
-                    if(_this.p2_books[i].name==_this.search_name){
-                        var search_project=_this.p2_books[i]
-                        _this.p2_books=[search_project]
-                        return
+                   if((_this.p2_books[i].name.indexOf(_this.search_name))!=-1){
+                        res.push(_this.p2_books[i])
+                        
                     }
                 }
-                _this.p2_books=[]
+                _this.p2_books=res
                 return
            }else if(_this.search_type==api.PYTHON3){
                _this.note_type='PYTHON3'
                if(_this.search_name=='')return
+                var res=[]
+                console.log(_this.p3_books)
                 for(var i=0;i<_this.p3_books.length;i++){
-                    if(_this.p3_books[i].name==_this.search_name){
-                        var search_project=_this.p3_books[i]
-                        _this.p3_books=[search_project]
-                        return
+                     console.log('_this.search_name:'+_this.search_name)
+                        console.log('_this.p3_books[i].name'+_this.p3_books[i].name)
+                    if((_this.p3_books[i].name.indexOf(_this.search_name))!=-1){
+                       
+                        res.push(_this.p3_books[i])
+                        
                     }
                 }
-                this.p3_books=[]
+                console.log(res)
+                _this.p3_books=res
+                console.log(_this.p3_books)
                 return
            }else if(_this.search_type==api.JAVA){
                _this.note_type='JAVA'
                if(_this.search_name=='')return
+                var res=[]
                 for(var i=0;i<_this.j_books.length;i++){
-                    if(_this.j_books[i].name==_this.search_name){
-                        var search_project=_this.j_books[i]
-                        _this.j_books=[search_project]
-                        return
+                    if((_this.j_books[i].name.indexOf(_this.search_name))!=-1){
+                        res.push(_this.j_books[i])
+                        
                     }
                 }
-                _this.j_books=[]
+                _this.j_books=res
                 return
            }
              }else if(response.code==-101){

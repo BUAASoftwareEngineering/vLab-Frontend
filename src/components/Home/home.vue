@@ -28,7 +28,6 @@
         background:#515a6e;
 		padding: 0;
 	}
-
 .layer {
     position: absolute;
     background: transparent;
@@ -37,7 +36,6 @@
     box-sizing: border-box;
     border: 1px solid transparent;
     z-index: 1;
-
 }
 .title{
    float:right;
@@ -104,7 +102,6 @@ import Account from './Account.vue'
                 p2_books:[],
                 p3_books:[],
                 j_books:[]
-
             }
         },
         components:{
@@ -170,7 +167,6 @@ import Account from './Account.vue'
                 this.showNotebooks=true
                 this.showAccount=false
             },
-
             ToAccount(){
                 this.showNotebooks=false
                 this.showAccount=true
@@ -185,11 +181,9 @@ import Account from './Account.vue'
                     if(response.code==0){
                         _this.$Message.success('注销成功')
                         _this.$router.push('/')
-
                     }
                 }) 
 			}
 		}
-
     }
 </script>

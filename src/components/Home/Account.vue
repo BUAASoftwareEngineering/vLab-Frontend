@@ -12,7 +12,7 @@
         </FormItem>
        <FormItem>
             <Button type="primary" @click='submit'>确认</Button>
-            <Button style="margin-left: 8px" @click="cancel">取消</Button>
+           <!-- <Button style="margin-left: 8px" @click="cancel">取消</Button>-->
         </FormItem>
         </Form>
     </div>
