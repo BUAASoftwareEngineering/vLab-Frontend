@@ -18,7 +18,7 @@
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
                     <DropdownItem @click.native="undo(editorMap[currentTab])">撤销<span style="float: right">Ctrl+Z</span></DropdownItem>
-                    <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
+                    <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Shift+Z</span></DropdownItem>
                     <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
                     <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
                    <!--  <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
@@ -33,15 +33,15 @@
                 <Button type="primary" style="min-width: 9vh">
                     代码操作
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 20vh, max-height: 500px, overflow: hidden">
-                    <DropdownItem @click.native='fold(editorMap[currentTab])'>折叠当前位置</DropdownItem>
-                    <DropdownItem @click.native='unfold(editorMap[currentTab])'>展开当前位置</DropdownItem>
-                    <DropdownItem @click.native='foldRecursively(editorMap[currentTab])'>从当前位置递归折叠</DropdownItem>
-                    <DropdownItem @click.native='unfoldRecursively(editorMap[currentTab])'>从当前位置递归展开</DropdownItem>
-                    <DropdownItem @click.native='foldAll(editorMap[currentTab])'>折叠全部</DropdownItem>
-                    <DropdownItem @click.native='unfoldAll(editorMap[currentTab])'>展开全部</DropdownItem>
-                    <DropdownItem divided  @click.native='revealDefinition(editorMap[currentTab])'>转到声明/定义</DropdownItem>
-                    <DropdownItem @click.native='referenceSearch(editorMap[currentTab])'>转到引用</DropdownItem>
+                <DropdownMenu slot="list" style="min-width: 40vh overflow: hidden">
+                    <DropdownItem @click.native='fold(editorMap[currentTab])'>折叠当前位置<span style="float: right">Ctrl+-</span></DropdownItem>
+                    <DropdownItem @click.native='unfold(editorMap[currentTab])'>展开当前位置<span style="float: right">Ctrl+=</span></DropdownItem>
+                    <DropdownItem @click.native='foldRecursively(editorMap[currentTab])'>从当前位置递归折叠<span style="float: right">Alt+Ctrl+-</span></DropdownItem>
+                    <DropdownItem @click.native='unfoldRecursively(editorMap[currentTab])'>从当前位置递归展开<span style="float: right">Alt+Ctrl+=</span></DropdownItem>
+                    <DropdownItem @click.native='foldAll(editorMap[currentTab])'>折叠全部<span style="float: right">Ctrl+Shift+-</span></DropdownItem>
+                    <DropdownItem @click.native='unfoldAll(editorMap[currentTab])'>展开全部<span style="float: right">Ctrl+Shift+=</span></DropdownItem>
+                    <DropdownItem divided  @click.native='revealDefinition(editorMap[currentTab])'>转到声明/定义<span style="float: right">Ctrl+D</span></DropdownItem>
+                    <DropdownItem @click.native='referenceSearch(editorMap[currentTab])'>转到引用<span style="float: right">Ctrl+Alt+D</span></DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -71,7 +71,7 @@
                     <DropdownItem @click.native='toDocs'>发布说明</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <Button type="primary" style="min-width: 9vh; float: right; margin:0px" @click="exitproject">
+            <Button type="primary" style="min-width: 9vh; float: right; margin:3px" @click="exitproject">
                 退出项目{{ this.projectname }}
             </Button>
             </Header>
@@ -266,8 +266,10 @@ export default {
         color:#f5f7f9;background-color:#464e57;border-color:#464e57;
         margin: 0px;
         border: 0px solid transparent;
-        padding: 6px 16px 6px;
-        margin:-3px;
+        /* padding: 6px 16px 6px; */
+        padding: 0px 0px 0px;
+        /* margin:-3px; */
+        margin: -3px;
     }
     .ivu-layout-header{
         height:4vh;

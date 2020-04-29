@@ -36,7 +36,7 @@
             <MyNotebook class="mynotebook" :username="username" :projectid="projectid" :projectname="projectname"></MyNotebook>
         </Sider>
         <Layout :style="{height: '95vh', overflow: 'hidden'}">
-            <Split ref="sp" v-model="split2" mode="vertical">
+            <Split ref="sp" v-model="split2" mode="vertical" @on-moving="fit" @on-move-end="fit">
                 <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
                     <Tabs type="card" style="height: 100%" v-model="currentTab" @on-tab-remove="handleTabRemove" >
                         <template v-for="key in tabs">
@@ -70,7 +70,7 @@ import {bus} from './bus.js'
     export default{
         components: {
             FootTerminal,MyTree,MySetting, MyCloudUpload, MyCloudDownload,
-            MyPreference, MyNotebook,
+            MyPreference, MyNotebook
         },
         props: {
             username:{
@@ -106,6 +106,9 @@ import {bus} from './bus.js'
             }
         },
         methods:{
+            fit() {
+                terminal.fit()
+            },
             handleTabsAdd(id, label, BASE_DIR, overwrite = false) {
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
