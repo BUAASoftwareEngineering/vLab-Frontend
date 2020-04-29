@@ -62,10 +62,14 @@ import api from '../../assets/js/api'
                 this.Show[data] = !this.Show[data];
                 // console.log(data, this.Show[data]);
             },
+            openSetting(){
+                bridge.$emit('openSetting');
+            },
             async compile(){
                 let ret = 'compile'
                 if(this.pythonMark){
                     this.$Message.error('python类工程下请直接选择一个python类型文件运行')
+                    this.openSetting();
                 } else {
                     let temp={};
                     temp.sources = [];
@@ -76,6 +80,7 @@ import api from '../../assets/js/api'
                     }
                     if(temp.sources.length == 0){
                         this.$Message.error('请在侧边栏的构建选项中选择至少一个cpp类型文件及相关依赖文件')
+                        this.openSetting();
                         return false;
                     } else{
                         ret = await terminal.compile(temp);
@@ -97,10 +102,12 @@ import api from '../../assets/js/api'
                     }
                     if(count==0){
                         this.$Message.error('请在侧边栏的构建选项中选择一个python类型文件')
+                        this.openSetting();
                     } else if (count==1){
                         ret = await terminal.run(temp);
                     } else if(count > 1){
                         this.$Message.error('Python类型工程只能有一个入口，请取消多余勾选')
+                        this.openSetting();
                     }
                 } else {
                     let temp={};
@@ -111,6 +118,7 @@ import api from '../../assets/js/api'
             async compileAndRun(){
                 if(this.pythonMark){
                     this.$Message.error('python类工程下请直接选择一个python类型文件运行')
+                    this.openSetting();
                 } else {
                     let ret = await this.compile()
                     if(ret != false){
@@ -153,6 +161,10 @@ import api from '../../assets/js/api'
         
         beforeDestroy(){
             bridge.$off('ReturnAllFile');
+            bridge.$off('settingProject');
+            bridge.$off('tocompile');
+            bridge.$off('torun');
+            bridge.$off('tocompilerun');
         }
     }
 </script>

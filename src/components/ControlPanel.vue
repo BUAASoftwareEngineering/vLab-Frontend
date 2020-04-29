@@ -89,7 +89,7 @@ import {bus} from './bus.js'
         data(){
             return{
                 split2:0.66,
-                treemark:true,
+                treemark:false,
                 settingmark:true,
                 uploadmark:true,
                 downloadmark:true,
@@ -297,14 +297,27 @@ import {bus} from './bus.js'
                     this.handleTabsAdd(path_label[0], path_label[1], '/code/', true);
                 }
                 this.currentTab=path_label[0];
+            }),
+            bridge.$on('openSetting',(obj)=>{
+                if(this.settingmark){
+                    this.changeSetting();
+                }
             })
-            
         },
         //TODO
           watch:{
             currentTab:function(){
                 bus.$emit('currentTab',this.currentTab)
             }
+        },
+        beforeDestroy(){
+            bridge.$off('openSetting');
+            bridge.$off('add');
+            bridge.$off('deleteFile');
+            bridge.$off('deleteFloder');
+            bridge.$off('renameFile');
+            bridge.$off('renameFloder');
+            bridge.$off('overrideMonaco');
         }
     }
 </script>

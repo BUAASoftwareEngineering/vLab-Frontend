@@ -251,6 +251,11 @@ export default {
            window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md')
        },
         
+    },
+    beforeDestroy(){
+        bridge.$off('editorMap');
+        bridge.$off('settingProject');
+        bridge.$off('currentTab');
     }
 }
 </script>

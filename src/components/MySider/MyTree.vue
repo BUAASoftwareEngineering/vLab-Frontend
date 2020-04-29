@@ -1294,7 +1294,10 @@ import bridge from '../bridge'
                 */
         },
         beforeDestroy(){
+            bridge.$off('newRootFile');
+            bridge.$off('newRootFolder');
             bridge.$off('AllFile');
+            bridge.$off('uploadFile');
         }
     }
 </script>

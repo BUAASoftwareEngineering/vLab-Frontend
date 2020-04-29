@@ -126,7 +126,7 @@ function socketOnError() {
 
 function fit() {
   that.fitAddon.fit()
-  that.term.focus()
+  // that.term.focus()
   that.term.scrollToBottom()
 }
 
