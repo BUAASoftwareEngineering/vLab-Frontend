@@ -151,6 +151,7 @@ export default {
                     console.log("response.code:" + response.code);
                     if(response.code==0){
                         console.log("退出项目成功");
+                        _this.$router.push('/home')
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
                         _this.$router.push('/')
