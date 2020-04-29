@@ -46,7 +46,7 @@ export function newEditor(container_id, code, language, filePath, fileDir, wsUrl
 				var _this = this;
 				return new Promise(function (resolve) {
 					var model = monaco.editor.getModel(uri);
-					console.log("foundedModel @ Peeking = ", model);
+					// console.log("foundedModel @ Peeking = ", model);
 					if (!model) {
 						if (!uri) {
 							model = null;

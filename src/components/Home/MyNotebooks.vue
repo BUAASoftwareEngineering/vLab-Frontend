@@ -397,7 +397,7 @@ export default {
            this.$Spin.show()
            api.project_info_update(del_id,this.project_name,function(response){
                _this.$Spin.hide()
-               console.log(response.code)
+            //    console.log(response.code)
                if(response.code==0){
                   
                    if(_this.project_type==api.C){
@@ -499,19 +499,19 @@ export default {
                _this.note_type='PYTHON3'
                if(_this.search_name=='')return
                 var res=[]
-                console.log(_this.p3_books)
+                // console.log(_this.p3_books)
                 for(var i=0;i<_this.p3_books.length;i++){
-                     console.log('_this.search_name:'+_this.search_name)
-                        console.log('_this.p3_books[i].name'+_this.p3_books[i].name)
+                    //  console.log('_this.search_name:'+_this.search_name)
+                        // console.log('_this.p3_books[i].name'+_this.p3_books[i].name)
                     if((_this.p3_books[i].name.indexOf(_this.search_name))!=-1){
                        
                         res.push(_this.p3_books[i])
                         
                     }
                 }
-                console.log(res)
+                // console.log(res)
                 _this.p3_books=res
-                console.log(_this.p3_books)
+                // console.log(_this.p3_books)
                 return
            }else if(_this.search_type==api.JAVA){
                _this.note_type='JAVA'

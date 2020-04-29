@@ -49,7 +49,8 @@ import api from '../assets/js/api'
               api.project_exit(this.projectid,function(response){
                   _this.$Spin.hide()
                   if(response.code==0){
-                      console.log('exit_sucess')
+                    //   console.log('exit_sucess')
+                      _this.$Message.success('退出成功')
                   }
               })
           }

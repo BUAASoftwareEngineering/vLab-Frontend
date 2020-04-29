@@ -69,6 +69,8 @@
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem @click.native='toDocs'>发布说明</DropdownItem>
+                    <DropdownItem @click.native='toHelp'>帮助文档</DropdownItem>
+                    <DropdownItem @click.native='toIssue'>问题反馈</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Button type="primary" style="min-width: 9vh; float: right; margin:3px" @click="exitproject">
@@ -98,19 +100,21 @@ export default {
     watch: {
         projectid: function(newVal, oldVal){
             this.projectId = newVal;
-            console.log("已更新projectid")
+            // console.log("已更新projectid")
         },
         currentTab:function(){
-            if(this.LineNumberOnOff){
-                Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'on')
-            }else{
-                 Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'off')
+            if(this.currentTab!=undefined && this.editorMap[this.currentTab]!=undefined){
+                if(this.LineNumberOnOff){
+                    Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'on')
+                }else{
+                     Editor.setLineNumberOnOff(this.editorMap[this.currentTab],'off')
 
-            }
-            if(this.MinimapOnOff){
-                Editor.setMinimapOnOff(this.editorMap[this.currentTab],'on')
-            }else{
-                 Editor.setMinimapOnOff(this.editorMap[this.currentTab],'off')
+                }
+                if(this.MinimapOnOff){
+                    Editor.setMinimapOnOff(this.editorMap[this.currentTab],'on')
+                }else{
+                     Editor.setMinimapOnOff(this.editorMap[this.currentTab],'off')
+                }
             }
         }
     },
@@ -132,8 +136,8 @@ export default {
         bus.$on('currentTab',(currentTab)=>{
             this.currentTab=currentTab
         })
-        console.log(this.editorMap),
-        console.log(this.currentTab)
+        // console.log(this.editorMap),
+        // console.log(this.currentTab)
         bridge.$on('settingProject',(Project)=>{
                 // console.log(Project.imageType)
                 if(Project.imageType=='PYTHON3'){
@@ -152,12 +156,12 @@ export default {
             if (this.projectId != 0){
                 var _this=this
                 this.$Spin.show()
-                console.log("退出id为"+this.projectId)
+                // console.log("退出id为"+this.projectId)
                 api.project_exit(this.projectId, function(response){
                     _this.$Spin.hide()
                     console.log("response.code:" + response.code);
                     if(response.code==0){
-                        console.log("退出项目成功");
+                        // console.log("退出项目成功");
                         _this.$router.push('/home')
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
@@ -247,9 +251,15 @@ export default {
        compilerun(){
            bridge.$emit('tocompilerun')
        },
-       toDocs(){
+       toHelp(){
            window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md')
        },
+       toDocs(){
+           window.open('https://www.cnblogs.com/--undefined/p/12804624.html')
+       },
+       toIssue(){
+           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues/53')
+       }
         
     },
     beforeDestroy(){

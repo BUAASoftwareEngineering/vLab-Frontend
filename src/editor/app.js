@@ -46,15 +46,15 @@ export function createMonacoApp(project_info_data_element, BASE_DIR) {
 function overrideMonaco() {
 	overrided = true;
 
-	console.log("Overriding Monaco StandaloneCodeEditorServiceImpl !");
+	// console.log("Overriding Monaco StandaloneCodeEditorServiceImpl !");
 
 	StandaloneCodeEditorServiceImpl.prototype.doOpenEditor = async function (editor, input) {
 		let foundedModel = monaco.editor.getModel(input.resource);
 		
-		console.log("foundedModel @ Go To Definition = ", foundedModel);
-		console.log(MonacoAppSingleton.model2editor);
+		// console.log("foundedModel @ Go To Definition = ", foundedModel);
+		// console.log(MonacoAppSingleton.model2editor);
 		if (!foundedModel || !MonacoAppSingleton.model2editor.get(foundedModel)) {
-			console.log("model have not been opened");
+			// console.log("model have not been opened");
 
 			if (!input.resource) {
 				return null;
@@ -71,7 +71,7 @@ function overrideMonaco() {
 				})
 			})
 		} else {
-			console.log("model have been opened");
+			// console.log("model have been opened");
 			let filePath = input.resource.path;
 			let temp = filePath.split('/');
 			let label = temp[temp.length - 1];
