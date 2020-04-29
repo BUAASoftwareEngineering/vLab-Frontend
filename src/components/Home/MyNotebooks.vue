@@ -21,10 +21,10 @@
             <Input v-model="search_name"  placeholder=" Search for Notebooks..." 
             style="width: 800px" @keyup.enter.native="search" >
                 <Select v-model="search_type" slot="prepend" style="width: 100px">                   
-                    <Option value="CPP" @click.native="search">C/C++</Option>
+                    <Option value="CPP" @click.native="search">C++</Option>
                     <!--<Option value="PYTHON2" @click.native="search" >Python2</Option>-->
-                    <Option value="PYTHON" @click.native="search" >Python</Option>
-                    <Option value="JAVA" @click.native="search" >Java</Option>
+                    <Option value="PYTHON3" @click.native="search" >Python</Option>
+                    <!--<Option value="JAVA" @click.native="search" >Java</Option>-->
                 </Select>
                 <Button slot="append" icon="ios-search" @click="search" ></Button>
             </Input>        
@@ -32,20 +32,21 @@
         <Footer >
             <div style="margin-top:20px;">
                 <Tabs v-model=note_type>                    
-                    <TabPane label="C/C++ Notebooks" name="CPP">
+                    <TabPane label="C++ Notebooks" name="CPP">
                         <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
                                     <div style="text-align:center">
+                                        <br>
                                         <img src="../../assets/new.png"/>
                                         <br>
                                         <a @click="newProject('CPP')">New</a>
                                         <br><br>                                                                                    
-                                    </div>
+                                    </div><!--
                                     <div style="text-align:left">
                                         <img src="../../assets/import.png" width=20px height=20px>
                                         <a >Import ...</a>
-                                    </div>
+                                    </div>-->
                                 </Card>   
                             </div>                           
                             <div class='mycardbody' style="float:left;margin-left:25px;margin-bottom:10px" 
@@ -101,15 +102,16 @@
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
                                     <div style="text-align:center">
+                                        <br>
                                         <img src="../../assets/new.png"/>
                                         <br>
                                         <a @click="newProject('PYTHON3')">New</a>
                                         <br><br>                                                                                    
-                                    </div>
+                                    </div><!--
                                     <div style="text-align:left">
                                         <img src="../../assets/import.png" width=20px height=20px>
                                         <a >Import ...</a>
-                                    </div>
+                                    </div>-->
                                 </Card>   
                             </div>                           
                             <div class='mycardbody' style="float:left;margin-left:25px;margin-bottom:10px" 
@@ -128,7 +130,7 @@
                             </div>                                   
                         </div>
                     </TabPane>
-                    <TabPane label="Java Notebooks" name="JAVA">
+                    <!--<TabPane label="Java Notebooks" name="JAVA">
                          <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
@@ -159,7 +161,7 @@
                                 </Card>
                             </div>                                   
                         </div>
-                    </TabPane>
+                    </TabPane>-->
                 </Tabs>         
             </div>
         </Footer>
@@ -541,20 +543,15 @@ export default {
                          _this.$Loading.finish()
                         if(response.code==0){
                             
-                            clearInterval(timer);
                              _this.$router.push({
-                                name:'Ide',
-                                // params:{
-                                //     username:_this.username,
-                                //     projectId:data.projectId,
-                                //     projectName:data.name
-                                // }
+                                name:'Ide',                                    
                                 query:{
-                                    // username:_this.username,
-                                    projectId:data.projectId,
-                                    projectName:data.name
+                                        projectId:data.projectId,
+                                        projectName:data.name
+                                    
                                 }
                              })
+                            clearInterval(timer);
                         }else if(response.code==-101){
                             _this.$Message.error('cookie验证失败')
                             _this.$router.push('/')

@@ -6,6 +6,7 @@
     border-radius: 4px;
     overflow: hidden;
     text-align: center;
+    height:100vh
 }
 .layout-logo{
     width: 100px;
@@ -48,8 +49,8 @@ a{
 }
 </style>
 <template>
-    <div class="layout">
-        <Layout  :style="{minHeight: '100vh'}">
+    <div class="layout" >
+        <Layout  style="height:100%">
             <Header >
                 <div class='title'>
                      欢迎&ensp;	{{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
@@ -68,7 +69,7 @@ a{
                         
                             <MenuItem name="1-1" @click.native="ToNotebooks">My Notebooks</MenuItem>
                             <MenuItem name="1-2" @click.native="ToAccount">Account</MenuItem>
-                            <MenuItem name="1-3">Preferences</MenuItem>
+                           <!-- <MenuItem name="1-3">Preferences</MenuItem>-->
                       
                     </Menu>
                     </div>

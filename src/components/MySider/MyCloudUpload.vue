@@ -11,12 +11,16 @@
         <br>
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
-                <Upload action="//jsonplaceholder.typicode.com/posts/">
+                <Upload 
+                :show-upload-list="false"
+                :before-upload="handleBeforeUpload"
+                action="">
                     <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">上传文件到Notebook...</Button>
                 </Upload>
             </Col>
         </Row>
         <br>
+        <!--
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
                 <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">从网盘导入Notebook...</Button>
@@ -27,12 +31,19 @@
             <Col :span="24" style="text-align:center">
                 <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">从GitHub导入到Notebook...</Button>
             </Col>
-        </Row>
+        </Row>-->
     </Layout>
 </template>
 
 <script>
+import api from '../../assets/js/api'
+import bridge from '../bridge'
 export default {
+    data(){
+        return{
+            file:null
+        }
+    },
     props: {
             username:{
                 type:String,
@@ -47,6 +58,50 @@ export default {
                 required:true
             }
         },
+    methods:{
+        handleBeforeUpload(file){
+           this.file=file
+           var filename=file.name
+           var filecontent=''
+             console.log(this.file)
+             let reader = new FileReader();
+             reader.readAsText(file);
+             reader.onload = e => {
+                 filecontent=e.target.result
+                   console.log(filecontent )
+                    
+            }
+            var _this=this
+            api.file_new(this.projectid,'/code/'+filename,function(response){
+                if(response.code==0){
+                       api.file_update(_this.projectid,'/code/'+filename,filecontent,
+                       function(response){
+                           if(response.code==0){
+                               console.log('上传成功')
+                               bridge.$emit('uploadFile',filename)
+                           }else if(response.code==-101){
+                                _this.$Message.error('cookie验证失败')
+                                _this.$router.push('/')
+                            }else if(response.code==-102){
+                                _this.$Message.error('权限不足')
+                            }else{
+                                _this.$Message.error('未知错误')
+                            }
+                       })
+                }else if(response.code==-101){
+                    _this.$Message.error('cookie验证失败')
+                    _this.$router.push('/')
+                }else if(response.code==-102){
+                    _this.$Message.error('权限不足')
+                }else if(response.code==-301){
+                    _this.$Message.error('文件重名')
+                }else{
+                    _this.$Message.error('未知错误')
+                }
+            })
+            return true
+        }
+    }
 }
 </script>
 

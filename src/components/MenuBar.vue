@@ -8,8 +8,8 @@
                     文件
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
-                    <DropdownItem><a @click="newFile()">新建文件</a></DropdownItem>
-                    <DropdownItem><a @click="newFolder()">新建文件夹</a></DropdownItem>
+                    <DropdownItem @click.native="newFile()">新建文件</DropdownItem>
+                    <DropdownItem @click.native="newFolder()">新建文件夹</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
@@ -51,6 +51,7 @@
                 <DropdownMenu slot="list" style="min-width: 20vh">
                     <DropdownItem @click.native="compile">编译</DropdownItem>
                     <DropdownItem @click.native="run">运行</DropdownItem>
+                    <DropdownItem @click.native="compilerun">编译并运行</DropdownItem>                  
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -67,8 +68,7 @@
                     帮助
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem @click.native='toDocs'>文档</DropdownItem>
-                    <DropdownItem @click.native='toProblem'>问题</DropdownItem>
+                    <DropdownItem @click.native='toDocs'>发布说明</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Button type="primary" style="min-width: 9vh; float: right; margin:0px" @click="exitproject">
@@ -235,12 +235,12 @@ export default {
        run(){
            bridge.$emit('torun',true)
        },
-       toDocs(){
-           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend')
+       compilerun(){
+           bridge.$emit('tocompilerun',true)
        },
-       toProblem(){
-           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues')
-       }
+       toDocs(){
+           window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md')
+       },
         
     }
 }

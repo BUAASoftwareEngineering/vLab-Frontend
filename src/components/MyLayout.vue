@@ -25,6 +25,7 @@ import api from '../assets/js/api'
             MenuBar, ControlPanel
         },
         mounted(){
+            
             // this.username=this.$route.params.username
             // this.projectid=this.$route.params.projectId
             // this.projectname=this.$route.params.projectName
@@ -32,7 +33,7 @@ import api from '../assets/js/api'
             this.projectid=Number(this.$route.query.projectId)
             this.projectname=this.$route.query.projectName
           },
-          beforedestroyed(){     
+          destroyed(){     
               var _this=this
               this.$Spin.show()
               api.project_exit(this.projectid,function(response){
