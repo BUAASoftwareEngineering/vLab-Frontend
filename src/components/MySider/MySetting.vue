@@ -58,9 +58,9 @@ import api from '../../assets/js/api'
         },
         methods:{
             changeState(data){
-                console.log(data, this.Show[data]);
+                // console.log(data, this.Show[data]);
                 this.Show[data] = !this.Show[data];
-                console.log(data, this.Show[data]);
+                // console.log(data, this.Show[data]);
             },
             async compile(){
                 let ret = 'compile'
@@ -122,18 +122,18 @@ import api from '../../assets/js/api'
         mounted(){
             bridge.$on('ReturnAllFile',(Files)=>{
                 this.Files = [];
-                console.log(this.Files);
+                // console.log(this.Files);
                 this.$nextTick(function(){
                     this.Show = {};
                     for(let i=0; i<Files.length;i++){
                         this.Show[Files[i]] = false;
                         this.Files.push(Files[i]);
                     }
-                    console.log(this.Files);
+                    // console.log(this.Files);
                 })
             }),
             bridge.$on('settingProject',(Project)=>{
-                console.log(Project.imageType)
+                // console.log(Project.imageType)
                 if(Project.imageType=='PYTHON3'){
                     this.pythonMark = true;
                 }
@@ -141,7 +141,7 @@ import api from '../../assets/js/api'
 
             bridge.$on('tocompile',(val)=>{
                  this.tocompile=val
-                 console.log(this.tocompile)
+                //  console.log(this.tocompile)
             }),
             bridge.$on('torun',(val)=>{
                 this.torun=val
@@ -151,7 +151,7 @@ import api from '../../assets/js/api'
         watch:{
             tocompile:function(){
                 if(this.tocompile){
-                    console.log('compile excute')
+                    // console.log('compile excute')
                     this.compile()
                     this.tocompile=false
                 }

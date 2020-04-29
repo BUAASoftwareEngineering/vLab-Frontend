@@ -109,13 +109,13 @@ import {bus} from './bus.js'
             handleTabsAdd(id, label, BASE_DIR, overwrite = false) {
                 this.tabs.push(id);
                 this.tabsMap[id] = label;
-                console.log(this.tabs);
+                // console.log(this.tabs);
                 this.$nextTick(function(){
                     let new_tabPane = document.createElement("DIV");
                     new_tabPane.id = this.getIDEId(id);
                     new_tabPane.style.height = "100%"
 	                new_tabPane.style.width = "100%"
-                    console.log(id);
+                    // console.log(id);
                     document.getElementById(id).appendChild(new_tabPane);
                     var _this=this;
                     this.$Spin.show();
@@ -123,7 +123,7 @@ import {bus} from './bus.js'
                         _this.$Spin.hide()
                         if(response.code==0){
                             var project_info = response;
-                            console.log(project_info);
+                            // console.log(project_info);
                             var project_now = project_info.data[0];
                             for(let i = 0; i < project_info.data.length; i++){
                                 if(_this.projectid == project_info.data[i].projectId){
@@ -186,8 +186,8 @@ import {bus} from './bus.js'
                 this.myEditor.closeEditor(this.editorMap[name]);
                 delete this.editorMap[name];
                 //TODO
-                console.log(this.tabsMap);
-                console.log(this.editorMap);
+                // console.log(this.tabsMap);
+                // console.log(this.editorMap);
                 bus.$emit('editorMap',this.editorMap)
                 bus.$emit('currentTab',this.currentTab)
             },
@@ -274,7 +274,7 @@ import {bus} from './bus.js'
                 }
             }),
             bridge.$on('renameFile',(IDmap)=>{
-                console.log(IDmap);
+                // console.log(IDmap);
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.handleTabRemove(key);
@@ -283,7 +283,7 @@ import {bus} from './bus.js'
                 }
             }),
             bridge.$on('renameFloder',(IDmap)=>{
-                console.log(IDmap);
+                // console.log(IDmap);
                 for(var key in IDmap){
                     if(this.tabsMap.hasOwnProperty(key)){
                         this.tabsMap[IDmap[key][0]] = this.tabsMap[key];

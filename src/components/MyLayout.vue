@@ -31,6 +31,16 @@ import api from '../assets/js/api'
             // this.username=this.$route.query.username
             this.projectid=Number(this.$route.query.projectId)
             this.projectname=this.$route.query.projectName
+            if(this.$route.query.projectId == undefined|this.$route.query.projectName == undefined){
+                this.$router.push('/')
+            }
+            var _this = this;
+            api.project_enter(this.projectid,function(response){
+                // console.log(response.code)
+                if(response.code!=0){
+                    _this.$router.push('/')
+                }
+            })
           },
           beforedestroyed(){     
               var _this=this

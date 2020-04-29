@@ -160,7 +160,7 @@ import bridge from '../bridge'
             clearFileData(data) {
                 var retData = [];
                 for (let i = 0; i < data.length; i++) {
-                    console.log(data[i]);
+                    // console.log(data[i]);
                     if (((data[i].title).indexOf(".gitignore")) == 0) {
                         retData.push(data[i]);
                     } else if (((data[i].title)[0] != '.') && ((data[i].title).indexOf("__pycache__") != 0)) {
@@ -174,7 +174,7 @@ import bridge from '../bridge'
                 var parent = root[parentKey].node;
                 var newnew = parent.children.sort(function(a, b){
                     if ((a.children != undefined) && (b.children == undefined)) {
-                        console.log(a.title + " " + b.title);
+                        // console.log(a.title + " " + b.title);
                         return -1;
                     } else if ((a.children == undefined) && (b.children != undefined)) {
                         return 1;
@@ -413,7 +413,6 @@ import bridge from '../bridge'
                     }
                 }
                 if (findnode != undefined) {
-                    console.log(6666)
                     this.confirmTheChange(root, i, findnode);
                 }
             },
@@ -438,7 +437,7 @@ import bridge from '../bridge'
                 if (data.children != undefined){
                     //若为文件夹，返回当前文件夹的路径   
                     while (findkey !== 0) {
-                        console.log(data.title + " " +data.nodeKey)
+                        // console.log(data.title + " " +data.nodeKey)
                 
                         var parentKey = root.find(el => el.nodeKey === findkey).parent;
                         if (parentKey == 0) {
@@ -847,7 +846,7 @@ import bridge from '../bridge'
             // 添加文件按钮
             appendfile (root, nodekey, data) {
                 this.hiddenRightMenu();
-                console.log(data.title);
+                // console.log(data.title);
                 event.stopPropagation()
                 /*
                 const children = data.children || [];
@@ -912,7 +911,7 @@ import bridge from '../bridge'
                 */
                 var path = "";
                 var findkey = nodekey;
-                console.log(nodekey);
+                // console.log(nodekey);
                 while (findkey !== 0) {
                     var parentKey = root.find(el => el.nodeKey === findkey).parent;
                     if (parentKey == 0) {
@@ -1147,7 +1146,7 @@ import bridge from '../bridge'
             getLeafPath(root, nodekey){
                 var i;
                 var pathList = [];
-                console.log(root.length)
+                // console.log(root.length)
                 for (i = 0; i < root.length; i++) {
                     var findkey = i;
                     //var searchnode = root.find(el => el.nodeKey === i).node;
@@ -1163,7 +1162,7 @@ import bridge from '../bridge'
                         var parent = root.find(el => el.nodeKey === parentKey).node;
                         if (parentKey === nodekey) {
                             pathList.push(path);
-                            console.log(path);
+                            // console.log(path);
                             break;
                         } else {
                             path = parent.title+"/"+path;
@@ -1222,10 +1221,10 @@ import bridge from '../bridge'
             
             var timer = setInterval(function(){
                 if(_this.rootData.length != 0) {
-                    console.log("rootlength:" + _this.rootData.length);
+                    // console.log("rootlength:" + _this.rootData.length);
                     for (let i = 0; i < _this.rootData.length; i++) {
                         var shownode = _this.rootData[i].node;
-                        console.log(shownode);
+                        // console.log(shownode);
                         if (shownode.children === undefined) {
                             _this.sort(_this.rootData, shownode)
                         }
