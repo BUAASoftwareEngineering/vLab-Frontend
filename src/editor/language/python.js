@@ -59,8 +59,9 @@ function createWebSocket(url) {
         minReconnectionDelay: 1000,
         reconnectionDelayGrowFactor: 1.3,
         connectionTimeout: 10000,
-        maxRetries: Infinity,
-        debug: false
+        maxRetries: 5,
+        debug: false,
+        maxReconnectAttempts: 5
     };
     return new ReconnectingWebSocket(url, [], socketOptions);
 }
