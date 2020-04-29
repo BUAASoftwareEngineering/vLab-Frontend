@@ -148,7 +148,7 @@ import api from '../../assets/js/api'
             })
             
         },
-          watch:{
+        watch:{
             tocompile:function(){
                 if(this.tocompile){
                     console.log('compile excute')
@@ -162,6 +162,9 @@ import api from '../../assets/js/api'
                     this.torun=false
                 }
             }
+        },
+        beforeDestroy(){
+            bridge.$off('ReturnAllFile');
         }
     }
 </script>

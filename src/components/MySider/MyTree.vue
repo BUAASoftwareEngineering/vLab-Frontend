@@ -1261,6 +1261,9 @@ import bridge from '../bridge'
                 })
                 }, 10000)
                 */
+        },
+        beforeDestroy(){
+            bridge.$off('AllFile');
         }
     }
 </script>
