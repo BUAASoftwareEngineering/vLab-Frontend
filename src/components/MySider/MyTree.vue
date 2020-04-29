@@ -8,6 +8,13 @@
             </Col>
         </Row>
         <Tree :data="data4" :render="renderContent"></Tree>
+        <Dropdown transfer ref="contentRootMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
+                <DropdownItem><a @click="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</a></DropdownItem>
+                <DropdownItem><a @click="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</a></DropdownItem>
+                <DropdownItem><a @click="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</a></DropdownItem>
+            </DropdownMenu>
+        </Dropdown>
         <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click" placement="right-start">
             <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
                 <DropdownItem><a @click="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</a></DropdownItem>
@@ -58,10 +65,10 @@ import bridge from '../bridge'
                 this.projectId = newVal;
                 console.log("projectid"+this.projectId);
                 var _this=this
-                
+                this.$Spin.show()
                 var timer = setInterval(function(){
                     api.file_struct(newVal, "/code/", function(response){
-                    
+                    _this.$Spin.hide()
                     if(response.code==0){
                         _this.$set(_this.data4[0], 'children', _this.clearFileData(response.data));
                         console.log(newVal+ "获得文件长度"+response.data.length)
@@ -111,8 +118,8 @@ import bridge from '../bridge'
                                     contextmenu:(e) => {
                                         e.preventDefault();
                                         this.nodeInfo = data;
-                                        this.$refs.contentFolderMenu.$refs.reference = event.target;
-                                        this.$refs.contentFolderMenu.currentVisible = !this.$refs.contentFolderMenu.currentVisible;
+                                        this.$refs.contentRootMenu.$refs.reference = event.target;
+                                        this.$refs.contentRootMenu.currentVisible = !this.$refs.contentRootMenu.currentVisible;
                                     }
                                 }
                             }, [
@@ -135,12 +142,28 @@ import bridge from '../bridge'
         },
         
         methods: {
+            deepcopy(copyInfo) {
+                var newInfo = [];
+                newInfo = JSON.parse(JSON.stringify(copyInfo));
+                return newInfo;
+            },
+
+            hiddenRightMenu() {
+                this.$refs.contentFolderMenu.$refs.reference = event.target;
+                this.$refs.contentFolderMenu.currentVisible = false;
+                this.$refs.contentFileMenu.$refs.reference = event.target;
+                this.$refs.contentFileMenu.currentVisible = false;
+                this.$refs.contentRootMenu.$refs.reference = event.target;
+                this.$refs.contentRootMenu.currentVisible = false;
+            },
             // 处理从后端得到的文件数据
             clearFileData(data) {
                 var retData = [];
                 for (let i = 0; i < data.length; i++) {
                     console.log(data[i]);
-                    if ((data[i].title)[0] != '.') {
+                    if (((data[i].title).indexOf(".gitignore")) == 0) {
+                        retData.push(data[i]);
+                    } else if (((data[i].title)[0] != '.') && ((data[i].title).indexOf("__pycache__") != 0)) {
                         retData.push(data[i]);
                     }
                 }
@@ -167,7 +190,8 @@ import bridge from '../bridge'
             },
             // 树渲染逻辑
             renderContent (h, { root, node, data }) { 
-                this.rootData = root;
+                var that = this;
+                that.rootData = root;
                 //data.expand = true;
                 if (data.children != undefined) {
                     return h("span", {
@@ -182,6 +206,9 @@ import bridge from '../bridge'
                             draggable:'true'
                         },
                         on: {
+                            click:()=>{
+                                data.editState ? '' :  this.handleClickTreeNode(root, node.nodeKey, data)
+                            },
                             contextmenu:(e) => {
                                 e.preventDefault();
                                 this.nodeInfo = data;
@@ -282,11 +309,8 @@ import bridge from '../bridge'
                         },
                         on:{
                             click:()=>{
-                                data.editState ? '' :  this.handleDbClickTreeNode(root, node.nodeKey, data)
+                                data.editState ? '' :  this.handleClickTreeNode(root, node.nodeKey, data)
                             },
-                            /*click:()=>{
-                                data.editState ? '' : this.handleClickTreeNode(data)
-                            }*/
                             contextmenu:(e) => {
                                 e.preventDefault();
                                 this.nodeInfo = data;
@@ -402,6 +426,7 @@ import bridge from '../bridge'
             },
             // Tree修改按钮
             editTree(data){
+                this.hiddenRightMenu();
                 event.stopPropagation()  
                 this.inputContent=data.title 
                 this.oldName=data.title
@@ -446,42 +471,37 @@ import bridge from '../bridge'
             // 复制文件夹
             copyfolder_choose (root, nodekey, data) {
                 event.stopPropagation()
-                this.$refs.contentFolderMenu.currentVisible = false;
-                this.$refs.contentFileMenu.currentVisible = false;
+                this.hiddenRightMenu();
                 this.copyInfo = data;
                 this.copyflag = true;
             },
             // 剪切文件夹
             movefolder_choose (root, nodekey, data) {
                 event.stopPropagation()
-                this.$refs.contentFolderMenu.currentVisible = false;
-                this.$refs.contentFileMenu.currentVisible = false;
+                this.hiddenRightMenu();
                 this.copyInfo = data;
                 this.copyflag = false;
             },
             
             // 复制文件
             copyfile_choose (root, nodekey, data) {
-                event.stopPropagation()
-                this.$refs.contentFolderMenu.currentVisible = false;
-                this.$refs.contentFileMenu.currentVisible = false;
+                event.stopPropagation();
+                this.hiddenRightMenu();
                 this.copyInfo = data;
                 this.copyflag = true; //复制行为为true
             },
             // 剪切文件
             movefile_choose (root, nodekey, data) {
-                event.stopPropagation()
-                this.$refs.contentFolderMenu.currentVisible = false;
-                this.$refs.contentFileMenu.currentVisible = false;
+                event.stopPropagation();
+                this.hiddenRightMenu();
                 this.copyInfo = data;
                 this.copyflag = false; //剪切行为为false
             },
             // 粘贴文件，用一个变量区别当前行为是剪切还是复制
             // 复制到同一目录下
             paste (root, nodekey, data) {
-                event.stopPropagation()
-                this.$refs.contentFolderMenu.currentVisible = false;
-                this.$refs.contentFileMenu.currentVisible = false;
+                event.stopPropagation();
+                this.hiddenRightMenu();
                 if (this.copyInfo != []){
                     var targetPath = this.getPath(root, nodekey, data); //目标目录，以/结尾
                     var originPath = this.getPath(root, this.copyInfo.nodeKey, this.copyInfo); //原文件所在目录或原文件夹的目录，以/结尾
@@ -490,8 +510,7 @@ import bridge from '../bridge'
                             var _this=this
                             this.$Spin.show()
                             if (_this.copyInfo.children == undefined) {
-                                console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+
-                                targetPath+_this.copyInfo.title)
+                                console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
                                 api.file_copy(_this.projectId, originPath+_this.copyInfo.title, targetPath+_this.copyInfo.title, false, function(response){
                                     _this.$Spin.hide();
                                     console.log("粘贴返回"+response.code)
@@ -501,13 +520,15 @@ import bridge from '../bridge'
                                             var parentKey = root[nodekey].parent;
                                             var parent = root[parentKey].node;
                                             const children = parent.children || [];
-                                            children.push(_this.copyInfo);
+                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                            children.push(newnode);
                                             _this.$set(parent, 'children', children);
                                             _this.sort(root, parent.children[0]);
                                         } else {
                                             //若粘贴目标为文件夹
                                             const children = data.children || [];
-                                            children.push(_this.copyInfo); 
+                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                            children.push(newnode); 
                                             _this.$set(data, 'children', children);
                                             _this.sort(root, data.children[0]);
                                         }
@@ -531,13 +552,15 @@ import bridge from '../bridge'
                                                             var parentKey = root[nodekey].parent;
                                                             var parent = root[parentKey].node;
                                                             const children = parent.children || [];
-                                                            children.push(_this.copyInfo);
+                                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                                            children.push(newnode);
                                                             _this.$set(parent, 'children', children);
                                                             _this.sort(root, parent.children[0]);
                                                         } else {
                                                             //若粘贴目标为文件夹
                                                             const children = data.children || [];
-                                                            children.push(_this.copyInfo); 
+                                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                                            children.push(newnode); 
                                                            _this.$set(data, 'children', children);
                                                            _this.sort(root, data.children[0]);
                                                         }
@@ -571,13 +594,15 @@ import bridge from '../bridge'
                                             var parentKey = root[nodekey].parent;
                                             var parent = root[parentKey].node;
                                             const children = parent.children || [];
-                                            children.push(_this.copyInfo);
+                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                            children.push(newnode);
                                             _this.$set(parent, 'children', children);
                                             _this.sort(root, parent.children[0]);
                                         } else {
                                             //若粘贴目标为文件夹
                                             const children = data.children || [];
-                                            children.push(_this.copyInfo); 
+                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                            children.push(newnode); 
                                             _this.$set(data, 'children', children);
                                             _this.sort(root, data.children[0]);
                                         }
@@ -601,13 +626,15 @@ import bridge from '../bridge'
                                                             var parentKey = root[nodekey].parent;
                                                             var parent = root[parentKey].node;
                                                             const children = parent.children || [];
-                                                            children.push(_this.copyInfo);
+                                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                                            children.push(newnode);
                                                             _this.$set(parent, 'children', children);
                                                             _this.sort(root, parent.children[0]);
                                                         } else {
                                                             //若粘贴目标为文件夹
                                                             const children = data.children || [];
-                                                            children.push(_this.copyInfo); 
+                                                            var newnode = _this.deepcopy(_this.copyInfo);
+                                                            children.push(newnode); 
                                                             _this.$set(data, 'children', children);
                                                             _this.sort(root, data.children[0]);
                                                         }
@@ -819,6 +846,8 @@ import bridge from '../bridge'
             },
             // 添加文件按钮
             appendfile (root, nodekey, data) {
+                this.hiddenRightMenu();
+                console.log(data.title);
                 event.stopPropagation()
                 /*
                 const children = data.children || [];
@@ -870,6 +899,7 @@ import bridge from '../bridge'
             },
             // 添加文件夹按钮
             appendfolder (root, nodekey, data) {
+                this.hiddenRightMenu();
                 event.stopPropagation()
                 /*
                 const children = data.children || [];
@@ -931,6 +961,7 @@ import bridge from '../bridge'
             },
             // 删除按钮
             remove (root, nodekey, data) {
+                this.hiddenRightMenu();
                 event.stopPropagation()
                 
                 this.$Modal.confirm({
@@ -1145,69 +1176,53 @@ import bridge from '../bridge'
 
             // 取消修改树节点
             CancelChange(data){ 
-                this.$Notice.info({
-                    title: '取消修改',
-                });
+                this.$Message.info('取消修改');
+                //this.$Notice.info({
+                //    title: '取消修改',
+                //});
                 this.setStates(data)
             },
             // 点击Tree节点触发
-            handleClickTreeNode(data){  
+            handleClickTreeNode(root, nodekey, data){  
                 console.log("当前点击》》"+data.title);
-
-            },
-            // 双击Tree节点时触发
-            handleDbClickTreeNode(root, nodekey, data){
-                var path = "";
-                var findkey = nodekey;
-                while (findkey !== 0) {
-                    var parentKey = root.find(el => el.nodeKey === findkey).parent;
-                    if (parentKey == 0) {
-                        break;
+                if (data.children == undefined) {
+                    var path = "";
+                    var findkey = nodekey;
+                    while (findkey !== 0) {
+                        var parentKey = root.find(el => el.nodeKey === findkey).parent;
+                        if (parentKey == 0) {
+                            break;
+                        }
+                        var parent = root.find(el => el.nodeKey === parentKey).node;
+                        path = parent.title+"/"+ path;
+                        var findkey = parentKey;
                     }
-                    var parent = root.find(el => el.nodeKey === parentKey).node;
-                    path = parent.title+"/"+ path;
-                    var findkey = parentKey;
+                    bridge.$emit('add',["/code/"+path+data.title, data.title, "/code/"+path]);
                 }
-                console.log("当前双击》》"+"/"+path+data.title);
-                bridge.$emit('add',["/code/"+path+data.title, data.title, "/code/"+path]);
-            }
+            },
         },
         mounted(){
-            /*
-            var _this=this
-            this.$Spin.show()
-            var timer = setInterval(function(){
-                    api.file_struct(_this.projectId, "/code/", function(response){
-                    if(response.code==0){
-                        _this.$set(_this.data4[0], 'children', response.data);
-                        console.log(_this.projectId+ "更新获得文件长度"+response.data.length)
-                    }else if(response.code==-101){
-                        _this.$Message.error('cookie验证失败')
-                        _this.$router.push('/')
-                        clearInterval(timer);
-                    }else if(response.code==-102){
-                        _this.$Message.error('权限不足')
-                        clearInterval(timer);
-                    }else if(response.code==500){
-                        
-                    }else{
-                        _this.$Message.error('未知错误')
-                        clearInterval(timer);
-                    }
-                })
-                }, 10000)
-                */
+            var _this = this;
+            bridge.$on('newRootFile',(val)=>{
+                _this.appendfile(_this.rootData, 0, _this.rootData[0].node);
+            })
+
+            bridge.$on('newRootFolder',(val)=>{
+                _this.appendfolder(_this.rootData, 0, _this.rootData[0].node);
+            })
+
             bridge.$on('AllFile',(CallBack)=>{
-                this.doculist = this.getLeafPath(this.rootData, 0);
+                _this.doculist = _this.getLeafPath(_this.rootData, 0);
                 // for (let i = 0; i < this.doculist.length; i++)
                 // {
                     // console.log(i,this.doculist[i])//暂且验证一下
                 // }
-                bridge.$emit('ReturnAllFile',this.doculist);
+                bridge.$emit('ReturnAllFile',_this.doculist);
             })
-            var _this = this
+            
             var timer = setInterval(function(){
                 if(_this.rootData.length != 0) {
+                    console.log("rootlength:" + _this.rootData.length);
                     for (let i = 0; i < _this.rootData.length; i++) {
                         var shownode = _this.rootData[i].node;
                         console.log(shownode);
@@ -1218,6 +1233,8 @@ import bridge from '../bridge'
                     clearInterval(timer);
                 }
             }, 1000)
+
+
         },
         created() {
             /*
@@ -1271,6 +1288,11 @@ import bridge from '../bridge'
     font-weight: bold;
     padding: 0px;
 }
+
+.root:hover {
+    color:#275cd4
+}
+
 .ivu-tree ul li {
     list-style: none;
     /* margin: 8px 0; */
@@ -1278,6 +1300,7 @@ import bridge from '../bridge'
     white-space: nowrap;
     outline: none;
 }
+
 </style>
 
 
@@ -1325,5 +1348,9 @@ import bridge from '../bridge'
     .mytree >>> .ivu-tree-title{
       border-radius:0px;
       color:#fff;
+    }
+
+    .mytree >>> .ivu-tree-title-selected{
+        color:#275cd4
     }
 </style> 

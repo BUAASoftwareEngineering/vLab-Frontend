@@ -7,9 +7,9 @@
                 <Button type="primary" style="min-width: 9vh">
                     文件
                 </Button>
-                <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem>新建文件</DropdownItem>
-                    <DropdownItem>新建文件夹</DropdownItem>
+                <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
+                    <DropdownItem><a @click="newFile()">新建文件</a></DropdownItem>
+                    <DropdownItem><a @click="newFolder()">新建文件夹</a></DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
@@ -21,8 +21,8 @@
                     <DropdownItem  @click.native="redo(editorMap[currentTab])">恢复<span style="float: right">Ctrl+Y</span></DropdownItem>
                     <DropdownItem divided @click.native='cut(editorMap[currentTab])'>剪切<span style="float: right">Ctrl+X</span></DropdownItem>
                     <DropdownItem  @click.native='copy(editorMap[currentTab])'>复制<span style="float: right">Ctrl+C</span></DropdownItem>
-                  <!--  <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
-
+                   <!--  <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
+                    
                     <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
                     <DropdownItem divided  @click.native='search(editorMap[currentTab])'>查找<span style="float: right">Ctrl+F</span></DropdownItem>
                     <DropdownItem @click.native='replace(editorMap[currentTab])'>替换<span style="float: right">Ctrl+H</span></DropdownItem>
@@ -49,8 +49,8 @@
                     运行
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                     <DropdownItem @click.native="compile">编译</DropdownItem>
-                    <DropdownItem @click.native="run">运行</DropdownItem>                   
+                    <DropdownItem @click.native="compile">编译</DropdownItem>
+                    <DropdownItem @click.native="run">运行</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -67,7 +67,7 @@
                     帮助
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                     <DropdownItem @click.native='toDocs'>文档</DropdownItem>
+                    <DropdownItem @click.native='toDocs'>文档</DropdownItem>
                     <DropdownItem @click.native='toProblem'>问题</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
@@ -76,14 +76,14 @@
             </Button>
             </Header>
         </Layout>
-    </div> 
+    </div>
 </template>
 
 <script>
 import api from '../assets/js/api.js';
-import {bus} from './bus.js'
-import * as Editor from '../editor/Appearances.js'
-import bridge from './bridge';
+import {bus} from './bus.js';
+import * as Editor from '../editor/Appearances.js';
+import bridge from './bridge.js';
 export default {
     props: {
         projectid:{
@@ -135,6 +135,12 @@ export default {
         console.log(this.currentTab)
     },
     methods: {
+        newFile() {
+            bridge.$emit('newRootFile');
+        },
+        newFolder() {
+            bridge.$emit('newRootFolder');
+        },
         exitproject() {
             if (this.projectId != 0){
                 var _this=this
@@ -144,9 +150,7 @@ export default {
                     _this.$Spin.hide()
                     console.log("response.code:" + response.code);
                     if(response.code==0){
-                        _this.$Message.success('退出成功')
                         console.log("退出项目成功");
-                        _this.$router.push('/home')
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
                         _this.$router.push('/')
@@ -225,7 +229,7 @@ export default {
        referenceSearch(editor){
            editor.getAction('editor.action.referenceSearch.trigger').run()
        },
-        compile(){
+       compile(){
            bridge.$emit('tocompile',true)
        },
        run(){
@@ -254,7 +258,7 @@ export default {
     .ivu-layout-header{
         height:4vh;
         line-height:4vh;
-        padding:0; 
+        padding:0;
     }
     .layout{
         border: 1px solid #d7dde4;
