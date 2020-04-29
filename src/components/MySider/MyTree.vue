@@ -61,33 +61,33 @@ import bridge from '../bridge'
                 this.projectName = newVal;
                 this.$set(this.data4[0], 'title', this.projectName);
             },
-            projectid: function(newVal, oldVal){
+             projectid: function(newVal, oldVal){
                 this.projectId = newVal;
                 console.log("projectid"+this.projectId);
                 var _this=this
                 this.$Spin.show()
-                var timer = setInterval(function(){
+              //  var timer = setInterval(function(){
                     api.file_struct(newVal, "/code/", function(response){
                     _this.$Spin.hide()
                     if(response.code==0){
                         _this.$set(_this.data4[0], 'children', _this.clearFileData(response.data));
                         console.log(newVal+ "获得文件长度"+response.data.length)
-                        clearInterval(timer);
+                       // clearInterval(timer);
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
                         _this.$router.push('/')
-                        clearInterval(timer);
+                      //  clearInterval(timer);
                     }else if(response.code==-102){
                         _this.$Message.error('权限不足')
-                        clearInterval(timer);
+                      //  clearInterval(timer);
                     }else if(response.code==500){
                         
                     }else{
                         _this.$Message.error('未知错误')
-                        clearInterval(timer);
+                       // clearInterval(timer);
                     }
                 })
-                }, 1000)
+               // }, 1000)
                 
             }
         },
@@ -1219,13 +1219,36 @@ import bridge from '../bridge'
                 // }
                 bridge.$emit('ReturnAllFile',_this.doculist);
             }),
-            bridge.$on('uploadFile', (fileName)=>{
+           bridge.$on('uploadFile', (fileName)=>{
                 console.log('接收上传文件'+fileName)
+                /*
                 const children = _this.rootData[0].children || [];
                 children.push({
                     title: fileName
                 });
-                _this.$set(_this.rootData[0], 'children', children);
+                _this.$set(_this.rootData[0], 'children', children);*/
+                var _this=this
+                this.$Spin.show()
+                 api.file_struct(this.projectid, "/code/", function(response){
+                    _this.$Spin.hide()
+                    if(response.code==0){
+                        _this.$set(_this.data4[0], 'children', _this.clearFileData(response.data));
+                      //  console.log(newVal+ "获得文件长度"+response.data.length)
+                       // clearInterval(timer);
+                    }else if(response.code==-101){
+                        _this.$Message.error('cookie验证失败')
+                        _this.$router.push('/')
+                       // clearInterval(timer);
+                    }else if(response.code==-102){
+                        _this.$Message.error('权限不足')
+                       // clearInterval(timer);
+                    }else if(response.code==500){
+                        
+                    }else{
+                        _this.$Message.error('未知错误')
+                       // clearInterval(timer);
+                    }
+                })
             })
             
             var timer = setInterval(function(){

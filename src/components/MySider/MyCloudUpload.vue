@@ -98,8 +98,9 @@ export default {
                 }else{
                     _this.$Message.error('未知错误')
                 }
+                return true
             })
-            return true
+            
         }
     }
 }

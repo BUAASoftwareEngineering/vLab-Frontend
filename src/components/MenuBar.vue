@@ -49,9 +49,9 @@
                     运行
                 </Button>
                 <DropdownMenu slot="list" style="min-width: 20vh">
-                    <DropdownItem @click.native="compile">编译</DropdownItem>
+                    <DropdownItem @click.native="compile" v-if="pythonMark==false">编译</DropdownItem>
                     <DropdownItem @click.native="run">运行</DropdownItem>
-                    <DropdownItem @click.native="compilerun">编译并运行</DropdownItem>                  
+                    <DropdownItem @click.native="compilerun" v-if="pythonMark==false">编译并运行</DropdownItem>                  
                 </DropdownMenu>
             </Dropdown>
             <Dropdown placement="bottom-start" transfer trigger="click">
@@ -121,7 +121,8 @@ export default {
             editorMap:{},
             currentTab:'',
             LineNumberOnOff:true,
-            MinimapOnOff:true
+            MinimapOnOff:true,
+            pythonMark:false
         }
     },
     created(){
@@ -133,6 +134,12 @@ export default {
         })
         console.log(this.editorMap),
         console.log(this.currentTab)
+        bridge.$on('settingProject',(Project)=>{
+                // console.log(Project.imageType)
+                if(Project.imageType=='PYTHON3'){
+                    this.pythonMark = true;
+                }
+        })
     },
     methods: {
         newFile() {
@@ -232,13 +239,13 @@ export default {
            editor.getAction('editor.action.referenceSearch.trigger').run()
        },
        compile(){
-           bridge.$emit('tocompile',true)
+           bridge.$emit('tocompile')
        },
        run(){
-           bridge.$emit('torun',true)
+           bridge.$emit('torun')
        },
        compilerun(){
-           bridge.$emit('tocompilerun',true)
+           bridge.$emit('tocompilerun')
        },
        toDocs(){
            window.open('https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md')

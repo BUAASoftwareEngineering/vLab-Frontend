@@ -52,9 +52,7 @@ import api from '../../assets/js/api'
                 Files:[],
                 Show:{},
                 pythonMark:false,
-                tocompile:false,
-                torun:false,
-                tocompilerun:false
+                
 
             }
         },
@@ -142,40 +140,17 @@ import api from '../../assets/js/api'
             }),
 
             bridge.$on('tocompile',(val)=>{
-                 this.tocompile=val
-                //  console.log(this.tocompile)
+                 this.compile()
             }),
             bridge.$on('torun',(val)=>{
-                this.torun=val
+                this.run()
             }),
              bridge.$on('tocompilerun',(val)=>{
-                 console.log(this.tocompilerun)
-                this.tocompilerun=val
-                 console.log(this.tocompilerun)
+                this.compileAndRun()
             })
             
         },
-        watch:{
-            tocompile:function(){
-                if(this.tocompile){
-                    // console.log('compile excute')
-                    this.compile()
-                    this.tocompile=false
-                }
-            },
-            torun:function(){
-                if(this.torun){
-                    this.run()
-                    this.torun=false
-                }
-            },
-            tocompilerun:function(){
-                    if(this.tocompilerun){
-                        this.compileAndRun()
-                        this.tocompilerun=false
-                    }
-            }
-        },
+        
         beforeDestroy(){
             bridge.$off('ReturnAllFile');
         }

@@ -67,8 +67,8 @@ a{
                     <div style="margin-top:200px;">
                     <Menu active-name="1-1" theme="light" width="auto" :open-names="['1']">
                         
-                            <MenuItem name="1-1" @click.native="ToNotebooks">My Notebooks</MenuItem>
-                            <MenuItem name="1-2" @click.native="ToAccount">Account</MenuItem>
+                            <MenuItem name="1-1" @click.native="ToNotebooks"><Icon  size=20 type="ios-book" />My Notebooks</MenuItem>
+                            <MenuItem name="1-2" @click.native="ToAccount"><Icon size=20 type="ios-person" />Account</MenuItem>
                            <!-- <MenuItem name="1-3">Preferences</MenuItem>-->
                       
                     </Menu>

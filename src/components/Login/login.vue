@@ -29,7 +29,7 @@
           
             <Input type="text" placeholder="请输入用户名" v-model="newUsername" style="width: 200px"/>
             <br><br>
-             <Tooltip content="至少6位，只能为字母数字.@#$-" placement="bottom">
+             <Tooltip content="至少6位，只能为字母数字.@#$-" placement="right">
                 <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px" @keyup.enter.native="register"/>
              </Tooltip>
             <br><br>
