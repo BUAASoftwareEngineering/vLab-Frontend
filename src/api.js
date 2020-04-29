@@ -1,5 +1,5 @@
 
-const http = new XMLHttpRequest()
+
 const server = "https://api.ivlab.xyz:8443"
 // const server = "http://114.116.135.181:8081"
 // const server = "http://127.0.0.1:3000"
@@ -9,9 +9,11 @@ const PYTHON3 = 'PYTHON3'
 const PYTHON2 = 'PYTHON2'
 const JAVA = 'JAVA'
 const C = 'C'
-http.withCredentials = true
+
     
 function get_request(url, callback) {
+    let http = new XMLHttpRequest()
+    http.withCredentials = true
     http.open("GET", url, true)
     http.send()
     http.onreadystatechange = function(data) {
@@ -55,11 +57,15 @@ function get_request(url, callback) {
             callback(obj)
         }
         // console.log(obj)
-        
+        setTimeout(function() {
+            http = null
+        }, 500)
     }
 }
 
 function post_request(url, data, callback) {
+    let http = new XMLHttpRequest()
+    http.withCredentials = true
     http.open("POST", url, true)
     http.setRequestHeader("Content-type","application/x-www-form-urlencoded")
     //http.setRequestHeader("Cookie","type=lpx")
@@ -98,7 +104,9 @@ function post_request(url, data, callback) {
             callback(obj)
         }
         // console.log(obj)
-        
+        setTimeout(function() {
+            http = null
+        }, 500)
     }
 }
 
