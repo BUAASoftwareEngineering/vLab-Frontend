@@ -53,7 +53,9 @@ import api from '../../assets/js/api'
                 Show:{},
                 pythonMark:false,
                 tocompile:false,
-                torun:false
+                torun:false,
+                tocompilerun:false
+
             }
         },
         methods:{
@@ -145,6 +147,11 @@ import api from '../../assets/js/api'
             }),
             bridge.$on('torun',(val)=>{
                 this.torun=val
+            }),
+             bridge.$on('tocompilerun',(val)=>{
+                 console.log(this.tocompilerun)
+                this.tocompilerun=val
+                 console.log(this.tocompilerun)
             })
             
         },
@@ -161,6 +168,12 @@ import api from '../../assets/js/api'
                     this.run()
                     this.torun=false
                 }
+            },
+            tocompilerun:function(){
+                    if(this.tocompilerun){
+                        this.compileAndRun()
+                        this.tocompilerun=false
+                    }
             }
         },
         beforeDestroy(){

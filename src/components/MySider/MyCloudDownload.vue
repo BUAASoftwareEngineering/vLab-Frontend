@@ -16,6 +16,7 @@
             </Col>
         </Row>
         <br>
+        <!--
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
                 <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">导出Notebook到网盘...</Button>
@@ -26,7 +27,7 @@
             <Col :span="24" style="text-align:center">
                 <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">保存Notebook到GitHub...</Button>
             </Col>
-        </Row>
+        </Row>-->
     </Layout>
 </template>
 

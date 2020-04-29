@@ -1199,6 +1199,7 @@ import bridge from '../bridge'
                     bridge.$emit('add',["/code/"+path+data.title, data.title, "/code/"+path]);
                 }
             },
+            
         },
         mounted(){
             var _this = this;
@@ -1217,7 +1218,15 @@ import bridge from '../bridge'
                     // console.log(i,this.doculist[i])//暂且验证一下
                 // }
                 bridge.$emit('ReturnAllFile',_this.doculist);
-            })
+            }),
+            bridge.$on('uploadFile', (fileName)=>{
+                console.log('接收上传文件'+fileName)
+                const children = _this.rootData[0].children || [];
+                children.push({
+                    title: fileName
+                });
+                _this.$set(_this.rootData[0], 'children', children);
+            })
             
             var timer = setInterval(function(){
                 if(_this.rootData.length != 0) {
