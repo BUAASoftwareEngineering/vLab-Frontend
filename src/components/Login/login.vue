@@ -29,7 +29,9 @@
           
             <Input type="text" placeholder="请输入用户名" v-model="newUsername" style="width: 200px"/>
             <br><br>
-            <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px" @keyup.enter.native="register"/>
+             <Tooltip content="至少6位，只能为字母数字.@#$-" placement="bottom">
+                <Input type="password" placeholder="请输入密码" v-model="newPassword" style="width: 200px" @keyup.enter.native="register"/>
+             </Tooltip>
             <br><br>
            <Button type="success"  v-on:click="register">注册</Button>
            <br><br>
