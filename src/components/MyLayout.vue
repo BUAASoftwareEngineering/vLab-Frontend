@@ -43,6 +43,7 @@ import api from '../assets/js/api'
                 }
             })
           },
+          /*
           destroyed(){     
               var _this=this
               this.$Spin.show()
@@ -53,7 +54,7 @@ import api from '../assets/js/api'
                       _this.$Message.success('退出成功')
                   }
               })
-          }
+          }*/
     }
 </script>
 

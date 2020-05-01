@@ -12,7 +12,7 @@
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
                 <Upload 
-                :show-upload-list="false"
+                
                 :before-upload="handleBeforeUpload"
                 action="">
                     <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">上传文件到Notebook...</Button>

@@ -37,11 +37,11 @@
                          <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
-                                    <div style="text-align:center">
+                                    <div style="text-align:center;cursor:pointer" @click="newProject('PYTHON3')">
                                         <br>
                                         <img src="../../assets/new.png"/>
                                         <br>
-                                        <a @click="newProject('PYTHON3')">New</a>
+                                        <p>New</p>
                                         <br><br>                                                                                    
                                     </div><!--
                                     <div style="text-align:left">
@@ -54,8 +54,8 @@
                             v-for="(data,index) in p3_books" :key='index'
                             @mouseout="iconshow=false" @mouseover="iconshow=true">
                                 <Card style="width:120px;" >                                                                                    
-                                    <a @click="etrProject(data)">{{data.name}}</a>                                
-                                    <a style="position:absolute;left:5px;bottom:5px" @click='udtProject("PYTHON3",index)' v-show="iconshow">
+                                    <div style="height:80%;cursor:pointer;overflow: hidden;word-wrap: break-word;
+                                        word-break: break-all;" @click="etrProject(data)">{{data.name}}</div>                                    <a style="position:absolute;left:5px;bottom:5px" @click='udtProject("PYTHON3",index)' v-show="iconshow">
                                         <Icon type="ios-more" />
                                     </a>
                                     <a  style="position:absolute;right:5px;bottom:5px" @click='delProject("PYTHON3",index)' v-show="iconshow">
@@ -70,11 +70,11 @@
                         <div >
                             <div class='mycardbody' style="float:left;margin-left:25px">                          
                                 <Card style="width:120px ;float:left">
-                                    <div style="text-align:center">
+                                    <div style="text-align:center;cursor:pointer" @click="newProject('CPP')">
                                         <br>
                                         <img src="../../assets/new.png"/>
                                         <br>
-                                        <a @click="newProject('CPP')">New</a>
+                                        <p>New</p>
                                         <br><br>                                                                                    
                                     </div><!--
                                     <div style="text-align:left">
@@ -87,7 +87,8 @@
                             v-for="(data,index) in cpp_books" :key='index'
                             @mouseout="iconshow=false" @mouseover="iconshow=true">
                                 <Card style="width:120px;" >                                                                                    
-                                    <a @click="etrProject(data)">{{data.name}}</a>                                
+                                    <div style="height:80%;cursor:pointer;overflow: hidden;word-wrap: break-word;
+                                        word-break: break-all;" @click="etrProject(data)">{{data.name}}</div>                                
                                     <a style="position:absolute;left:5px;bottom:5px" @click="udtProject('CPP',index)" v-show="iconshow">
                                         <Icon type="ios-more" />
                                     </a>
@@ -297,6 +298,14 @@ export default {
         },    
                     
        new_ok(){
+           if(this.project_name==''){
+                this.$Modal.error({
+                     title: '创建失败',
+                    content: '<p>项目名不能为空</p>',
+                    
+                 })
+                 return
+           }
            var _this=this
            this.$Spin.show()
 
@@ -381,6 +390,14 @@ export default {
        },
 
        update_ok(){
+            if(this.project_name==''){
+                this.$Modal.error({
+                     title: '修改失败',
+                    content: '<p>项目名不能为空</p>',
+                    
+                 })
+                 return
+           }
             var _this=this
            var del_id
            if(this.project_type==api.C){
