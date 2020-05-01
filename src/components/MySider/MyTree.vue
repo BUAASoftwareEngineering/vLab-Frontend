@@ -1193,11 +1193,11 @@ import bridge from '../bridge'
         mounted(){
             var _this = this;
             bridge.$on('newRootFile',(val)=>{
-                _this.appendfile(_this.rootData, 0, _this.rootData[0].node);
+                _this.appendfile(_this.rootData, 0, _this.data4[0]);
             })
 
             bridge.$on('newRootFolder',(val)=>{
-                _this.appendfolder(_this.rootData, 0, _this.rootData[0].node);
+                _this.appendfolder(_this.rootData, 0, _this.data4[0]);
             })
 
             bridge.$on('AllFile',(CallBack)=>{
