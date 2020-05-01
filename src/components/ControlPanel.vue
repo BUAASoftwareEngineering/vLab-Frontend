@@ -258,6 +258,9 @@ import {bus} from './bus.js'
             }
         },
         mounted(){
+            bridge.$on('changeTree',(val)=>{
+                this.changeTree()                
+            }),
             bridge.$on('add',(path_label)=>{
                 if(!this.tabsMap.hasOwnProperty(path_label[0])){
                     this.handleTabsAdd(path_label[0],path_label[1], path_label[2]);

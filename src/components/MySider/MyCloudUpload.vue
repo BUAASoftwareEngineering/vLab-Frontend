@@ -11,8 +11,7 @@
         <br>
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
-                <Upload 
-                
+                <Upload                 
                 :before-upload="handleBeforeUpload"
                 action="">
                     <Button type="primary" style="border-radius: 0.4vh; margin: 0 auto; width:200px">上传文件到Notebook...</Button>
@@ -81,6 +80,8 @@ export default {
                            if(response.code==0){
                             //    console.log('上传成功')
                                bridge.$emit('uploadFile',filename)
+                                           bridge.$emit('changeTree')
+
                            }else if(response.code==-101){
                                 _this.$Message.error('cookie验证失败')
                                 _this.$router.push('/')
@@ -107,7 +108,8 @@ export default {
                 return true
             })
             
-        }
+        },
+       
     }
 }
 </script>
