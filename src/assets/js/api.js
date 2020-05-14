@@ -17,10 +17,10 @@ function get_request(url, callback) {
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
             if (url.split('?')[0] == server + '/file/download') {
-                console.log(new Buffer(data.currentTarget.response))
+                // console.log(new Buffer(data.currentTarget.response))
                 //downloadFile(data.currentTarget.response, 'file.zip')
             } else {
-                console.log('get success')
+                // console.log('get success')
                 var obj = {}
                 try {
                     obj = eval("("+http.responseText+")")
@@ -44,9 +44,9 @@ function get_request(url, callback) {
                 callback(obj)
             }
         } else if (http.readyState == 4) {
-            console.log('get fail')
+            // console.log('get fail')
             let code = (http.status == 0) ? -100 : http.status
-            console.log(http.responseText)
+            // console.log(http.responseText)
             var obj = {
                 code: code,
                 message: "Http request fail!",
@@ -70,12 +70,12 @@ function post_request(url, data, callback) {
     http.send(data)
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
-            console.log('post success')
+            // console.log('post success')
             var obj = {}
             try {
                 obj = eval("("+http.responseText+")")
             } catch (err) {
-                console.log(http.responseText)
+                // console.log(http.responseText)
             }
             // console.log(http.getResponseHeader('Set-Cookie'))
             // console.log(document.cookie.length)
@@ -91,8 +91,8 @@ function post_request(url, data, callback) {
             // console.log(document.cookie)
             callback(obj)
         } else if (http.readyState == 4) {
-            console.log('post fail')
-            console.log(http.responseText)
+            // console.log('post fail')
+            // console.log(http.responseText)
             let code = (http.status == 0) ? -100 : http.status
             var obj = {
                 code: code,

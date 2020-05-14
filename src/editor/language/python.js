@@ -35,13 +35,13 @@ export function getPythonReady(editor, BASE_DIR, url) {
         rootUri: BASE_DIR
     });
 
-    console.log("using Web Socket URL = ", url);
+    // console.log("using Web Socket URL = ", url);
     if (!connected) {
         const webSocket = createWebSocket(url);
         listen({
             webSocket,
             onConnection: connection => {
-                console.log("onConnection!")
+                // console.log("onConnection!")
                 connected = true;
                 // create and start the language client
                 const languageClient = createLanguageClient(connection);

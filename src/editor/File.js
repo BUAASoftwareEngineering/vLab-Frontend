@@ -38,9 +38,9 @@ export async function openFile(project_id, filePath, fileDir, wsUrl, newlyCreate
         return editor;
     } else {
         let file_content = await new Promise((resolve) => {
-            console.log("getting file content @ ", project_id, filePath);
+            // console.log("getting file content @ ", project_id, filePath);
             webapi.default.file_content(project_id, filePath, (obj) => {
-                console.log("file_content: ", obj);
+                // console.log("file_content: ", obj);
                 resolve(obj);
             });
         });
@@ -54,7 +54,7 @@ export async function saveFile(project_id, editor, filePath) {
 
     let file_update = await new Promise((resolve) => {
         webapi.default.file_update(project_id, filePath, content, (obj) => {
-            console.log("file_update: ", obj);
+            // console.log("file_update: ", obj);
             resolve(obj);
         });
     });

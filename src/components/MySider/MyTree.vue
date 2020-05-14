@@ -63,7 +63,7 @@ import bridge from '../bridge'
             },
              projectid: function(newVal, oldVal){
                 this.projectId = newVal;
-                console.log("projectid"+this.projectId);
+                // console.log("projectid"+this.projectId);
                 var _this=this
                 this.$Spin.show()
               //  var timer = setInterval(function(){
@@ -71,7 +71,7 @@ import bridge from '../bridge'
                     _this.$Spin.hide()
                     if(response.code==0){
                         _this.$set(_this.data4[0], 'children', _this.clearFileData(response.data));
-                        console.log(newVal+ "获得文件长度"+response.data.length)
+                        // console.log(newVal+ "获得文件长度"+response.data.length)
                        // clearInterval(timer);
                     }else if(response.code==-101){
                         _this.$Message.error('cookie验证失败')
@@ -522,10 +522,10 @@ import bridge from '../bridge'
                             var _this=this
                             this.$Spin.show()
                             if (_this.copyInfo.children == undefined) {
-                                console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
+                                // console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
                                 api.file_copy(_this.projectId, originPath+_this.copyInfo.title, targetPath+_this.copyInfo.title, false, function(response){
                                     _this.$Spin.hide();
-                                    console.log("粘贴返回"+response.code)
+                                    // console.log("粘贴返回"+response.code)
                                     if (response.code == 0) {
                                         if (data.children == undefined) {
                                             //若粘贴目标为文件
@@ -557,7 +557,7 @@ import bridge from '../bridge'
                                             onOk:() => {
                                                 api.file_copy(_this.projectId, originPath+_this.copyInfo.title, targetPath+_this.copyInfo.title, true, function(response){
                                                     _this.$Spin.hide();
-                                                    console.log("粘贴返回"+response.code)
+                                                    // console.log("粘贴返回"+response.code)
                                                     if (response.code == 0) {
                                                         if (data.children == undefined) {
                                                             //若粘贴目标为文件
@@ -596,10 +596,10 @@ import bridge from '../bridge'
                                     }
                                 })
                             } else {
-                                console.log("文件夹从目录"+ originPath +"移动到目录"+targetPath+_this.copyInfo.title+"/")
+                                // console.log("文件夹从目录"+ originPath +"移动到目录"+targetPath+_this.copyInfo.title+"/")
                                 api.dir_copy(_this.projectId, originPath, targetPath+_this.copyInfo.title+"/", false, function(response){
                                     _this.$Spin.hide();
-                                    console.log("粘贴返回"+response.code)
+                                    // console.log("粘贴返回"+response.code)
                                     if (response.code == 0) {
                                         if (data.children == undefined) {
                                             //若粘贴目标为文件
@@ -631,7 +631,7 @@ import bridge from '../bridge'
                                             onOk:() => {
                                                 api.dir_copy(_this.projectId, originPath, targetPath+_this.copyInfo.title+"/", true, function(response){
                                                     _this.$Spin.hide();
-                                                    console.log("粘贴返回"+response.code)
+                                                    // console.log("粘贴返回"+response.code)
                                                     if (response.code == 0) {
                                                         if (data.children == undefined) {
                                                             //若粘贴目标为文件
@@ -675,10 +675,10 @@ import bridge from '../bridge'
                         var _this=this
                         this.$Spin.show()
                         if (_this.copyInfo.children == undefined) {
-                            console.log("文件从目录"+originPath+_this.copyInfo.title+"剪切到目录"+targetPath+_this.copyInfo.title)
+                            // console.log("文件从目录"+originPath+_this.copyInfo.title+"剪切到目录"+targetPath+_this.copyInfo.title)
                             api.file_move(_this.projectId, originPath+_this.copyInfo.title, targetPath+_this.copyInfo.title, false, function(response){
                                 _this.$Spin.hide();
-                                console.log("粘贴返回"+response.code)
+                                // console.log("粘贴返回"+response.code)
                                 if (response.code == 0) {
                                     
                                     var IDmap = {};
@@ -715,7 +715,7 @@ import bridge from '../bridge'
                                         onOk:() => {
                                             api.file_move(_this.projectId, originPath+_this.copyInfo.title, targetPath+_this.copyInfo.title, true, function(response){
                                                 _this.$Spin.hide();
-                                                console.log("粘贴返回"+response.code)
+                                                // console.log("粘贴返回"+response.code)
                                                 if (response.code == 0) {
                                                     var IDmap = {};
                                                     IDmap[originPath+_this.copyInfo.title] = [targetPath+_this.copyInfo.title, _this.copyInfo.title, '/code/'];
@@ -758,10 +758,10 @@ import bridge from '../bridge'
                                 }
                             })
                         } else {
-                            console.log("文件夹从目录"+originPath+"剪切到目录"+targetPath+_this.copyInfo.title+"/")
+                            // console.log("文件夹从目录"+originPath+"剪切到目录"+targetPath+_this.copyInfo.title+"/")
                             api.dir_move(_this.projectId, originPath, targetPath+_this.copyInfo.title+"/", false, function(response){
                                 _this.$Spin.hide();
-                                console.log("粘贴返回"+response.code)
+                                // console.log("粘贴返回"+response.code)
                                 if (response.code == 0) {
                                     var leaves = _this.getLeafPath(root, _this.copyInfo.nodeKey);
                                     var IDmap = {};
@@ -804,7 +804,7 @@ import bridge from '../bridge'
                                         onOk:() => {
                                             api.dir_move(_this.projectId, originPath, targetPath+_this.copyInfo.title+"/", true, function(response){
                                                 _this.$Spin.hide();
-                                                console.log("粘贴返回"+response.code)
+                                                // console.log("粘贴返回"+response.code)
                                                 if (response.code == 0) {
                                                     var leaves = _this.getLeafPath(root, _this.copyInfo.nodeKey);
                                                     var IDmap = {};
@@ -876,12 +876,12 @@ import bridge from '../bridge'
                 }
                 var _this=this
                 this.$Spin.show()
-                console.log(this.projectId + "当前新建文件》》" + "/code/" + path +"新建文件");
+                // console.log(this.projectId + "当前新建文件》》" + "/code/" + path +"新建文件");
                 api.file_new(this.projectId, "/code/" + path + "新建文件", function(response){
                     _this.$Spin.hide()
                     console.log("response.code:" + response.code);
                     if(response.code==0){
-                        console.log("当前新建文件》》" + "/code/" + path + "新建文件");
+                        // console.log("当前新建文件》》" + "/code/" + path + "新建文件");
                         const children = data.children || [];
                         children.push({
                             title: '新建文件'
@@ -922,12 +922,12 @@ import bridge from '../bridge'
                 }
                 var _this=this
                 this.$Spin.show()
-                console.log(this.projectId + "当前新建文件夹》》" + "/code/" + path + "新建文件夹/");
+                // console.log(this.projectId + "当前新建文件夹》》" + "/code/" + path + "新建文件夹/");
                 api.dir_new(this.projectId, "/code/" + path + "新建文件夹/", function(response){
                     _this.$Spin.hide();
-                    console.log("response.code:" + response.code);
+                    // console.log("response.code:" + response.code);
                     if(response.code==0){
-                        console.log("当前新建文件夹》》" + "/code/" + path + "新建文件夹/");
+                        // console.log("当前新建文件夹》》" + "/code/" + path + "新建文件夹/");
                         const children = data.children || [];
                         children.push({
                             title: '新建文件夹',
@@ -978,10 +978,10 @@ import bridge from '../bridge'
                         var _this = this
                         this.$Spin.show()
                         if (data.children != undefined){
-                            console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
+                            // console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
                             api.dir_delete(this.projectId, "/code/" + path + data.title + "/", function(response){
                                 _this.$Spin.hide()
-                                console.log("response.code:" + response.code);
+                                // console.log("response.code:" + response.code);
                                 if(response.code==0){
                                     var parentKey = root.find(el => el.nodeKey === nodekey).parent;
                                     var parent = root.find(el => el.nodeKey === parentKey).node;
@@ -989,7 +989,7 @@ import bridge from '../bridge'
                                     parent.children.splice(index, 1);
                                     _this.$Message.info('删除成功');
 
-                                    console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
+                                    // console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
 
                                     var leaves = _this.getLeafPath(root, nodekey);
                                     var oldID = [];
@@ -1008,17 +1008,17 @@ import bridge from '../bridge'
                             })
                             
                         } else {
-                            console.log("当前删除文件》》" + "/code/" + path + data.title);
+                            // console.log("当前删除文件》》" + "/code/" + path + data.title);
                             api.file_delete(this.projectId, "/code/" + path + data.title, function(response){
                                 _this.$Spin.hide()
-                                console.log("response.code:" + response.code);
+                                // console.log("response.code:" + response.code);
                                 if(response.code==0){
                                     var parentKey = root.find(el => el.nodeKey === nodekey).parent;
                                     var parent = root.find(el => el.nodeKey === parentKey).node;
                                     const index = parent.children.indexOf(data);
                                     parent.children.splice(index, 1);
                                     _this.$Message.info('删除成功');
-                                    console.log("当前删除文件》》" + "/code/" + path + data.title);
+                                    // console.log("当前删除文件》》" + "/code/" + path + data.title);
 
                                     bridge.$emit('deleteFile', '/code/'+ path + data.title);
                                 }else if(response.code==-101){
@@ -1061,10 +1061,10 @@ import bridge from '../bridge'
                         var _this=this
                         this.$Spin.show()
                         if (data.children != undefined){
-                            console.log(this.projectId + "当前修改文件夹》》" + "/code/" + path + data.title+"/为"+"/code/"+path+this.inputContent+"/");
+                            // console.log(this.projectId + "当前修改文件夹》》" + "/code/" + path + data.title+"/为"+"/code/"+path+this.inputContent+"/");
                             api.dir_rename(this.projectId, "/code/" + path + data.title+"/", "/code/"+path+this.inputContent+"/", function(response){
                                 _this.$Spin.hide()
-                                console.log("response.code:" + response.code);
+                                // console.log("response.code:" + response.code);
                                 if(response.code==0){
                                     var leaves = _this.getLeafPath(root, nodekey);
                                     var IDmap = {};
@@ -1097,10 +1097,10 @@ import bridge from '../bridge'
                                 }
                             })
                         } else {
-                            console.log(this.projectId + "当前修改文件》》" + "/code/" + path + data.title+"为"+"/code/"+path+this.inputContent);
+                            // console.log(this.projectId + "当前修改文件》》" + "/code/" + path + data.title+"为"+"/code/"+path+this.inputContent);
                             api.file_rename(this.projectId, "/code/" + path + data.title, "/code/"+path+this.inputContent, function(response){
                                 _this.$Spin.hide()
-                                console.log("response.code:" + response.code);
+                                // console.log("response.code:" + response.code);
                                 if(response.code==0){
                                     var oldID = '/code/' + path + data.title;
                                     var newID = '/code/' + path + _this.inputContent;
@@ -1171,7 +1171,7 @@ import bridge from '../bridge'
             },
             // 点击Tree节点触发
             handleClickTreeNode(root, nodekey, data){  
-                console.log("当前点击》》"+data.title);
+                // console.log("当前点击》》"+data.title);
                 this.nodeInfo = data;
                 if (data.children == undefined) {
                     var path = "";
@@ -1193,11 +1193,11 @@ import bridge from '../bridge'
         mounted(){
             var _this = this;
             bridge.$on('newRootFile',(val)=>{
-                _this.appendfile(_this.rootData, 0, _this.rootData[0].node);
+                _this.appendfile(_this.rootData, 0, _this.data4[0]);
             })
 
             bridge.$on('newRootFolder',(val)=>{
-                _this.appendfolder(_this.rootData, 0, _this.rootData[0].node);
+                _this.appendfolder(_this.rootData, 0, _this.data4[0]);
             })
 
             bridge.$on('AllFile',(CallBack)=>{
@@ -1209,7 +1209,7 @@ import bridge from '../bridge'
                 bridge.$emit('ReturnAllFile',_this.doculist);
             }),
            bridge.$on('uploadFile', (fileName)=>{
-                console.log('接收上传文件'+fileName)
+                // console.log('接收上传文件'+fileName)
                 /*
                 const children = _this.rootData[0].children || [];
                 children.push({
