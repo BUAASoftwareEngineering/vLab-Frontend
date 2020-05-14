@@ -17,7 +17,7 @@ export function getCppReady(editor, BASE_DIR, url) {
     });
 
     monaco.languages.registerCompletionItemProvider('cpp', {
-        provideCompletionItems: function(model, position) {
+        provideCompletionItems: function (model, position) {
             var word = model.getWordUntilPosition(position);
             var range = {
                 startLineNumber: position.lineNumber,

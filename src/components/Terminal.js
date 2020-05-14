@@ -10,11 +10,11 @@ that.socketURL = 'ws://120.53.27.31:'
 that.project = {}
 
 function mounted(project, div_id) {
-    that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
-    that.project = project
-    that.div_id = div_id
-    that.project.name = 'vlab_project'
-    initSocket()
+  that.socketURL = 'ws://' + project.ip + ':' + project.terminalPort
+  that.project = project
+  that.div_id = div_id
+  that.project.name = 'vlab_project'
+  initSocket()
 }
 
 function beforeDestroy() {
@@ -35,8 +35,8 @@ function initTerm() {
   const term = new Terminal({
     fontSize: 14,
     cursorBlink: true,
-    scrollback: 800, 
-    tabStopWidth: 8, 
+    scrollback: 800,
+    tabStopWidth: 8,
     screenKeys: true,
     theme: {
       foreground: that.project.foreground, //字体
@@ -58,7 +58,7 @@ function initTerm() {
   // runcommand('pkill python3')
   // runcommand('clear')
   runcommand('cd /code/ && clear')
-  window.onresize = function() {
+  window.onresize = function () {
     fit()
   }
 }
@@ -84,17 +84,17 @@ function setcolor(setting) {
 }
 
 function initSocket() {
-    that.socket = new WebSocket(that.socketURL)
+  that.socket = new WebSocket(that.socketURL)
+  socketOnClose();
+  socketOnOpen();
+  socketOnError();
+  that.timer = setInterval(function () {
+    that.socket = new WebSocket(that.socketURL);
     socketOnClose();
     socketOnOpen();
     socketOnError();
-    that.timer = setInterval(function() {
-      that.socket = new WebSocket(that.socketURL);
-      socketOnClose();
-      socketOnOpen();
-      socketOnError();
-    }, 2000)
-    
+  }, 2000)
+
   //   that.socket.onmessage = () => {
   //       that.term.resize()
   //   }
@@ -105,23 +105,23 @@ function runcommand(command) {
 }
 
 function socketOnOpen() {
-    that.socket.onopen = () => {
-      clearInterval(that.timer)
-      // 链接成功后
-      initTerm()
-    }
+  that.socket.onopen = () => {
+    clearInterval(that.timer)
+    // 链接成功后
+    initTerm()
+  }
 }
 
 function socketOnClose() {
-    that.socket.onclose = () => {
-      // console.log('close socket')
-    }
+  that.socket.onclose = () => {
+    // console.log('close socket')
+  }
 }
 
 function socketOnError() {
-    that.socket.onerror = () => {
-      // console.log('socket 链接失败')
-    }
+  that.socket.onerror = () => {
+    // console.log('socket 链接失败')
+  }
 }
 
 function fit() {
@@ -133,7 +133,7 @@ function fit() {
 async function gen_build(id, name, sources) {
   let base = '/build/'
   let content = 'cmake_minimum_required(VERSION 3.10)\n\n'
-  content = await new Promise ((resolve) => {
+  content = await new Promise((resolve) => {
     api.dir_new(id, base, function () {
       // console.log("1")
       content += 'project(' + name + ')\n\n'
@@ -148,13 +148,13 @@ async function gen_build(id, name, sources) {
       resolve(content)
     })
   })
-  await new Promise ((resolve) => {
+  await new Promise((resolve) => {
     api.file_new(id, base + 'CMakeLists.txt', function (obj) {
       // console.log("2")
       resolve(obj)
     })
   })
-  await new Promise ((resolve) => {
+  await new Promise((resolve) => {
     api.file_update(id, base + 'CMakeLists.txt', content, function (obj) {
       // console.log("3")
       // console.log(obj)
@@ -168,7 +168,7 @@ async function gen_build(id, name, sources) {
   })
   await new Promise((resolve) => {
     content = '#!/bin/bash\n\nnow=`pwd`\ncd /build/ && cmake CMakeLists.txt && make\ncd $now\n'
-    api.file_update(id, base + 'Compile.sh', content, function(obj) {
+    api.file_update(id, base + 'Compile.sh', content, function (obj) {
       resolve(obj)
     })
   })
@@ -197,7 +197,7 @@ async function compile(submit) {
   return ret
 }
 
-function run (submit) {
+function run(submit) {
   submit.type = that.project.imageType
   let command = ''
   // that.term.writeln('Run project begin ...')

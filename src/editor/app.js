@@ -32,7 +32,7 @@ export class MonacoApp {
 		return editor;
 	}
 
-	closeEditor(editor){
+	closeEditor(editor) {
 		this.model2editor.delete(editor.getModel());
 
 	}
@@ -50,7 +50,7 @@ function overrideMonaco() {
 
 	StandaloneCodeEditorServiceImpl.prototype.doOpenEditor = async function (editor, input) {
 		let foundedModel = monaco.editor.getModel(input.resource);
-		
+
 		// console.log("foundedModel @ Go To Definition = ", foundedModel);
 		// console.log(MonacoAppSingleton.model2editor);
 		if (!foundedModel || !MonacoAppSingleton.model2editor.get(foundedModel)) {
@@ -62,9 +62,9 @@ function overrideMonaco() {
 			let filePath = input.resource.path;
 			let temp = filePath.split('/');
 			let label = temp[temp.length - 1];
-			bridge.$emit('overrideMonaco',[filePath, label]);
-			var editor = await new Promise((resolve)=>{
-				bridge.$on('overrideMonacoReturn',(myEditor)=>{
+			bridge.$emit('overrideMonaco', [filePath, label]);
+			var editor = await new Promise((resolve) => {
+				bridge.$on('overrideMonacoReturn', (myEditor) => {
 					myEditor.focus();
 					position(myEditor, input);
 					resolve(myEditor);
@@ -75,18 +75,18 @@ function overrideMonaco() {
 			let filePath = input.resource.path;
 			let temp = filePath.split('/');
 			let label = temp[temp.length - 1];
-			bridge.$emit('add',[filePath, label, '/code/']);
+			bridge.$emit('add', [filePath, label, '/code/']);
 
 			var editor = MonacoAppSingleton.model2editor.get(foundedModel);
 			editor.focus();
 			position(editor, input);
 		}
-		
+
 		return editor;
 	};
 }
 
-function position(editor, input){
+function position(editor, input) {
 	var selection = input.options.selection;
 	if (selection) {
 		if (typeof selection.endLineNumber === 'number' && typeof selection.endColumn === 'number') {

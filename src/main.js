@@ -11,7 +11,7 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 Vue.config.productionTip = false
 Vue.use(ViewUI) //使用iview组件 
- 
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
