@@ -36,7 +36,7 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click="compileAndRun"
+          @click="click_compile_run"
         >编译并运行</Button>
       </Col>
     </Row>
@@ -52,7 +52,7 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click="compile"
+          @click="click_compile"
         >编译</Button>
       </Col>
     </Row>
@@ -62,7 +62,7 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click="run"
+          @click="click_run"
         >运行</Button>
       </Col>
     </Row>
@@ -111,6 +111,18 @@ export default {
     },
     openSetting() {
       bridge.$emit("openSetting");
+    },
+    async click_compile() {
+      terminal.ctrlc()
+      this.compile()
+    },
+    async click_run() {
+      terminal.ctrlc()
+      this.run()
+    },
+    async click_compile_run() {
+      terminal.ctrlc()
+      this.compileAndRun()
     },
     async compile() {
       let ret = "compile";
