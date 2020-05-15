@@ -29,3 +29,10 @@ npm run build
 ```
 Then set the website root to `vLab-Frontend/dist/` and setup local server with Apache.
 
+## Instructions
+
+Please review our  [welcome.md](https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md)
+
+## Contributing
+
+Please review our [contribution guidelines](https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/contributing.md).
