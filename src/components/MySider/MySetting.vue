@@ -10,8 +10,18 @@
     </Row>
 
     <template v-for="file in Files">
-      <Checkbox :id="file" :key="file" @on-change="changeState(file)" :value="Show[file]">
-        <label style="color:white">{{file}}</label>
+      <Checkbox
+        :id="file"
+        :key="file"
+        @on-change="changeState(file)"
+        :value="Show[file]"
+        style="margin-left:10%;"
+      >
+        <label
+          style="color:white;line-height:30px;font-family: Consolas;"
+        >{{file.split('/').reverse()[0]}}</label>
+
+        <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
     </template>
 
@@ -47,12 +57,7 @@
       </Col>
     </Row>
 
-    <Row 
-    type="flex" 
-    justify="center" 
-    align="middle" 
-    style="margin-top: 10px;"
-    >
+    <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
       <Col :span="24" style="text-align:center">
         <Button
           type="primary"
@@ -88,6 +93,15 @@ export default {
       Show: {},
       pythonMark: false
     };
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 27) {
+        return value.slice(0, 27) + "...";
+      }
+      return value;
+    }
   },
   methods: {
     changeState(data) {
