@@ -1,5 +1,5 @@
 <template>
-  <Layout style="background-color: #808695">
+  <Layout style="background-color: #808695;width:250px;">
     <Row>
       <Col span="24">
         <Card style="border-radius: 0vh">
@@ -10,19 +10,62 @@
     </Row>
 
     <template v-for="file in Files">
-      <Checkbox :id="file" :key="file" @on-change="changeState(file)" :value="Show[file]">
-        <label style="color:white">{{file}}</label>
+      <Checkbox
+        :id="file"
+        :key="file"
+        @on-change="changeState(file)"
+        :value="Show[file]"
+        style="margin-left:10%;"
+      >
+        <label
+          style="color:white;line-height:30px;font-family: Consolas;"
+        >{{file.split('/').reverse()[0]}}</label>
+
+        <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
     </template>
-    <button @click="compileAndRun" v-if="pythonMark==false">
-      <p>编译并运行</p>
-    </button>
-    <button @click="compile" v-if="pythonMark==false">
-      <p>编译</p>
-    </button>
-    <button @click="run">
-      <p>运行</p>
-    </button>
+
+    <Row
+      type="flex"
+      justify="center"
+      align="middle"
+      style="margin-top: 10px;"
+      v-if="pythonMark==false"
+    >
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="compileAndRun"
+        >编译并运行</Button>
+      </Col>
+    </Row>
+
+    <Row
+      type="flex"
+      justify="center"
+      align="middle"
+      style="margin-top: 10px;"
+      v-if="pythonMark==false"
+    >
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="compile"
+        >编译</Button>
+      </Col>
+    </Row>
+
+    <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="run"
+        >运行</Button>
+      </Col>
+    </Row>
   </Layout>
 </template>
 <script>
@@ -50,6 +93,15 @@ export default {
       Show: {},
       pythonMark: false
     };
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 27) {
+        return value.slice(0, 27) + "...";
+      }
+      return value;
+    }
   },
   methods: {
     changeState(data) {
