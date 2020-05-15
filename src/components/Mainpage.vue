@@ -23,7 +23,8 @@ export default {
     data () {
         return {
             split2: 0.7,
-            test1place: ''
+            test1place: '',
+            Terminal: Terminal
         }
     },
     mounted() {
