@@ -1,5 +1,5 @@
 <template>
-  <Layout style="background-color: #808695">
+  <Layout style="background-color: #808695;width:250px;">
     <Row>
       <Col span="24">
         <Card style="border-radius: 0vh">
