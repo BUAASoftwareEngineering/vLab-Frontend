@@ -179,6 +179,7 @@ async function compile(submit) {
   submit.type = that.project.imageType
   let ret = undefined
   that.term.writeln('Compile project begin ...')
+  ctrlc()
   switch (submit.type) {
     case api.CPP:
       ret = await gen_build(that.project.projectId, that.project.name, submit.sources)
@@ -197,10 +198,15 @@ async function compile(submit) {
   return ret
 }
 
+function ctrlc() {
+  that.socket.send(new TextEncoder().encode('\x00\x03'))
+}
+
 function run (submit) {
   submit.type = that.project.imageType
   let command = ''
   // that.term.writeln('Run project begin ...')
+  ctrlc()
   switch (submit.type) {
     case api.CPP:
       command = '/build/' + that.project.name
@@ -230,5 +236,7 @@ export default {
   fit,
   run,
   compile,
-  setcolor
+  setcolor,
+  runcommand,
+  ctrlc
 }

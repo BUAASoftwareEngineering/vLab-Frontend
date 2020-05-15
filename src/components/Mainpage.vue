@@ -6,6 +6,7 @@
                 <button @click="test1()">cpp_test</button>
                 <button @click="test2()">python_test</button>
                 <button @click="setcolor()">setcolor</button>
+                <button @click="clear()">clear</button>
             </div>
             <div slot="bottom" class="demo-split-pane" style="width: 100%; height: 100%" id="shell">
 
@@ -31,8 +32,8 @@ export default {
         console.log('wenhao')
         Terminal.mounted({
             projectId : 145,
-            terminalPort : '33077',
-            ip : '120.53.27.31',
+            terminalPort : '4000',
+            ip : 'localhost',
             name : 'pp'
         }, 'shell')
     },
@@ -62,6 +63,9 @@ export default {
                 foreground : 'black',
                 cursor : 'black'
             })
+        },
+        clear() {
+            Terminal.ctrlc()
         }
     }
 }
