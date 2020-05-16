@@ -2,7 +2,8 @@
 <template>
   <div id="menubar">
     <Layout>
-      <Header style="height: '4vh', padding: '0'">
+      <Header style="height: '4vh', padding: '0'" width="80%">
+        <!--
         <Dropdown placement="bottom-start" transfer trigger="click" style="padding: 0vh">
           <Button type="primary" style="min-width: 9vh">文件</Button>
           <DropdownMenu slot="list" style="min-width: 20vh; overflow:hidden">
@@ -29,9 +30,6 @@
               复制
               <span style="float: right">Ctrl+C</span>
             </DropdownItem>
-            <!--  <DropdownItem  @click.native='paste(editorMap[currentTab])'>粘贴<span style="float: right">Ctrl+Y</span></DropdownItem>
-                    
-            <DropdownItem>粘贴<span style="float: right">Ctrl+V</span></DropdownItem>-->
             <DropdownItem divided @click.native="search(editorMap[currentTab])">
               查找
               <span style="float: right">Ctrl+F</span>
@@ -102,11 +100,164 @@
             <DropdownItem @click.native="toIssue">问题反馈</DropdownItem>
           </DropdownMenu>
         </Dropdown>
+        -->
+        <Menu
+          mode="horizontal"
+          :theme="Menutheme"
+          active-name="1"
+          style="height:100%;line-height:40px;padding: 0px;"
+          width="300px"
+        >
+          <MenuItem
+            name="10"
+            style="pointer-events:none;font-family: Consolas;"
+          >项目: {{ this.projectname }}</MenuItem>
+          <Submenu name="1">
+            <template slot="title">
+              <Icon type="ios-document" />文件
+            </template>
+            <MenuGroup title="新建">
+              <MenuItem name="1-1" @click.native="newFile()">
+                <div style="width:100px">新建文件</div>
+              </MenuItem>
+              <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
+            </MenuGroup>
+          </Submenu>
+          <Submenu name="2">
+            <template slot="title">
+              <Icon type="ios-create" />编辑
+            </template>
+            <MenuGroup title="修改">
+              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])">
+                <div style="width:200px">
+                  撤销
+                  <span style="float: right">Ctrl+Z</span>
+                </div>
+              </MenuItem>
+              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])">
+                恢复
+                <span style="float: right">Ctrl+Shift+Z</span>
+              </MenuItem>
+              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])">
+                剪切
+                <span style="float: right">Ctrl+X</span>
+              </MenuItem>
+              <MenuItem name="2-4" @click.native="copy(editorMap[currentTab])">
+                复制
+                <span style="float: right">Ctrl+C</span>
+              </MenuItem>
+            </MenuGroup>
+            <MenuGroup title="查找">
+              <MenuItem name="2-5" @click.native="search(editorMap[currentTab])">
+                查找
+                <span style="float: right">Ctrl+F</span>
+              </MenuItem>
+              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])">
+                替换
+                <span style="float: right">Ctrl+H</span>
+              </MenuItem>
+            </MenuGroup>
+          </Submenu>
+          <Submenu name="3">
+            <template slot="title">
+              <Icon type="ios-code-working" />代码操作
+            </template>
+            <MenuGroup title="折叠">
+              <MenuItem name="3-1" @click.native="fold(editorMap[currentTab])">
+                <div style="width:250px;">
+                  折叠当前位置
+                  <span style="float: right">Ctrl+-</span>
+                </div>
+              </MenuItem>
+              <MenuItem name="3-2" @click.native="unfold(editorMap[currentTab])">
+                展开当前位置
+                <span style="float: right">Ctrl+=</span>
+              </MenuItem>
+              <MenuItem name="3-3" @click.native="foldRecursively(editorMap[currentTab])">
+                从当前位置递归折叠
+                <span style="float: right">Alt+Ctrl+-</span>
+              </MenuItem>
+              <MenuItem name="3-4" @click.native="unfoldRecursively(editorMap[currentTab])">
+                从当前位置递归展开
+                <span style="float: right">Alt+Ctrl+=</span>
+              </MenuItem>
+              <MenuItem name="3-5" @click.native="foldAll(editorMap[currentTab])">
+                折叠全部
+                <span style="float: right">Ctrl+Shift+-</span>
+              </MenuItem>
+              <MenuItem name="3-6" @click.native="unfoldAll(editorMap[currentTab])">
+                展开全部
+                <span style="float: right">Ctrl+Shift+=</span>
+              </MenuItem>
+              <MenuItem name="3-5" @click.native="revealDefinition(editorMap[currentTab])">
+                转到声明/定义
+                <span style="float: right">Ctrl+D</span>
+              </MenuItem>
+              <MenuItem name="3-6" @click.native="referenceSearch(editorMap[currentTab])">
+                转到引用
+                <span style="float: right">Ctrl+Alt+D</span>
+              </MenuItem>
+            </MenuGroup>
+            <MenuGroup title="跳转">
+              <MenuItem name="3-5" @click.native="revealDefinition(editorMap[currentTab])">
+                转到声明/定义
+                <span style="float: right">Ctrl+D</span>
+              </MenuItem>
+              <MenuItem name="3-6" @click.native="referenceSearch(editorMap[currentTab])">
+                转到引用
+                <span style="float: right">Ctrl+Alt+D</span>
+              </MenuItem>
+            </MenuGroup>
+          </Submenu>
+          <Submenu name="4">
+            <template slot="title">
+              <Icon type="ios-play" />运行
+            </template>
+            <MenuItem name="4-1" v-if="pythonMark==false">
+              <div style="width:150px">编译</div>
+            </MenuItem>
+            <MenuItem name="4-2">运行</MenuItem>
+            <MenuItem name="4-2" v-if="pythonMark==false">编译并运行</MenuItem>
+          </Submenu>
+          <Submenu name="5">
+            <template slot="title">
+              <Icon type="ios-list" />视图
+            </template>
+
+            <MenuItem name="5-1">
+              <div style="width:150px">显示/隐藏&ensp;行号</div>
+            </MenuItem>
+            <MenuItem name="5-2">显示/隐藏&ensp;迷你地图</MenuItem>
+          </Submenu>
+          <Submenu name="6">
+            <template slot="title">
+              <Icon type="ios-help-circle" />帮助
+            </template>
+            <MenuGroup title="使用">
+              <MenuItem name="6-1">
+                <div style="width:150px">发布说明</div>
+              </MenuItem>
+              <MenuItem name="6-2">帮助文档</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="反馈">
+              <MenuItem name="6-3">问题反馈</MenuItem>
+            </MenuGroup>
+          </Submenu>
+          <Button
+            type="primary"
+            style="min-width: 9vh; float: right; margin:3px"
+            @click="exitproject"
+          >退出项目</Button>
+        </Menu>
+        <!--
+<Switch v-model="themeSwitch" @on-change="changeTheme" />
         <Button
           type="primary"
           style="min-width: 9vh; float: right; margin:3px"
           @click="exitproject"
         >退出项目{{ this.projectname }}</Button>
+    
+        -->
       </Header>
     </Layout>
   </div>
@@ -155,6 +306,8 @@ export default {
   data() {
     return {
       projectId: 0,
+      Menutheme: "dark",
+      themeSwitch: false,
       editorMap: {},
       currentTab: "",
       LineNumberOnOff: true,
@@ -189,7 +342,7 @@ export default {
       if (this.projectId != 0) {
         var _this = this;
         this.$Spin.show();
-        // console.log("退出id为"+this.projectId)
+        console.log("退出id为" + this.projectId);
         api.project_exit(this.projectId, function(response) {
           _this.$Spin.hide();
           console.log("response.code:" + response.code);
@@ -289,6 +442,14 @@ export default {
       window.open(
         "https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues/53"
       );
+    },
+    changeTheme(status) {
+      if (status) {
+        this.Menutheme = "dark";
+      } else {
+        this.Menutheme = "light";
+      }
+      this.$Message.info("开关状态：" + status);
     }
   },
   beforeDestroy() {
@@ -312,21 +473,7 @@ export default {
   /* margin:-3px; */
   margin: -3px;
 }
-.ivu-layout-header {
-  height: 4vh;
-  line-height: 4vh;
-  padding: 0;
-}
-.layout {
-  border: 1px solid #d7dde4;
-  background: #f5f7f9;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.layout-header-bar {
-  background: #fff;
-}
+
 .demo-split {
   height: 200px;
   border: 1px solid #dcdee2;

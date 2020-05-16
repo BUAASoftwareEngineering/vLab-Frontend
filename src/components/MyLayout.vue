@@ -87,17 +87,13 @@ export default {
   text-align: middle;
 }
 .mymenu >>> .ivu-btn {
-  height: 3.6vh;
+  height: 4.0vh;
   margin-top: 0vh;
   margin-bottom: 0vh;
 }
 .mymenu >>> .ivu-dropdown {
   height: 3.6vh;
+  z-index: 999;
 }
-.mymenu >>> .ivu-select-dropdown {
-  overflow: hidden;
-  border-radius: 0vh;
-  max-height: 400px;
-  padding-bottom: 0px;
-}
+
 </style> 
