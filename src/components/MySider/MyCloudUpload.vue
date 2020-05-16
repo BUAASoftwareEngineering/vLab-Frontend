@@ -31,9 +31,13 @@
       <Modal
         v-model="gitUrlModal"
         title="请输入git仓库的url"
-        @on-ok="gitUrlModalOk"
-        @on-cancel="gitUrlModalCancel">
+        :footer-hide=true
+      >
         <Input v-model="gitUrl" icon="logo-github" placeholder="Enter url..." style="width: 100%" />
+        <div slot="footer">
+          <Button type="ghost">取消</Button>
+          <Button type="primary" @click="gitUrlModalOk">确定</Button>
+        </div>
       </Modal>
     </Row>
     <!--
@@ -52,6 +56,7 @@
 </template>
 
 <script>
+import { GiturlIsleagal } from "../../assets/js/checking.js";
 import terminal from "../Terminal";
 import api from "../../assets/js/api";
 import bridge from "../bridge";
@@ -132,13 +137,15 @@ export default {
     },
     async gitUrlModalOk() {
       console.log(this.gitUrl);
-      this.$Message.info('Click OK');
-      temp = "git clone " + this.gitUrl;
-      terminal.ctrlc();
-      await terminal.runcommand(temp);
-    },
-    gitUrlModalCancel() {
-      this.$Message.info('Clicked cancel');
+      if (GiturlIsleagal(this.gitUrl)) {
+        this.gitUrlModal = false;
+        this.$Message.info('Url OK');
+        temp = "git clone " + this.gitUrl;
+        terminal.ctrlc();
+        terminal.runcommand(temp);
+      } else {
+        this.$Message.error('Url illegal!');
+      }
     },
   }
 };
