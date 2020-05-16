@@ -569,419 +569,427 @@ export default {
           this.copyInfo.nodeKey,
           this.copyInfo
         ); //原文件所在目录或原文件夹的目录，以/结尾
-        if (this.copyflag) {
-          //复制行为
+        if (targetPath == originPath) {
           var _this = this;
-          this.$Spin.show();
-          if (_this.copyInfo.children == undefined) {
-            // console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
-            api.file_copy(
-              _this.projectId,
-              originPath + _this.copyInfo.title,
-              targetPath + _this.copyInfo.title,
-              false,
-              function(response) {
-                _this.$Spin.hide();
-                // console.log("粘贴返回"+response.code)
-                if (response.code == 0) {
-                  if (data.children == undefined) {
-                    //若粘贴目标为文件
-                    var parentKey = root[nodekey].parent;
-                    var parent = root[parentKey].node;
-                    const children = parent.children || [];
-                    var newnode = _this.deepcopy(_this.copyInfo);
-                    children.push(newnode);
-                    _this.$set(parent, "children", children);
-                    _this.sort(root, parent.children[0]);
-                  } else {
-                    //若粘贴目标为文件夹
-                    const children = data.children || [];
-                    var newnode = _this.deepcopy(_this.copyInfo);
-                    children.push(newnode);
-                    _this.$set(data, "children", children);
-                    _this.sort(root, data.children[0]);
-                  }
-                  _this.$Message.info("粘贴成功");
-                } else if (response.code == -101) {
-                  _this.$Message.error("cookie验证失败");
-                  _this.$router.push("/");
-                } else if (response.code == -102) {
-                  _this.$Message.error("权限不足");
-                } else if (response.code == -301) {
-                  _this.$Modal.confirm({
-                    title: "提示",
-                    content: "在目标文件夹中有同名文件，是否覆盖？",
-                    onOk: () => {
-                      api.file_copy(
-                        _this.projectId,
-                        originPath + _this.copyInfo.title,
-                        targetPath + _this.copyInfo.title,
-                        true,
-                        function(response) {
-                          _this.$Spin.hide();
-                          // console.log("粘贴返回"+response.code)
-                          if (response.code == 0) {
-                            if (data.children == undefined) {
-                              //若粘贴目标为文件
-                              var parentKey = root[nodekey].parent;
-                              var parent = root[parentKey].node;
-                              const children = parent.children || [];
-                              var newnode = _this.deepcopy(_this.copyInfo);
-                              children.push(newnode);
-                              _this.$set(parent, "children", children);
-                              _this.sort(root, parent.children[0]);
-                            } else {
-                              //若粘贴目标为文件夹
-                              const children = data.children || [];
-                              var newnode = _this.deepcopy(_this.copyInfo);
-                              children.push(newnode);
-                              _this.$set(data, "children", children);
-                              _this.sort(root, data.children[0]);
-                            }
-                            _this.$Message.info("粘贴成功");
-                          } else if (response.code == -101) {
-                            _this.$Message.error("cookie验证失败");
-                            _this.$router.push("/");
-                          } else if (response.code == -102) {
-                            _this.$Message.error("权限不足");
-                          } else {
-                            _this.$Message.error("未知错误");
-                          }
-                        }
-                      );
-                    },
-                    onCancel: () => {
-                      _this.$Message.info("取消");
-                    }
-                  });
-                } else {
-                  _this.$Message.error("未知错误");
-                }
-              }
-            );
-          } else {
-            // console.log("文件夹从目录"+ originPath +"移动到目录"+targetPath+_this.copyInfo.title+"/")
-            api.dir_copy(
-              _this.projectId,
-              originPath,
-              targetPath + _this.copyInfo.title + "/",
-              false,
-              function(response) {
-                _this.$Spin.hide();
-                // console.log("粘贴返回"+response.code)
-                if (response.code == 0) {
-                  if (data.children == undefined) {
-                    //若粘贴目标为文件
-                    var parentKey = root[nodekey].parent;
-                    var parent = root[parentKey].node;
-                    const children = parent.children || [];
-                    var newnode = _this.deepcopy(_this.copyInfo);
-                    children.push(newnode);
-                    _this.$set(parent, "children", children);
-                    _this.sort(root, parent.children[0]);
-                  } else {
-                    //若粘贴目标为文件夹
-                    const children = data.children || [];
-                    var newnode = _this.deepcopy(_this.copyInfo);
-                    children.push(newnode);
-                    _this.$set(data, "children", children);
-                    _this.sort(root, data.children[0]);
-                  }
-                  _this.$Message.info("粘贴成功");
-                } else if (response.code == -101) {
-                  _this.$Message.error("cookie验证失败");
-                  _this.$router.push("/");
-                } else if (response.code == -102) {
-                  _this.$Message.error("权限不足");
-                } else if (response.code == -301) {
-                  _this.$Modal.confirm({
-                    title: "提示",
-                    content: "在目标文件夹中有同名文件，是否覆盖？",
-                    onOk: () => {
-                      api.dir_copy(
-                        _this.projectId,
-                        originPath,
-                        targetPath + _this.copyInfo.title + "/",
-                        true,
-                        function(response) {
-                          _this.$Spin.hide();
-                          // console.log("粘贴返回"+response.code)
-                          if (response.code == 0) {
-                            if (data.children == undefined) {
-                              //若粘贴目标为文件
-                              var parentKey = root[nodekey].parent;
-                              var parent = root[parentKey].node;
-                              const children = parent.children || [];
-                              var newnode = _this.deepcopy(_this.copyInfo);
-                              children.push(newnode);
-                              _this.$set(parent, "children", children);
-                              _this.sort(root, parent.children[0]);
-                            } else {
-                              //若粘贴目标为文件夹
-                              const children = data.children || [];
-                              var newnode = _this.deepcopy(_this.copyInfo);
-                              children.push(newnode);
-                              _this.$set(data, "children", children);
-                              _this.sort(root, data.children[0]);
-                            }
-                            _this.$Message.info("粘贴成功");
-                          } else if (response.code == -101) {
-                            _this.$Message.error("cookie验证失败");
-                            _this.$router.push("/");
-                          } else if (response.code == -102) {
-                            _this.$Message.error("权限不足");
-                          } else {
-                            _this.$Message.error("未知错误");
-                          }
-                        }
-                      );
-                    },
-                    onCancel: () => {
-                      _this.$Message.info("取消");
-                    }
-                  });
-                } else {
-                  _this.$Message.error("未知错误");
-                }
-              }
-            );
-          }
+          _this.$Message.error("粘贴到了同一路径下！");
         } else {
-          //剪切行为
-          var _this = this;
-          this.$Spin.show();
-          if (_this.copyInfo.children == undefined) {
-            // console.log("文件从目录"+originPath+_this.copyInfo.title+"剪切到目录"+targetPath+_this.copyInfo.title)
-            api.file_move(
-              _this.projectId,
-              originPath + _this.copyInfo.title,
-              targetPath + _this.copyInfo.title,
-              false,
-              function(response) {
-                _this.$Spin.hide();
-                // console.log("粘贴返回"+response.code)
-                if (response.code == 0) {
-                  var IDmap = {};
-                  IDmap[originPath + _this.copyInfo.title] = [
-                    targetPath + _this.copyInfo.title,
-                    _this.copyInfo.title,
-                    "/code/"
-                  ];
-                  bridge.$emit("renameFile", IDmap);
-
-                  _this.removenode(
-                    root,
-                    _this.copyInfo.nodeKey,
-                    _this.copyInfo
-                  );
-                  if (data.children == undefined) {
-                    //若粘贴目标为文件
-                    var parentKey = root[nodekey].parent;
-                    var parent = root[parentKey].node;
-                    const children = parent.children || [];
-                    children.push(_this.copyInfo);
-                    _this.$set(parent, "children", children);
-                    _this.sort(root, parent.children[0]);
-                  } else {
-                    //若粘贴目标为文件夹
-                    const children = data.children || [];
-                    children.push(_this.copyInfo);
-                    _this.$set(data, "children", children);
-                    _this.sort(root, data.children[0]);
-                  }
-                  _this.copyInfo = [];
-                  _this.$Message.info("粘贴成功");
-                } else if (response.code == -101) {
-                  _this.$Message.error("cookie验证失败");
-                  _this.$router.push("/");
-                } else if (response.code == -102) {
-                  _this.$Message.error("权限不足");
-                } else if (response.code == -301) {
-                  _this.$Modal.confirm({
-                    title: "提示",
-                    content: "在目标文件夹中有同名文件，是否覆盖？",
-                    onOk: () => {
-                      api.file_move(
-                        _this.projectId,
-                        originPath + _this.copyInfo.title,
-                        targetPath + _this.copyInfo.title,
-                        true,
-                        function(response) {
-                          _this.$Spin.hide();
-                          // console.log("粘贴返回"+response.code)
-                          if (response.code == 0) {
-                            var IDmap = {};
-                            IDmap[originPath + _this.copyInfo.title] = [
-                              targetPath + _this.copyInfo.title,
-                              _this.copyInfo.title,
-                              "/code/"
-                            ];
-                            bridge.$emit("renameFile", IDmap);
-
-                            _this.removenode(
-                              root,
-                              _this.copyInfo.nodeKey,
-                              _this.copyInfo
-                            );
-                            if (data.children == undefined) {
-                              //若粘贴目标为文件
-                              var parentKey = root[nodekey].parent;
-                              var parent = root[parentKey].node;
-                              const children = parent.children || [];
-                              children.push(_this.copyInfo);
-                              _this.$set(parent, "children", children);
-                              _this.sort(root, parent.children[0]);
-                            } else {
-                              //若粘贴目标为文件夹
-                              const children = data.children || [];
-                              children.push(_this.copyInfo);
-                              _this.$set(data, "children", children);
-                              _this.sort(root, data.children[0]);
-                            }
-                            _this.copyInfo = [];
-                            _this.$Message.info("粘贴成功");
-                          } else if (response.code == -101) {
-                            _this.$Message.error("cookie验证失败");
-                            _this.$router.push("/");
-                          } else if (response.code == -102) {
-                            _this.$Message.error("权限不足");
-                          } else {
-                            _this.$Message.error("未知错误");
-                          }
-                        }
-                      );
-                    },
-                    onCancel: () => {
-                      _this.$Message.info("取消");
+          if (this.copyflag) {
+            //复制行为
+            var _this = this;
+            this.$Spin.show();
+            if (_this.copyInfo.children == undefined) {
+              // console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
+              api.file_copy(
+                _this.projectId,
+                originPath + _this.copyInfo.title,
+                targetPath + _this.copyInfo.title,
+                false,
+                function(response) {
+                  _this.$Spin.hide();
+                  // console.log("粘贴返回"+response.code)
+                  if (response.code == 0) {
+                    if (data.children == undefined) {
+                      //若粘贴目标为文件
+                      var parentKey = root[nodekey].parent;
+                      var parent = root[parentKey].node;
+                      const children = parent.children || [];
+                      var newnode = _this.deepcopy(_this.copyInfo);
+                      children.push(newnode);
+                      _this.$set(parent, "children", children);
+                      _this.sort(root, parent.children[0]);
+                    } else {
+                      //若粘贴目标为文件夹
+                      const children = data.children || [];
+                      var newnode = _this.deepcopy(_this.copyInfo);
+                      children.push(newnode);
+                      _this.$set(data, "children", children);
+                      _this.sort(root, data.children[0]);
                     }
-                  });
-                } else {
-                  _this.$Message.error("未知错误");
+                    _this.$Message.info("粘贴成功");
+                  } else if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.$router.push("/");
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else if (response.code == -301) {
+                    _this.$Modal.confirm({
+                      title: "提示",
+                      content: "在目标文件夹中有同名文件，是否覆盖？",
+                      onOk: () => {
+                        api.file_copy(
+                          _this.projectId,
+                          originPath + _this.copyInfo.title,
+                          targetPath + _this.copyInfo.title,
+                          true,
+                          function(response) {
+                            _this.$Spin.hide();
+                            // console.log("粘贴返回"+response.code)
+                            if (response.code == 0) {
+                              if (data.children == undefined) {
+                                //若粘贴目标为文件
+                                var parentKey = root[nodekey].parent;
+                                var parent = root[parentKey].node;
+                                const children = parent.children || [];
+                                var newnode = _this.deepcopy(_this.copyInfo);
+                                children.push(newnode);
+                                _this.$set(parent, "children", children);
+                                _this.sort(root, parent.children[0]);
+                              } else {
+                                //若粘贴目标为文件夹
+                                const children = data.children || [];
+                                var newnode = _this.deepcopy(_this.copyInfo);
+                                children.push(newnode);
+                                _this.$set(data, "children", children);
+                                _this.sort(root, data.children[0]);
+                              }
+                              _this.$Message.info("粘贴成功");
+                            } else if (response.code == -101) {
+                              _this.$Message.error("cookie验证失败");
+                              _this.$router.push("/");
+                            } else if (response.code == -102) {
+                              _this.$Message.error("权限不足");
+                            } else {
+                              _this.$Message.error("未知错误");
+                            }
+                          }
+                        );
+                      },
+                      onCancel: () => {
+                        _this.$Message.info("取消");
+                      }
+                    });
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
                 }
-              }
-            );
+              );
+            } else {
+              // console.log("文件夹从目录"+ originPath +"移动到目录"+targetPath+_this.copyInfo.title+"/")
+              api.dir_copy(
+                _this.projectId,
+                originPath,
+                targetPath + _this.copyInfo.title + "/",
+                false,
+                function(response) {
+                  _this.$Spin.hide();
+                  // console.log("粘贴返回"+response.code)
+                  if (response.code == 0) {
+                    if (data.children == undefined) {
+                      //若粘贴目标为文件
+                      var parentKey = root[nodekey].parent;
+                      var parent = root[parentKey].node;
+                      const children = parent.children || [];
+                      var newnode = _this.deepcopy(_this.copyInfo);
+                      children.push(newnode);
+                      _this.$set(parent, "children", children);
+                      _this.sort(root, parent.children[0]);
+                    } else {
+                      //若粘贴目标为文件夹
+                      const children = data.children || [];
+                      var newnode = _this.deepcopy(_this.copyInfo);
+                      children.push(newnode);
+                      _this.$set(data, "children", children);
+                      _this.sort(root, data.children[0]);
+                    }
+                    _this.$Message.info("粘贴成功");
+                  } else if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.$router.push("/");
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else if (response.code == -301) {
+                    _this.$Modal.confirm({
+                      title: "提示",
+                      content: "在目标文件夹中有同名文件，是否覆盖？",
+                      onOk: () => {
+                        api.dir_copy(
+                          _this.projectId,
+                          originPath,
+                          targetPath + _this.copyInfo.title + "/",
+                          true,
+                          function(response) {
+                            _this.$Spin.hide();
+                            // console.log("粘贴返回"+response.code)
+                            if (response.code == 0) {
+                              if (data.children == undefined) {
+                                //若粘贴目标为文件
+                                var parentKey = root[nodekey].parent;
+                                var parent = root[parentKey].node;
+                                const children = parent.children || [];
+                                var newnode = _this.deepcopy(_this.copyInfo);
+                                children.push(newnode);
+                                _this.$set(parent, "children", children);
+                                _this.sort(root, parent.children[0]);
+                              } else {
+                                //若粘贴目标为文件夹
+                                const children = data.children || [];
+                                var newnode = _this.deepcopy(_this.copyInfo);
+                                children.push(newnode);
+                                _this.$set(data, "children", children);
+                                _this.sort(root, data.children[0]);
+                              }
+                              _this.$Message.info("粘贴成功");
+                            } else if (response.code == -101) {
+                              _this.$Message.error("cookie验证失败");
+                              _this.$router.push("/");
+                            } else if (response.code == -102) {
+                              _this.$Message.error("权限不足");
+                            } else {
+                              _this.$Message.error("未知错误");
+                            }
+                          }
+                        );
+                      },
+                      onCancel: () => {
+                        _this.$Message.info("取消");
+                      }
+                    });
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
+                }
+              );
+            }
           } else {
-            // console.log("文件夹从目录"+originPath+"剪切到目录"+targetPath+_this.copyInfo.title+"/")
-            api.dir_move(
-              _this.projectId,
-              originPath,
-              targetPath + _this.copyInfo.title + "/",
-              false,
-              function(response) {
-                _this.$Spin.hide();
-                // console.log("粘贴返回"+response.code)
-                if (response.code == 0) {
-                  var leaves = _this.getLeafPath(root, _this.copyInfo.nodeKey);
-                  var IDmap = {};
-                  var oldID = "";
-                  var newID = "";
-                  for (let i = 0; i < leaves.length; i++) {
-                    oldID = originPath + leaves[i];
-                    newID = targetPath + _this.copyInfo.title + "/" + leaves;
-                    console.log(oldID + " " + newID);
-                    IDmap[oldID] = [newID, "/code/"];
-                  }
-                  bridge.$emit("renameFloder", IDmap);
+            //剪切行为
+            var _this = this;
+            this.$Spin.show();
+            if (_this.copyInfo.children == undefined) {
+              // console.log("文件从目录"+originPath+_this.copyInfo.title+"剪切到目录"+targetPath+_this.copyInfo.title)
+              api.file_move(
+                _this.projectId,
+                originPath + _this.copyInfo.title,
+                targetPath + _this.copyInfo.title,
+                false,
+                function(response) {
+                  _this.$Spin.hide();
+                  // console.log("粘贴返回"+response.code)
+                  if (response.code == 0) {
+                    var IDmap = {};
+                    IDmap[originPath + _this.copyInfo.title] = [
+                      targetPath + _this.copyInfo.title,
+                      _this.copyInfo.title,
+                      "/code/"
+                    ];
+                    bridge.$emit("renameFile", IDmap);
 
-                  _this.removenode(
-                    root,
-                    _this.copyInfo.nodeKey,
-                    _this.copyInfo
-                  );
-                  if (data.children == undefined) {
-                    //若粘贴目标为文件
-                    var parentKey = root[nodekey].parent;
-                    var parent = root[parentKey].node;
-                    const children = parent.children || [];
-                    children.push(_this.copyInfo);
-                    _this.$set(parent, "children", children);
-                    _this.sort(root, parent.children[0]);
-                  } else {
-                    //若粘贴目标为文件夹
-                    const children = data.children || [];
-                    children.push(_this.copyInfo);
-                    _this.$set(data, "children", children);
-                    _this.sort(root, data.children[0]);
-                  }
-                  _this.$Message.info("粘贴成功");
-                } else if (response.code == -101) {
-                  _this.$Message.error("cookie验证失败");
-                  _this.$router.push("/");
-                } else if (response.code == -102) {
-                  _this.$Message.error("权限不足");
-                } else if (response.code == -301) {
-                  _this.$Modal.confirm({
-                    title: "提示",
-                    content: "在目标文件夹中有同名文件，是否覆盖？",
-                    onOk: () => {
-                      api.dir_move(
-                        _this.projectId,
-                        originPath,
-                        targetPath + _this.copyInfo.title + "/",
-                        true,
-                        function(response) {
-                          _this.$Spin.hide();
-                          // console.log("粘贴返回"+response.code)
-                          if (response.code == 0) {
-                            var leaves = _this.getLeafPath(
-                              root,
-                              _this.copyInfo.nodeKey
-                            );
-                            var IDmap = {};
-                            var oldID = "";
-                            var newID = "";
-                            for (let i = 0; i < leaves.length; i++) {
-                              oldID = originPath + leaves[i];
-                              newID =
-                                targetPath +
-                                _this.copyInfo.title +
-                                "/" +
-                                leaves;
-                              IDmap[oldID] = [newID, "/code/"];
-                            }
-                            bridge.$emit("renameFloder", IDmap);
-
-                            _this.removenode(
-                              root,
-                              _this.copyInfo.nodeKey,
-                              _this.copyInfo
-                            );
-                            if (data.children == undefined) {
-                              //若粘贴目标为文件
-                              var parentKey = root[nodekey].parent;
-                              var parent = root[parentKey].node;
-                              const children = parent.children || [];
-                              children.push(_this.copyInfo);
-                              _this.$set(parent, "children", children);
-                              _this.sort(root, parent.children[0]);
-                            } else {
-                              //若粘贴目标为文件夹
-                              const children = data.children || [];
-                              children.push(_this.copyInfo);
-                              _this.$set(data, "children", children);
-                              _this.sort(root, data.children[0]);
-                            }
-                            _this.$Message.info("粘贴成功");
-                          } else if (response.code == -101) {
-                            _this.$Message.error("cookie验证失败");
-                            _this.$router.push("/");
-                          } else if (response.code == -102) {
-                            _this.$Message.error("权限不足");
-                          } else {
-                            _this.$Message.error("未知错误");
-                          }
-                        }
-                      );
-                    },
-                    onCancel: () => {
-                      _this.$Message.info("取消");
+                    _this.removenode(
+                      root,
+                      _this.copyInfo.nodeKey,
+                      _this.copyInfo
+                    );
+                    if (data.children == undefined) {
+                      //若粘贴目标为文件
+                      var parentKey = root[nodekey].parent;
+                      var parent = root[parentKey].node;
+                      const children = parent.children || [];
+                      children.push(_this.copyInfo);
+                      _this.$set(parent, "children", children);
+                      _this.sort(root, parent.children[0]);
+                    } else {
+                      //若粘贴目标为文件夹
+                      const children = data.children || [];
+                      children.push(_this.copyInfo);
+                      _this.$set(data, "children", children);
+                      _this.sort(root, data.children[0]);
                     }
-                  });
-                } else {
-                  _this.$Message.error("未知错误");
+                    _this.copyInfo = [];
+                    _this.$Message.info("粘贴成功");
+                  } else if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.$router.push("/");
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else if (response.code == -301) {
+                    _this.$Modal.confirm({
+                      title: "提示",
+                      content: "在目标文件夹中有同名文件，是否覆盖？",
+                      onOk: () => {
+                        api.file_move(
+                          _this.projectId,
+                          originPath + _this.copyInfo.title,
+                          targetPath + _this.copyInfo.title,
+                          true,
+                          function(response) {
+                            _this.$Spin.hide();
+                            // console.log("粘贴返回"+response.code)
+                            if (response.code == 0) {
+                              var IDmap = {};
+                              IDmap[originPath + _this.copyInfo.title] = [
+                                targetPath + _this.copyInfo.title,
+                                _this.copyInfo.title,
+                                "/code/"
+                              ];
+                              bridge.$emit("renameFile", IDmap);
+
+                              _this.removenode(
+                                root,
+                                _this.copyInfo.nodeKey,
+                                _this.copyInfo
+                              );
+                              if (data.children == undefined) {
+                                //若粘贴目标为文件
+                                var parentKey = root[nodekey].parent;
+                                var parent = root[parentKey].node;
+                                const children = parent.children || [];
+                                children.push(_this.copyInfo);
+                                _this.$set(parent, "children", children);
+                                _this.sort(root, parent.children[0]);
+                              } else {
+                                //若粘贴目标为文件夹
+                                const children = data.children || [];
+                                children.push(_this.copyInfo);
+                                _this.$set(data, "children", children);
+                                _this.sort(root, data.children[0]);
+                              }
+                              _this.copyInfo = [];
+                              _this.$Message.info("粘贴成功");
+                            } else if (response.code == -101) {
+                              _this.$Message.error("cookie验证失败");
+                              _this.$router.push("/");
+                            } else if (response.code == -102) {
+                              _this.$Message.error("权限不足");
+                            } else {
+                              _this.$Message.error("未知错误");
+                            }
+                          }
+                        );
+                      },
+                      onCancel: () => {
+                        _this.$Message.info("取消");
+                      }
+                    });
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
                 }
-              }
-            );
+              );
+            } else {
+              // console.log("文件夹从目录"+originPath+"剪切到目录"+targetPath+_this.copyInfo.title+"/")
+              api.dir_move(
+                _this.projectId,
+                originPath,
+                targetPath + _this.copyInfo.title + "/",
+                false,
+                function(response) {
+                  _this.$Spin.hide();
+                  // console.log("粘贴返回"+response.code)
+                  if (response.code == 0) {
+                    var leaves = _this.getLeafPath(
+                      root,
+                      _this.copyInfo.nodeKey
+                    );
+                    var IDmap = {};
+                    var oldID = "";
+                    var newID = "";
+                    for (let i = 0; i < leaves.length; i++) {
+                      oldID = originPath + leaves[i];
+                      newID = targetPath + _this.copyInfo.title + "/" + leaves;
+                      console.log(oldID + " " + newID);
+                      IDmap[oldID] = [newID, "/code/"];
+                    }
+                    bridge.$emit("renameFloder", IDmap);
+
+                    _this.removenode(
+                      root,
+                      _this.copyInfo.nodeKey,
+                      _this.copyInfo
+                    );
+                    if (data.children == undefined) {
+                      //若粘贴目标为文件
+                      var parentKey = root[nodekey].parent;
+                      var parent = root[parentKey].node;
+                      const children = parent.children || [];
+                      children.push(_this.copyInfo);
+                      _this.$set(parent, "children", children);
+                      _this.sort(root, parent.children[0]);
+                    } else {
+                      //若粘贴目标为文件夹
+                      const children = data.children || [];
+                      children.push(_this.copyInfo);
+                      _this.$set(data, "children", children);
+                      _this.sort(root, data.children[0]);
+                    }
+                    _this.$Message.info("粘贴成功");
+                  } else if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.$router.push("/");
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else if (response.code == -301) {
+                    _this.$Modal.confirm({
+                      title: "提示",
+                      content: "在目标文件夹中有同名文件，是否覆盖？",
+                      onOk: () => {
+                        api.dir_move(
+                          _this.projectId,
+                          originPath,
+                          targetPath + _this.copyInfo.title + "/",
+                          true,
+                          function(response) {
+                            _this.$Spin.hide();
+                            // console.log("粘贴返回"+response.code)
+                            if (response.code == 0) {
+                              var leaves = _this.getLeafPath(
+                                root,
+                                _this.copyInfo.nodeKey
+                              );
+                              var IDmap = {};
+                              var oldID = "";
+                              var newID = "";
+                              for (let i = 0; i < leaves.length; i++) {
+                                oldID = originPath + leaves[i];
+                                newID =
+                                  targetPath +
+                                  _this.copyInfo.title +
+                                  "/" +
+                                  leaves;
+                                IDmap[oldID] = [newID, "/code/"];
+                              }
+                              bridge.$emit("renameFloder", IDmap);
+
+                              _this.removenode(
+                                root,
+                                _this.copyInfo.nodeKey,
+                                _this.copyInfo
+                              );
+                              if (data.children == undefined) {
+                                //若粘贴目标为文件
+                                var parentKey = root[nodekey].parent;
+                                var parent = root[parentKey].node;
+                                const children = parent.children || [];
+                                children.push(_this.copyInfo);
+                                _this.$set(parent, "children", children);
+                                _this.sort(root, parent.children[0]);
+                              } else {
+                                //若粘贴目标为文件夹
+                                const children = data.children || [];
+                                children.push(_this.copyInfo);
+                                _this.$set(data, "children", children);
+                                _this.sort(root, data.children[0]);
+                              }
+                              _this.$Message.info("粘贴成功");
+                            } else if (response.code == -101) {
+                              _this.$Message.error("cookie验证失败");
+                              _this.$router.push("/");
+                            } else if (response.code == -102) {
+                              _this.$Message.error("权限不足");
+                            } else {
+                              _this.$Message.error("未知错误");
+                            }
+                          }
+                        );
+                      },
+                      onCancel: () => {
+                        _this.$Message.info("取消");
+                      }
+                    });
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
+                }
+              );
+            }
           }
         }
       }
