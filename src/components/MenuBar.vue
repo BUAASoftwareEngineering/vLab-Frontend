@@ -105,13 +105,14 @@
           mode="horizontal"
           :theme="Menutheme"
           active-name="1"
-          style="height:100%;line-height:40px;padding: 0px;"
+          style="height:100%;line-height:45px;padding: 0px;"
           width="300px"
         >
-          <MenuItem
-            name="10"
-            style="pointer-events:none;font-family: Consolas;"
-          >项目: {{ this.projectname }}</MenuItem>
+          <MenuItem name="10" style="pointer-events:none;font-family: Consolas;">
+            <Icon type="ios-cloudy" />
+            {{ this.projectname }}
+          </MenuItem>
+
           <Submenu name="1">
             <template slot="title">
               <Icon type="ios-document" />文件
@@ -189,14 +190,6 @@
                 展开全部
                 <span style="float: right">Ctrl+Shift+=</span>
               </MenuItem>
-              <MenuItem name="3-5" @click.native="revealDefinition(editorMap[currentTab])">
-                转到声明/定义
-                <span style="float: right">Ctrl+D</span>
-              </MenuItem>
-              <MenuItem name="3-6" @click.native="referenceSearch(editorMap[currentTab])">
-                转到引用
-                <span style="float: right">Ctrl+Alt+D</span>
-              </MenuItem>
             </MenuGroup>
             <MenuGroup title="跳转">
               <MenuItem name="3-5" @click.native="revealDefinition(editorMap[currentTab])">
@@ -243,21 +236,13 @@
               <MenuItem name="6-3">问题反馈</MenuItem>
             </MenuGroup>
           </Submenu>
-          <Button
-            type="primary"
-            style="min-width: 9vh; float: right; margin:3px"
-            @click="exitproject"
-          >退出项目</Button>
+           <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
+            <Icon type="ios-exit" />退出项目
+          </MenuItem>
+          <MenuItem name="111" style="float:right;">
+            <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#464e57"/>
+          </MenuItem>     
         </Menu>
-        <!--
-<Switch v-model="themeSwitch" @on-change="changeTheme" />
-        <Button
-          type="primary"
-          style="min-width: 9vh; float: right; margin:3px"
-          @click="exitproject"
-        >退出项目{{ this.projectname }}</Button>
-    
-        -->
       </Header>
     </Layout>
   </div>
@@ -306,7 +291,7 @@ export default {
   data() {
     return {
       projectId: 0,
-      Menutheme: "dark",
+      Menutheme: "light",
       themeSwitch: false,
       editorMap: {},
       currentTab: "",
@@ -446,10 +431,11 @@ export default {
     changeTheme(status) {
       if (status) {
         this.Menutheme = "dark";
+        this.$Message.info("关灯");
       } else {
         this.Menutheme = "light";
+        this.$Message.info("开灯");
       }
-      this.$Message.info("开关状态：" + status);
     }
   },
   beforeDestroy() {
@@ -509,8 +495,8 @@ export default {
   float: none;
 }
 .ivu-layout-header {
-  height: 36px;
-  line-height: 36px;
+  height: 45px;
+  line-height: 45px;
   padding: 0;
   background-color: #464e57;
   margin: 0;

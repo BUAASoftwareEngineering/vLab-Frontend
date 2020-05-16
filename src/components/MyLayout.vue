@@ -96,4 +96,24 @@ export default {
   z-index: 999;
 }
 
+.mymenu >>> .ivu-menu-dark.ivu-menu-horizontal {
+  color:#ffffff;
+}
+.mymenu >>> .ivu-menu-item-active {
+  color:inherit;
+  border-bottom: inherit;
+}
+.mymenu >>> .ivu-menu-item:hover {
+  border-bottom: inherit;
+}
+.mymenu >>> .ivu-menu-opened {
+  border-bottom: inherit;
+}
+.mymenu >>> .ivu-menu-submenu:hover {
+  border-bottom: inherit;
+}
+.mymenu >>> .ivu-menu-child-item-active  {
+  color:inherit;
+  border-bottom: inherit;
+}
 </style> 
