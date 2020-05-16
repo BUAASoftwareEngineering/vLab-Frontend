@@ -20,6 +20,22 @@
       </Col>
     </Row>
     <br />
+    <Row type="flex" justify="center" align="middle">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="gitUrlModal = true"
+        >从GitHub导入到Notebook...</Button>
+      </Col>
+      <Modal
+        v-model="gitUrlModal"
+        title="请输入git仓库的url"
+        @on-ok="gitUrlModalOk"
+        @on-cancel="gitUrlModalCancel">
+        <Input v-model="gitUrl" icon="logo-github" placeholder="Enter url..." style="width: 100%" />
+      </Modal>
+    </Row>
     <!--
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
@@ -36,12 +52,15 @@
 </template>
 
 <script>
+import terminal from "../Terminal";
 import api from "../../assets/js/api";
 import bridge from "../bridge";
 export default {
   data() {
     return {
-      file: null
+      file: null,
+      gitUrlModal: false,
+      gitUrl: ''
     };
   },
   props: {
@@ -110,7 +129,17 @@ export default {
         }
         return true;
       });
-    }
+    },
+    async gitUrlModalOk() {
+      console.log(this.gitUrl);
+      this.$Message.info('Click OK');
+      temp = "git clone " + this.gitUrl;
+      terminal.ctrlc();
+      await terminal.runcommand(temp);
+    },
+    gitUrlModalCancel() {
+      this.$Message.info('Clicked cancel');
+    },
   }
 };
 </script>
