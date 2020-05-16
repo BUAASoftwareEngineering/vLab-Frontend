@@ -83,6 +83,7 @@ function example(user_name, password) {
 - `2020-04-14:` 第三版api完成，本地测试完成，目前可支持所有file操作，服务器尚未进行对接测试。
 - `2020-04-15:` 服务器对接测试完成，容器已配置，新增project_info_update接口
 - `2020-04-19:` 修复file_update和file_content的bug
+- `2020-05-16:` 新增邮箱验证等接口
 
 ## TODO
 

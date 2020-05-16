@@ -1,5 +1,3 @@
-
-
 const server = "https://api.ivlab.xyz:8443"
 // const server = "http://114.116.135.181:8081"
 // const server = "http://127.0.0.1:3000"
@@ -19,15 +17,15 @@ function get_request(url, callback) {
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
             if (url.split('?')[0] == server + '/file/download') {
-                console.log(new Buffer(data.currentTarget.response))
+                // console.log(new Buffer(data.currentTarget.response))
                 //downloadFile(data.currentTarget.response, 'file.zip')
             } else {
-                console.log('get success')
+                // console.log('get success')
                 var obj = {}
                 try {
                     obj = eval("("+http.responseText+")")
                 } catch (err) {
-                    console.log(http.responseText)
+                    // console.log(http.responseText)
                 }
 
                 if (obj.code == undefined) {
@@ -46,9 +44,9 @@ function get_request(url, callback) {
                 callback(obj)
             }
         } else if (http.readyState == 4) {
-            console.log('get fail')
+            // console.log('get fail')
             let code = (http.status == 0) ? -100 : http.status
-            console.log(http.responseText)
+            // console.log(http.responseText)
             var obj = {
                 code: code,
                 message: "Http request fail!",
@@ -72,12 +70,12 @@ function post_request(url, data, callback) {
     http.send(data)
     http.onreadystatechange = function(data) {
         if (http.readyState == 4 && http.status == 200) {
-            console.log('post success')
+            // console.log('post success')
             var obj = {}
             try {
                 obj = eval("("+http.responseText+")")
             } catch (err) {
-                console.log(http.responseText)
+                // console.log(http.responseText)
             }
             // console.log(http.getResponseHeader('Set-Cookie'))
             // console.log(document.cookie.length)
@@ -93,8 +91,8 @@ function post_request(url, data, callback) {
             // console.log(document.cookie)
             callback(obj)
         } else if (http.readyState == 4) {
-            console.log('post fail')
-            console.log(http.responseText)
+            // console.log('post fail')
+            // console.log(http.responseText)
             let code = (http.status == 0) ? -100 : http.status
             var obj = {
                 code: code,
@@ -123,10 +121,12 @@ function user_logout(callback) {
     post_request(url, data, callback)
 }
 
-function user_register(user_name, password, callback) {
+function user_register(user_name, password, email, captcha, callback) {
     var url = server + '/user/register'
     var data =  'user_name=' + encodeURIComponent(user_name) + 
-                '&password=' + encodeURIComponent(password)
+                '&password=' + encodeURIComponent(password) +
+                '&email=' + encodeURIComponent(email) +
+                '&captcha=' + encodeURIComponent(captcha)
     post_request(url, data, callback)
 }
 
@@ -297,6 +297,22 @@ function dir_rename(project_id, old_path, new_path, callback) {
     post_request(url, data, callback)
 }
 
+function util_check_username(username, callback) {
+    var url = server + '/util/check-username?username=' + encodeURIComponent(username)
+    get_request(url, callback)
+}
+
+function util_check_email(email, callback) {
+    var url = server + '/util/check-email?email=' + encodeURIComponent(email)
+    get_request(url, callback)
+}
+
+function util_send_captcha(email, callback) {
+    var url = server + '/util/send-captcha'
+    var data = 'email=' + encodeURIComponent(email)
+    post_request(url, data, callback)
+}
+
 export default {
     user_login,
     user_logout,
@@ -323,6 +339,9 @@ export default {
     dir_move,
     dir_copy,
     dir_rename,
+    util_check_username,
+    util_check_email,
+    util_send_captcha,
     CPP,
     C,
     PYTHON2,
