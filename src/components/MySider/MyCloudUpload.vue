@@ -20,6 +20,24 @@
       </Col>
     </Row>
     <br />
+    <Row type="flex" justify="center" align="middle">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="gitUrlModal = true"
+        >从GitHub导入到Notebook...</Button>
+      </Col>
+      <Modal
+        v-model="gitUrlModal"
+        title="请输入git仓库的url"
+      >
+        <Input v-model="gitUrl" icon="logo-github" placeholder="Enter url..." style="width: 100%" />
+        <div slot="footer">
+          <Button type="primary" @click="gitUrlModalOk">确定</Button>
+        </div>
+      </Modal>
+    </Row>
     <!--
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
@@ -36,12 +54,16 @@
 </template>
 
 <script>
+import { GiturlIsleagal } from "../../assets/js/checking.js";
+import terminal from "../Terminal";
 import api from "../../assets/js/api";
 import bridge from "../bridge";
 export default {
   data() {
     return {
-      file: null
+      file: null,
+      gitUrlModal: false,
+      gitUrl: ''
     };
   },
   props: {
@@ -110,7 +132,20 @@ export default {
         }
         return true;
       });
-    }
+    },
+    async gitUrlModalOk() {
+      console.log(this.gitUrl);
+      if (GiturlIsleagal(this.gitUrl)) {
+        this.gitUrlModal = false;
+        this.$Message.info('Url OK');
+        var temp = "git clone " + this.gitUrl;
+        terminal.ctrlc();
+        terminal.runcommand(temp);
+        bridge.$emit("uploadFile", '');
+      } else {
+        this.$Message.error('Url illegal!');
+      }
+    },
   }
 };
 </script>
