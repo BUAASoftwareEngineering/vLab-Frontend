@@ -15,6 +15,6 @@ export function GiturlIsleagal(newGiturl) {
     else {
         var patt1 = /\.git$/
         var patt2 = /[\s]/
-        return patt1.test(ewGiturl) && !patt2.test(newGiturl)
+        return patt1.test(newGiturl) && !patt2.test(newGiturl)
     }
 }

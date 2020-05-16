@@ -31,11 +31,9 @@
       <Modal
         v-model="gitUrlModal"
         title="请输入git仓库的url"
-        :footer-hide=true
       >
         <Input v-model="gitUrl" icon="logo-github" placeholder="Enter url..." style="width: 100%" />
         <div slot="footer">
-          <Button type="ghost">取消</Button>
           <Button type="primary" @click="gitUrlModalOk">确定</Button>
         </div>
       </Modal>
@@ -140,9 +138,10 @@ export default {
       if (GiturlIsleagal(this.gitUrl)) {
         this.gitUrlModal = false;
         this.$Message.info('Url OK');
-        temp = "git clone " + this.gitUrl;
+        var temp = "git clone " + this.gitUrl;
         terminal.ctrlc();
         terminal.runcommand(temp);
+        bridge.$emit("uploadFile", '');
       } else {
         this.$Message.error('Url illegal!');
       }
