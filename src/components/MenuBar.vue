@@ -216,11 +216,10 @@
             <template slot="title">
               <Icon type="ios-list" />视图
             </template>
-
-            <MenuItem  @click.native="setLineNumberOnOff(editorMap[currentTab])">
+            <MenuItem @click.native="setLineNumberOnOff(editorMap[currentTab])">
               <div style="width:150px">显示/隐藏&ensp;行号</div>
             </MenuItem>
-            <MenuItem  @click.native="setMinimapOnOff(editorMap[currentTab])">显示/隐藏&ensp;迷你地图</MenuItem>
+            <MenuItem @click.native="setMinimapOnOff(editorMap[currentTab])">显示/隐藏&ensp;迷你地图</MenuItem>
           </Submenu>
           <Submenu name="6">
             <template slot="title">
@@ -236,14 +235,12 @@
               <MenuItem @click.native="toIssue">问题反馈</MenuItem>
             </MenuGroup>
           </Submenu>
-           <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
+          <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
             <Icon type="ios-exit" />退出项目
           </MenuItem>
-          <!--
           <MenuItem name="111" style="float:right;">
-            <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#464e57"/>
+            <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#464e57" />
           </MenuItem>
-          -->     
         </Menu>
       </Header>
     </Layout>
