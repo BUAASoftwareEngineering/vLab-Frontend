@@ -114,7 +114,8 @@ export default {
       time_count:60,
       butt1:true,
       butt2:false,
-      warning:false
+      warning:false,
+      submit:false
     };
   },
 
@@ -300,6 +301,12 @@ export default {
       }
     },
     send_captcha(){
+      console.log('发送')
+      if(!this.submit){
+        this.submit=!this.submit
+      }else{
+        return
+      }
       if(this.email==""){
          this.error_message2="邮箱不能为空"
         this.error2=true
@@ -323,7 +330,8 @@ export default {
                 _this.butt1=false
                 _this.butt2=true
                 var timer=setInterval(()=>{
-                  if(_this.time_count==0){
+                  if(_this.time_count==1){
+                    _this.submit=false
                     _this.time_count=60
                     _this.butt1=true
                     _this.butt2=false
