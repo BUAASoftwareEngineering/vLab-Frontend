@@ -239,9 +239,11 @@
            <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
             <Icon type="ios-exit" />退出项目
           </MenuItem>
+          <!--
           <MenuItem name="111" style="float:right;">
             <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#464e57"/>
-          </MenuItem>     
+          </MenuItem>
+          -->     
         </Menu>
       </Header>
     </Layout>
@@ -291,8 +293,8 @@ export default {
   data() {
     return {
       projectId: 0,
-      Menutheme: "light",
-      themeSwitch: false,
+      Menutheme: "dark",
+      themeSwitch: true,
       editorMap: {},
       currentTab: "",
       LineNumberOnOff: true,
@@ -431,10 +433,10 @@ export default {
     changeTheme(status) {
       if (status) {
         this.Menutheme = "dark";
-        this.$Message.info("关灯");
+        this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
-        this.$Message.info("开灯");
+        this.$Message.info("light");
       }
     }
   },
