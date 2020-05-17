@@ -206,34 +206,34 @@
             <template slot="title">
               <Icon type="ios-play" />运行
             </template>
-            <MenuItem name="4-1" v-if="pythonMark==false">
+            <MenuItem name="4-1" @click.native="compile" v-if="pythonMark==false">
               <div style="width:150px">编译</div>
             </MenuItem>
-            <MenuItem name="4-2">运行</MenuItem>
-            <MenuItem name="4-2" v-if="pythonMark==false">编译并运行</MenuItem>
+            <MenuItem name="4-2" @click.native="run">运行</MenuItem>
+            <MenuItem name="4-2" @click.native="compilerun" v-if="pythonMark==false">编译并运行</MenuItem>
           </Submenu>
           <Submenu name="5">
             <template slot="title">
               <Icon type="ios-list" />视图
             </template>
 
-            <MenuItem name="5-1">
+            <MenuItem name="5-1" @click.native="setLineNumberOnOff(editorMap[currentTab])">
               <div style="width:150px">显示/隐藏&ensp;行号</div>
             </MenuItem>
-            <MenuItem name="5-2">显示/隐藏&ensp;迷你地图</MenuItem>
+            <MenuItem name="5-2" @click.native="setMinimapOnOff(editorMap[currentTab])">显示/隐藏&ensp;迷你地图</MenuItem>
           </Submenu>
           <Submenu name="6">
             <template slot="title">
               <Icon type="ios-help-circle" />帮助
             </template>
             <MenuGroup title="使用">
-              <MenuItem name="6-1">
+              <MenuItem name="6-1" @click.native="toDocs">
                 <div style="width:150px">发布说明</div>
               </MenuItem>
-              <MenuItem name="6-2">帮助文档</MenuItem>
+              <MenuItem name="6-2" @click.native="toHelp">帮助文档</MenuItem>
             </MenuGroup>
             <MenuGroup title="反馈">
-              <MenuItem name="6-3">问题反馈</MenuItem>
+              <MenuItem name="6-3" @click.native="toIssue">问题反馈</MenuItem>
             </MenuGroup>
           </Submenu>
            <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
