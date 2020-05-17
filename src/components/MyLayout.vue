@@ -50,6 +50,7 @@ export default {
         _this.$router.push("/");
       }
     });
+    
   }
   /*
           destroyed(){     
