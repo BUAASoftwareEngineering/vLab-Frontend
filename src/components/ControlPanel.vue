@@ -1,7 +1,7 @@
 <template>
   <Layout :style="{marginLeft: '0vh'}" id="wtf">
     <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">
-      <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
+      <Menu active-name="mySider" :theme="menuTheme" width="50" :open-names="['1']" style="height:100%">
         <MenuItem name="1-1" @click.native="changeTree">
           <Icon type="md-folder" />
         </MenuItem>
@@ -178,7 +178,8 @@ export default {
       count: 0,
       currentTab: "",
       firstInto: true,
-      myEditor: undefined
+      myEditor: undefined, 
+      menuTheme: "dark"
     };
   },
   methods: {
@@ -388,6 +389,13 @@ export default {
         if (this.settingmark) {
           this.changeSetting();
         }
+      }),
+      bridge.$on("changeAllTheme", obj => {
+        if (this.menuTheme=='dark') {
+          this.menuTheme='light';
+        } else {
+          this.menuTheme='dark';
+        }
       });
   },
   //TODO
@@ -404,6 +412,7 @@ export default {
     bridge.$off("renameFile");
     bridge.$off("renameFloder");
     bridge.$off("overrideMonaco");
+    bridge.$off("changeAllTheme");
   }
 };
 </script>
@@ -432,11 +441,13 @@ export default {
   margin: -3px;
 }
 .layout {
+
   border: 1px solid #d7dde4;
   background: #f5f7f9;
   position: relative;
   border-radius: 4px;
   overflow: hidden;
+  height: 100%;
 }
 .layout-header-bar {
   background: #fff;

@@ -50,7 +50,6 @@ export default {
         _this.$router.push("/");
       }
     });
-    
   }
   /*
           destroyed(){     
@@ -116,5 +115,8 @@ export default {
 .mymenu >>> .ivu-menu-child-item-active  {
   color:inherit;
   border-bottom: inherit;
+}
+.mymenu >>> .ivu-select-dropdown{
+  padding-top: 0px;
 }
 </style> 
