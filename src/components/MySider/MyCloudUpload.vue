@@ -41,7 +41,7 @@ import bridge from "../bridge";
 export default {
   data() {
     return {
-      file: null
+      
     };
   },
   props: {
@@ -59,57 +59,60 @@ export default {
     }
   },
   methods: {
-    handleBeforeUpload(file) {
-      this.file = file;
-      var filename = file.name;
-      var filecontent = "";
-      //  console.log(this.file)
-      let reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = e => {
-        filecontent = e.target.result;
-        //    console.log(filecontent )
-      };
-      var _this = this;
-      this.$Spin.show();
-      api.file_new(this.projectid, "/code/" + filename, function(response) {
-        if (response.code == 0) {
-          api.file_update(
-            _this.projectid,
-            "/code/" + filename,
-            filecontent,
-            function(response) {
-              _this.$Spin.hide();
-              if (response.code == 0) {
-                //    console.log('上传成功')
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
-              } else if (response.code == -101) {
-                _this.$Message.error("cookie验证失败");
-                _this.$router.push("/");
-              } else if (response.code == -102) {
-                _this.$Message.error("权限不足");
-              } else {
-                _this.$Message.error("未知错误");
+    handleBeforeUpload(files) {
+     // this.files = files;
+      for(var i=0;i<files.length;i++){
+        var file=files[i]
+        var filename = file.name;
+        var filecontent = "";
+        //  console.log(this.file)
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = e => {
+          filecontent = e.target.result;
+          //    console.log(filecontent )
+        };
+        var _this = this;
+        this.$Spin.show();
+        api.file_new(this.projectid, "/code/" + filename, function(response) {
+          if (response.code == 0) {
+            api.file_update(
+              _this.projectid,
+              "/code/" + filename,
+              filecontent,
+              function(response) {
+                _this.$Spin.hide();
+                if (response.code == 0) {
+                  //    console.log('上传成功')
+                  bridge.$emit("uploadFile", filename);
+                  bridge.$emit("changeTree");
+                } else if (response.code == -101) {
+                  _this.$Message.error("cookie验证失败");
+                  _this.$router.push("/");
+                } else if (response.code == -102) {
+                  _this.$Message.error("权限不足");
+                } else {
+                  _this.$Message.error("未知错误");
+                }
               }
-            }
-          );
-        } else if (response.code == -101) {
-          _this.$Spin.hide();
-          _this.$Message.error("cookie验证失败");
-          _this.$router.push("/");
-        } else if (response.code == -102) {
-          _this.$Spin.hide();
-          _this.$Message.error("权限不足");
-        } else if (response.code == -301) {
-          _this.$Spin.hide();
-          _this.$Message.error("文件重名");
-        } else {
-          _this.$Spin.hide();
-          _this.$Message.error("未知错误");
-        }
-        return true;
-      });
+            );
+          } else if (response.code == -101) {
+            _this.$Spin.hide();
+            _this.$Message.error("cookie验证失败");
+            _this.$router.push("/");
+          } else if (response.code == -102) {
+            _this.$Spin.hide();
+            _this.$Message.error("权限不足");
+          } else if (response.code == -301) {
+            _this.$Spin.hide();
+            _this.$Message.error("文件重名");
+          } else {
+            _this.$Spin.hide();
+            _this.$Message.error("未知错误");
+          }
+          return true;
+        });
+      }
     }
   }
 };
