@@ -138,7 +138,7 @@ export default {
         });
       }
     },
-    async gitUrlModalOk() {
+    async gitUrlModalOk() { 
       console.log(this.gitUrl);
       if (GiturlIsleagal(this.gitUrl)) {
         this.gitUrlModal = false;

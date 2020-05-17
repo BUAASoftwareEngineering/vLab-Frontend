@@ -188,8 +188,7 @@ export default {
                             _this.error2=true
                           }else{
                             _this.error2=false
-                            _this.butt1=true
-                            _this.butt2=false
+                            
                             if (!PassIsleagal(_this.newPassword1)){
                               _this.error_message3="密码格式错误，至少6位，只能为字母数字.@#$-"
                               _this.error3=true
