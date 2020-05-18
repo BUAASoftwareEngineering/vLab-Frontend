@@ -1,7 +1,13 @@
 <template>
   <Layout :style="{marginLeft: '0vh'}" id="wtf">
     <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">
-      <Menu active-name="mySider" :theme="menuTheme" width="50" :open-names="['1']" style="height:100%">
+      <Menu
+        active-name="mySider"
+        :theme="menuTheme"
+        width="50"
+        :open-names="['1']"
+        style="height:100%"
+      >
         <MenuItem name="1-1" @click.native="changeTree">
           <Icon type="md-folder" />
         </MenuItem>
@@ -43,11 +49,10 @@
       ></MySetting>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor}"
       collapsible
       v-model="uploadmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyCloudUpload
@@ -178,8 +183,9 @@ export default {
       count: 0,
       currentTab: "",
       firstInto: true,
-      myEditor: undefined, 
-      menuTheme: "dark"
+      myEditor: undefined,
+      menuTheme: "dark",
+      childSiderColor: "#808695"
     };
   },
   methods: {
@@ -391,10 +397,10 @@ export default {
         }
       }),
       bridge.$on("changeAllTheme", obj => {
-        if (this.menuTheme=='dark') {
-          this.menuTheme='light';
+        if (this.menuTheme == "dark") {
+          this.menuTheme = "light";
         } else {
-          this.menuTheme='dark';
+          this.menuTheme = "dark";
         }
       });
   },
@@ -441,7 +447,6 @@ export default {
   margin: -3px;
 }
 .layout {
-
   border: 1px solid #d7dde4;
   background: #f5f7f9;
   position: relative;

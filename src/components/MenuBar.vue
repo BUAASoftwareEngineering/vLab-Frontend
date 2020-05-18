@@ -106,7 +106,6 @@
           :theme="Menutheme"
           active-name="1"
           style="height:100%;line-height:45px;padding: 0px;"
-          width="300px"
         >
           <MenuItem name="10" style="pointer-events:none;font-family: Consolas;">
             <Icon type="ios-cloudy" />
@@ -117,129 +116,135 @@
             <template slot="title">
               <Icon type="ios-document" />文件
             </template>
-            <MenuGroup title="新建">
-              <MenuItem name="1-1" :style="{'color': dropmenuColor}" @click.native="newFile()">
-                <div style="width:100px">新建文件</div>
-              </MenuItem>
-              <MenuItem name="1-2" :style="{'color': dropmenuColor}" @click.native="newFolder()">新建文件夹</MenuItem>
+            <MenuGroup title="新建" :style="{'width': '150px'}">
+              <MenuItem name="1-1" @click.native="newFile()">新建文件</MenuItem>
+              <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
             </MenuGroup>
+            <MenuItem name="1-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
           <Submenu name="2">
             <template slot="title">
               <Icon type="ios-create" />编辑
             </template>
-            <MenuGroup title="修改">
-              <MenuItem name="2-1" :style="{'color': dropmenuColor}" @click.native="undo(editorMap[currentTab])">
-                <div style="width:200px">
-                  撤销
-                  <span style="float: right">Ctrl+Z</span>
-                </div>
+            <MenuGroup title="修改" :style="{'width': '200px'}">
+              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])">
+                撤销
+                <span style="float: right">Ctrl+Z</span>
               </MenuItem>
-              <MenuItem name="2-2" :style="{'color': dropmenuColor}" @click.native="redo(editorMap[currentTab])">
+              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])">
                 恢复
                 <span style="float: right">Ctrl+Shift+Z</span>
               </MenuItem>
-              <MenuItem name="2-3" :style="{'color': dropmenuColor}" @click.native="cut(editorMap[currentTab])">
+              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])">
                 剪切
                 <span style="float: right">Ctrl+X</span>
               </MenuItem>
-              <MenuItem name="2-4" :style="{'color': dropmenuColor}" @click.native="copy(editorMap[currentTab])">
+              <MenuItem name="2-4" @click.native="copy(editorMap[currentTab])">
                 复制
                 <span style="float: right">Ctrl+C</span>
               </MenuItem>
             </MenuGroup>
-            <MenuGroup title="查找">
-              <MenuItem name="2-5" :style="{'color': dropmenuColor}" @click.native="search(editorMap[currentTab])">
+            <MenuGroup title="查找" :style="{'width': '200px'}">
+              <MenuItem name="2-5" @click.native="search(editorMap[currentTab])">
                 查找
                 <span style="float: right">Ctrl+F</span>
               </MenuItem>
-              <MenuItem name="2-6" :style="{'color': dropmenuColor}" @click.native="replace(editorMap[currentTab])">
+              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])">
                 替换
                 <span style="float: right">Ctrl+H</span>
               </MenuItem>
             </MenuGroup>
+            <MenuItem name="2-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
           <Submenu name="3">
             <template slot="title">
               <Icon type="ios-code-working" />代码操作
             </template>
-            <MenuGroup title="折叠">
-              <MenuItem name="3-1" :style="{'color': dropmenuColor}" @click.native="fold(editorMap[currentTab])">
-                <div style="width:250px;">
-                  折叠当前位置
-                  <span style="float: right">Ctrl+-</span>
-                </div>
+            <MenuGroup title="折叠" :style="{'width': '300px'}">
+              <MenuItem name="3-1" @click.native="fold(editorMap[currentTab])">
+                折叠当前位置
+                <span style="float: right">Ctrl+-</span>
               </MenuItem>
-              <MenuItem name="3-2" :style="{'color': dropmenuColor}" @click.native="unfold(editorMap[currentTab])">
+              <MenuItem name="3-2" @click.native="unfold(editorMap[currentTab])">
                 展开当前位置
                 <span style="float: right">Ctrl+=</span>
               </MenuItem>
-              <MenuItem name="3-3" :style="{'color': dropmenuColor}" @click.native="foldRecursively(editorMap[currentTab])">
+              <MenuItem name="3-3" @click.native="foldRecursively(editorMap[currentTab])">
                 从当前位置递归折叠
                 <span style="float: right">Alt+Ctrl+-</span>
               </MenuItem>
-              <MenuItem name="3-4" :style="{'color': dropmenuColor}" @click.native="unfoldRecursively(editorMap[currentTab])">
+              <MenuItem name="3-4" @click.native="unfoldRecursively(editorMap[currentTab])">
                 从当前位置递归展开
                 <span style="float: right">Alt+Ctrl+=</span>
               </MenuItem>
-              <MenuItem name="3-5" :style="{'color': dropmenuColor}" @click.native="foldAll(editorMap[currentTab])">
+              <MenuItem name="3-5" @click.native="foldAll(editorMap[currentTab])">
                 折叠全部
                 <span style="float: right">Ctrl+Shift+-</span>
               </MenuItem>
-              <MenuItem name="3-6" :style="{'color': dropmenuColor}" @click.native="unfoldAll(editorMap[currentTab])">
+              <MenuItem name="3-6" @click.native="unfoldAll(editorMap[currentTab])">
                 展开全部
                 <span style="float: right">Ctrl+Shift+=</span>
               </MenuItem>
             </MenuGroup>
-            <MenuGroup title="跳转">
-              <MenuItem name="3-7" :style="{'color': dropmenuColor}" @click.native="revealDefinition(editorMap[currentTab])">
+            <MenuGroup title="跳转" :style="{'width': '300px'}">
+              <MenuItem name="3-7" @click.native="revealDefinition(editorMap[currentTab])">
                 转到声明/定义
                 <span style="float: right">Ctrl+D</span>
               </MenuItem>
-              <MenuItem name="3-8" :style="{'color': dropmenuColor}" @click.native="referenceSearch(editorMap[currentTab])">
+              <MenuItem name="3-8" @click.native="referenceSearch(editorMap[currentTab])">
                 转到引用
                 <span style="float: right">Ctrl+Alt+D</span>
               </MenuItem>
             </MenuGroup>
+            <MenuItem name="3-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
           <Submenu name="4">
             <template slot="title">
               <Icon type="ios-play" />运行
             </template>
-            <MenuItem name="4-1" :style="{'color': dropmenuColor}" @click.native="compile" v-if="pythonMark==false">
-              <div style="width:150px">编译</div>
-            </MenuItem>
-            <MenuItem name="4-2" :style="{'color': dropmenuColor}" @click.native="run">运行</MenuItem>
-            <MenuItem name="4-3" :style="{'color': dropmenuColor}" @click.native="compilerun" v-if="pythonMark==false">编译并运行</MenuItem>
+            <MenuGroup title="编译" v-if="pythonMark==false" :style="{'width': '200px'}">
+              <MenuItem name="4-1" @click.native="compile">编译</MenuItem>
+              <MenuItem name="4-2" @click.native="compilerun">编译并运行</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="运行" :style="{'width': '200px'}">
+              <MenuItem name="4-3" @click.native="run">运行</MenuItem>
+            </MenuGroup>
+            <MenuItem name="4-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
-          <Submenu name="5">
+          <Submenu name="5" theme="dark">
             <template slot="title">
               <Icon type="ios-list" />视图
             </template>
-            <MenuItem name="5-1" :style="{'color': dropmenuColor}" @click.native="setLineNumberOnOff(editorMap[currentTab])">
-              <div style="width:150px">显示/隐藏&ensp;行号</div>
-            </MenuItem>
-            <MenuItem name="5-2" :style="{'color': dropmenuColor}" @click.native="setMinimapOnOff(editorMap[currentTab])">显示/隐藏&ensp;迷你地图</MenuItem>
+            <MenuGroup title="编辑器" :style="{'width': '200px'}">
+              <MenuItem
+                name="5-1"
+                @click.native="setLineNumberOnOff(editorMap[currentTab])"
+              >显示/隐藏&ensp;行号</MenuItem>
+              <MenuItem
+                name="5-2"
+                @click.native="setMinimapOnOff(editorMap[currentTab])"
+              >显示/隐藏&ensp;迷你地图</MenuItem>
+            </MenuGroup>
+            <MenuItem name="5-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
           <Submenu name="6">
             <template slot="title">
               <Icon type="ios-help-circle" />帮助
             </template>
-            <MenuGroup title="使用">
-              <MenuItem name="6-1" :style="{'color': dropmenuColor}" @click.native="toDocs">
-                <div style="width:150px">发布说明</div>
-              </MenuItem>
-              <MenuItem name="6-2" :style="{'color': dropmenuColor}" @click.native="toHelp">帮助文档</MenuItem>
+            <MenuGroup title="使用" :style="{'width': '200px'}">
+              <MenuItem name="6-1" @click.native="toDocs">发布说明</MenuItem>
+              <MenuItem name="6-2" @click.native="toHelp">帮助文档</MenuItem>
             </MenuGroup>
-            <MenuGroup title="反馈">
-              <MenuItem name="6-3" :style="{'color': dropmenuColor}" @click.native="toIssue">问题反馈</MenuItem>
+            <MenuGroup title="反馈" :style="{'width': '200px'}">
+              <MenuItem name="6-3" @click.native="toIssue">问题反馈</MenuItem>
             </MenuGroup>
+            <MenuItem name="6-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
           <MenuItem name="110" style="float:right;color:#ff4949;" @click.native="exitproject">
             <Icon type="ios-exit" />退出项目
           </MenuItem>
           <MenuItem name="111" style="float:right;">
-            <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#464e57" />
+            <i-switch v-model="themeSwitch" @on-change="changeTheme" true-color="#5b5b5b" />
           </MenuItem>
         </Menu>
       </Header>
@@ -297,7 +302,8 @@ export default {
       LineNumberOnOff: true,
       MinimapOnOff: true,
       pythonMark: false,
-      dropmenuColor: "#515a6e",
+      dropmenuColor: "#ececec",
+      dropmenuBack: "#4b4b4d"
     };
   },
   created() {
@@ -431,6 +437,7 @@ export default {
     changeTheme(status) {
       if (status) {
         this.Menutheme = "dark";
+
         this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
@@ -515,5 +522,29 @@ export default {
   border-radius: 0px;
   color: #fff;
 }
-
+.ivu-menu-dark.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item:hover {
+  background: #5b5b5d;
+}
+.ivu-menu-dark.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item-group {
+  background: #4b4b4d;
+  color: #f3f3f3;
+}
+.ivu-menu-dark.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown {
+  background: #4b4b4d;
+  color: #f3f3f3;
+}
+.ivu-menu-dark.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item {
+  background: #4b4b4d;
+  color: #f3f3f3;
+  font-family:Consolas;
+}
 </style>

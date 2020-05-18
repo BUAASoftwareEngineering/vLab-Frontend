@@ -82,6 +82,17 @@ export default {
 .mycontrol >>> .ivu-layout-sider-trigger {
   visibility: hidden;
 }
+.mycontrol >>> .ivu-menu-dark.ivu-menu {
+  background:#2b2e31;
+  border: none;
+}
+.mycontrol >>> .ivu-menu-light.ivu-menu {
+  background:#c7d2dd;
+  border: none;
+}
+.mycontrol >>> .ivu-menu-item-active {
+  border: none;
+}
 .mymenu >>> .ivu-dropdown-rel {
   height: 5vh;
   text-align: middle;
@@ -95,9 +106,12 @@ export default {
   height: 3.6vh;
   z-index: 999;
 }
-
 .mymenu >>> .ivu-menu-dark.ivu-menu-horizontal {
-  color:#ffffff;
+  color:#ececec;
+  background:#4b4b4d;
+}
+.mymenu >>> .ivu-menu-light.ivu-menu-horizontal {
+  background:#f5f7f9;
 }
 .mymenu >>> .ivu-menu-item-active {
   color:inherit;
