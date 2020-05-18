@@ -289,14 +289,23 @@ export default {
           Editor.setMinimapOnOff(this.editorMap[this.currentTab], "off");
         }
       }
-    }
+    },
+    /*
+    themeSwitch: function (val, oldVal) {
+      if (val == true) {
+        bridge.$emit("changeAllTheme", "dark");
+      } else {
+        bridge.$emit("changeAllTheme", "light");
+      }
+    },
+    */
   },
 
   data() {
     return {
       projectId: 0,
-      Menutheme: "dark",
-      themeSwitch: true,
+      Menutheme: "light",
+      themeSwitch: false,
       editorMap: {},
       currentTab: "",
       LineNumberOnOff: true,
@@ -437,15 +446,34 @@ export default {
     changeTheme(status) {
       if (status) {
         this.Menutheme = "dark";
-
+        this.childSiderColor= "#333333";
+        this.childFontColor="#ececec";
+        bridge.$emit("changeAllTheme", "dark");
         this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
+        this.childSiderColor = "#fafafa";
+        this.childFontColor="#4b4b4d";        
+        bridge.$emit("changeAllTheme", "light");
         this.$Message.info("light");
       }
-      bridge.$emit("changeAllTheme");
     }
   },
+  /*
+  mounted() {
+    bridge.$on("changeAllTheme", themeName => {
+      if (themeName == "light") {
+          this.menuTheme = "light";
+          this.childSiderColor = "#fafafa";
+          this.childFontColor="#4b4b4d";
+        } else {
+          this.menuTheme = "dark";
+          this.childSiderColor= "#333333";
+          this.childFontColor="#ececec";
+        }
+      });
+  },
+  */
   beforeDestroy() {
     bridge.$off("editorMap");
     bridge.$off("settingProject");

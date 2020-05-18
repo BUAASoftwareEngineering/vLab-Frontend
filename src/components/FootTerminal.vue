@@ -1,8 +1,10 @@
 <template>
-  <Layout :style="{marginTop: '1vh'}">
-    <Breadcrumb>
-      <BreadcrumbItem font-weight: bold>调试控制台</BreadcrumbItem>
-    </Breadcrumb>
+  <Layout style="background-color: inherit; color: inherit;">
+    <Row type="flex" justify="center" align="middle">
+      <Col span="24">
+        <p style="padding:5px 5px 5px 20px;width:250px;height:30px;font-size:15px;">调试控制台</p>
+      </Col>
+    </Row>
     <div id="myFoot" style="width: 100%; height: 100%"></div>
   </Layout>
 </template>

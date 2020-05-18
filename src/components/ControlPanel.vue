@@ -1,5 +1,5 @@
 <template>
-  <Layout :style="{marginLeft: '0vh'}" id="wtf">
+  <Layout :style="{marginLeft: '0vh'}" :class="controlTheme">
     <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">
       <Menu
         active-name="mySider"
@@ -102,12 +102,12 @@
         :projectname="projectname"
       ></MyNotebook>
     </Sider>
-    <Layout :style="{height: '95vh', overflow: 'hidden'}">
+    <Layout :style="{height: '95vh', overflow: 'hidden','background-color': childSiderColor, 'color': childFontColor}">
       <Split ref="sp" v-model="split2" mode="vertical" @on-moving="fit" @on-move-end="fit">
         <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
           <Tabs
             type="card"
-            style="height: 100%"
+            :style="{'height': '100%','background-color': childSiderColor}"
             v-model="currentTab"
             @on-tab-remove="handleTabRemove"
           >
@@ -134,6 +134,7 @@ import MyCloudDownload from "./MySider/MyCloudDownload";
 import MyPreference from "./MySider/MyPreference";
 import MyNotebook from "./MySider/MyNotebook";
 import * as editor from "../editor/app";
+import { setTheme } from "../editor/Appearances"
 import bridge from "./bridge";
 import api from "../assets/js/api.js";
 import terminal from "./Terminal";
@@ -179,9 +180,10 @@ export default {
       currentTab: "",
       firstInto: true,
       myEditor: undefined,
-      menuTheme: "dark",
-      childSiderColor: "#333333",
-      childFontColor: "#ececec"
+      menuTheme: "light",
+      childSiderColor: "#fafafa",
+      childFontColor: "#4b4b4d",
+      controlTheme: "lightcontrol"
     };
   },
   methods: {
@@ -392,15 +394,17 @@ export default {
           this.changeSetting();
         }
       }),
-      bridge.$on("changeAllTheme", obj => {
-        if (this.menuTheme == "dark") {
+      bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "light") {
           this.menuTheme = "light";
           this.childSiderColor = "#fafafa";
           this.childFontColor="#4b4b4d";
+          setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
           this.childSiderColor= "#333333";
           this.childFontColor="#ececec";
+          setTheme("tomorrow-night");
         }
       });
   },

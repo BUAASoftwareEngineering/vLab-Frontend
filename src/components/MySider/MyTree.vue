@@ -119,7 +119,7 @@ export default {
       userName: "",
       projectId: 0,
       projectName: "",
-      treeTheme: "darkTree",
+      treeTheme: "lightTree",
       data4: [
         {
           title: "",
@@ -1400,11 +1400,11 @@ export default {
           }
         });
       }),
-       bridge.$on("changeAllTheme", obj => {
-        if (this.treeTheme == "darkTree") {
-          this.treeTheme = "lightTree";
-        } else {
+       bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "dark") {
           this.treeTheme = "darkTree";
+        } else {
+          this.treeTheme = "lightTree";
         }
       });
 
