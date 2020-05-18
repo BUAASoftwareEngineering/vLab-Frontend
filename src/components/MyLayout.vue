@@ -84,12 +84,24 @@ export default {
 }
 .mycontrol >>> .ivu-menu-dark.ivu-menu {
   background:#3f3f3f;
-  border: none;
 }
+
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu) {
+  color:#ffffff;
+}
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
+  background:#5d5d5d;
+}
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+  color: #ffffff;
+  background: #5d5d5d75;
+}
+
 .mycontrol >>> .ivu-menu-light.ivu-menu {
-  background:#c7d2dd;
+  background:#c0c0c0;
   border: none;
 }
+
 .mycontrol >>> .ivu-menu-item-active {
   border: none;
 }
@@ -111,7 +123,7 @@ export default {
   background:#4b4b4d;
 }
 .mymenu >>> .ivu-menu-light.ivu-menu-horizontal {
-  background:#f5f7f9;
+  background:#e2e2e2;
 }
 .mymenu >>> .ivu-menu-item-active {
   color:inherit;

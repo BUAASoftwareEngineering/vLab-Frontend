@@ -24,7 +24,7 @@
     </Sider>
 
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="treemark"
       collapsed-width="0"
@@ -33,7 +33,7 @@
       <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="settingmark"
       collapsed-width="0"
@@ -47,7 +47,7 @@
       ></MySetting>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="uploadmark"
       collapsed-width="0"
@@ -61,7 +61,7 @@
       ></MyCloudUpload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="downloadmark"
       collapsed-width="0"
@@ -75,7 +75,7 @@
       ></MyCloudDownload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="preferencemark"
       collapsed-width="0"
@@ -89,7 +89,7 @@
       ></MyPreference>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
+      :style="{height: '95vh', overflow: 'auto'}"
       collapsible
       v-model="notebookmark"
       collapsed-width="0"
@@ -102,12 +102,12 @@
         :projectname="projectname"
       ></MyNotebook>
     </Sider>
-    <Layout :style="{height: '95vh', overflow: 'hidden','background-color': childSiderColor, 'color': childFontColor}">
+    <Layout :style="{height: '95vh', overflow: 'hidden'}">
       <Split ref="sp" v-model="split2" mode="vertical" @on-moving="fit" @on-move-end="fit">
         <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
           <Tabs
             type="card"
-            :style="{'height': '100%','background-color': childSiderColor}"
+            :style="{'height': '100%'}"
             v-model="currentTab"
             @on-tab-remove="handleTabRemove"
           >
@@ -181,8 +181,6 @@ export default {
       firstInto: true,
       myEditor: undefined,
       menuTheme: "light",
-      childSiderColor: "#fafafa",
-      childFontColor: "#4b4b4d",
       controlTheme: "lightcontrol"
     };
   },
@@ -397,13 +395,11 @@ export default {
       bridge.$on("changeAllTheme", themeName => {
         if (themeName == "light") {
           this.menuTheme = "light";
-          this.childSiderColor = "#fafafa";
-          this.childFontColor="#4b4b4d";
+          this.controlTheme = "lightcontrol"
           setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
-          this.childSiderColor= "#333333";
-          this.childFontColor="#ececec";
+          this.controlTheme = "darkcontrol"
           setTheme("tomorrow-night");
         }
       });
@@ -440,7 +436,32 @@ export default {
   background: #363e4f;
   margin: -0.1vh;
 }
-.ivu-btn {
+.lightcontrol >>> .ivu-btn {
+  border-radius: 0px;
+  color: #4b4b4d;
+  background-color: #dfdfdf;
+  border-color: #bbbbbb;
+  margin: 0px;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  margin: -3px;
+}
+
+.lightcontrol >>> .ivu-tabs-content {
+  background-color: #ffffff;
+}
+
+.lightcontrol >>> .ivu-layout-sider {
+    background-color: #f7f7f7;
+    color: #4b4b4d;
+}
+
+.lightcontrol >>> .ivu-tabs-bar {
+    background-color: #f0f0f0;
+    font-family: Consolas;
+}
+
+.darkcontrol >>> .ivu-btn {
   border-radius: 0px;
   color: #f5f7f9;
   background-color: #464e57;
@@ -449,6 +470,59 @@ export default {
   border: 0px solid transparent;
   padding: 6px 16px 6px;
   margin: -3px;
+}
+
+.lightcontrol >>> .ivu-btn:hover {
+  background-color: #cccccc;
+}
+
+.darkcontrol >>> .ivu-btn:hover {
+  background-color: dimgrey;
+}
+
+.darkcontrol >>> .ivu-layout-sider {
+    background-color: #333333;
+    color: #ececec;
+}
+
+.darkcontrol >>> .ivu-divider {
+  background-color: #3f3f3f;
+}
+
+.darkcontrol >>> .ivu-tabs-content {
+  background-color: #222222;
+}
+
+.darkcontrol >>> .ivu-tabs-bar {
+    background-color: #404040;
+    border-bottom:#222222;
+    font-family: Consolas;
+}
+
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab {
+    background-color: #505050;
+    color: #ececec;
+    border: 1px solid #303030;
+}
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active {
+    background-color: #222222;
+    color: #ffffff;
+}
+.darkcontrol >>> .ivu-tabs-nav-container:focus .ivu-tabs-tab-focused {
+   border-color: #6d6d6d!important;
+}
+.darkcontrol >>> .ivu-layout {
+   background: #333333;
+   color: #ffffff;
+}
+
+.darkcontrol >>> .demo-split-pane >>> .ivu-layout {
+   background: #ffffff;
+}
+
+.darkcontrol >>> .ivu-split-trigger-horizontal {
+   background: #444444;
+   height: 7px;
 }
 .layout {
   border: 1px solid #d7dde4;
@@ -461,9 +535,7 @@ export default {
 .layout-header-bar {
   background: #fff;
 }
-.ivu-btn:hover {
-  background-color: dimgrey;
-}
+
 .ivu-layout-header {
   height: 36px;
   line-height: 36px;

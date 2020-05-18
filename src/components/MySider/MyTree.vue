@@ -1467,7 +1467,7 @@ export default {
 }
 
 .root:hover {
-  color: #949090;
+  color: inherit;
 }
 
 .ivu-tree ul li {
@@ -1526,12 +1526,29 @@ export default {
 .darkTree >>> .ivu-tree-title {
   border-radius: 0px;
   color: #ececec;
+  width: 100%;
+  font-family: Consolas;
 }
 .lightTree >>> .ivu-tree-title {
   border-radius: 0px;
   color: #4b4b4d;
+  width: 100%;
+  font-family: Consolas;
 }
-.mytree >>> .ivu-tree-title-selected {
-  color: #949090;
+.lightTree >>> .ivu-tree-title:hover {
+  background: #d0ecf380;
+  color: #4b4b4d;
+}
+
+.lightTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #d0ecf3;
+}
+
+.darkTree >>> .ivu-tree-title:hover {
+  background: #4b4b4d79;
+}
+
+.darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #4b4b4d;
 }
 </style> 
