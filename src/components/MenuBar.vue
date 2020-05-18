@@ -1,6 +1,6 @@
 
 <template>
-  <div id="menubar">
+  <div :id="myDropTheme">
     <Layout>
       <Header style="height: '4vh', padding: '0'" width="80%">
         <!--
@@ -305,6 +305,7 @@ export default {
     return {
       projectId: 0,
       Menutheme: "light",
+      myDropTheme: "myLightDrop",
       themeSwitch: false,
       editorMap: {},
       currentTab: "",
@@ -446,12 +447,14 @@ export default {
     changeTheme(status) {
       if (status) {
         this.Menutheme = "dark";
+        this.myDropTheme = "myDarkDrop";
         this.childSiderColor= "#333333";
         this.childFontColor="#ececec";
         bridge.$emit("changeAllTheme", "dark");
         this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
+        this.myDropTheme = "myLightDrop";
         this.childSiderColor = "#fafafa";
         this.childFontColor="#4b4b4d";        
         bridge.$emit("changeAllTheme", "light");
@@ -538,14 +541,7 @@ export default {
   background-color: #464e57;
   margin: 0;
 }
-.ivu-select-dropdown {
-  border-radius: 0px;
-  margin-top: 2px;
-  max-height: 400px;
-  padding: 0px;
-  z-index: 20000;
-  overflow: hidden;
-}
+
 .ivu-tree-title {
   border-radius: 0px;
   color: #fff;
@@ -575,4 +571,8 @@ export default {
   color: #f3f3f3;
   font-family:Consolas;
 }
+#myDarkDrop >>> .ivu-select-dropdown {
+  background-color: #4b4b4d;
+}
+
 </style>

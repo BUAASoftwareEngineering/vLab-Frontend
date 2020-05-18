@@ -142,7 +142,4 @@ export default {
   color:inherit;
   border-bottom: inherit;
 }
-.mymenu >>> .ivu-select-dropdown{
-  padding-top: 0px;
-}
 </style> 

@@ -454,6 +454,7 @@ export default {
 .lightcontrol >>> .ivu-layout-sider {
     background-color: #f7f7f7;
     color: #4b4b4d;
+    overflow-x: hidden;
 }
 
 .lightcontrol >>> .ivu-tabs-bar {
@@ -483,6 +484,7 @@ export default {
 .darkcontrol >>> .ivu-layout-sider {
     background-color: #333333;
     color: #ececec;
+    overflow-x: hidden;
 }
 
 .darkcontrol >>> .ivu-divider {
