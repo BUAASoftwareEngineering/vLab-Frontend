@@ -1,13 +1,11 @@
 <template>
-  <Layout style="background-color: #808695;width:250px;">
-    <Row>
+  <Layout style="background-color: inherit;width:250px;color: inherit;">
+    <Row type="flex" justify="center" align="middle">
       <Col span="24">
-        <Card style="border-radius: 0vh">
-          <p slot="title">构建设置</p>
-          <p style="height:2.4vh;padding-left:0.4vh;color:white">{{ this.projectname }}</p>
-        </Card>
+        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">构建设置</p>
       </Col>
     </Row>
+    <Divider style="margin:10px auto"/>
 
     <template v-for="file in Files">
       <Checkbox
@@ -18,7 +16,7 @@
         style="margin-left:10%;"
       >
         <label
-          style="color:white;line-height:30px;font-family: Consolas;"
+          style="line-height:30px;font-family: Consolas;"
         >{{file.split('/').reverse()[0]}}</label>
 
         <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>

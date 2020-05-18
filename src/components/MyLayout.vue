@@ -83,7 +83,7 @@ export default {
   visibility: hidden;
 }
 .mycontrol >>> .ivu-menu-dark.ivu-menu {
-  background:#2b2e31;
+  background:#3f3f3f;
   border: none;
 }
 .mycontrol >>> .ivu-menu-light.ivu-menu {

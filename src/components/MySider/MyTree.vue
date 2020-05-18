@@ -1,13 +1,12 @@
 <template>
-  <Layout style="background-color: #808695" height="80vh" visible="visible" width="1000px">
-    <Row>
+  <Layout style="background-color: inherit;color: inherit;" height="80vh" visible="visible" width="1000px" >
+    <Row type="flex" justify="center" align="middle">
       <Col span="24">
-        <Card style="border-radius: 0vh; width:100%" visible="visible">
-          <p slot="title">文件管理器</p>
-        </Card>
+        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">文件管理</p>
       </Col>
     </Row>
-    <Tree :data="data4" :render="renderContent"></Tree>
+    <Divider style="margin:10px auto"/>
+    <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
     <Dropdown
       transfer
       ref="contentRootMenu"
@@ -120,6 +119,7 @@ export default {
       userName: "",
       projectId: 0,
       projectName: "",
+      treeTheme: "darkTree",
       data4: [
         {
           title: "",
@@ -1399,6 +1399,13 @@ export default {
             // clearInterval(timer);
           }
         });
+      }),
+       bridge.$on("changeAllTheme", obj => {
+        if (this.treeTheme == "darkTree") {
+          this.treeTheme = "lightTree";
+        } else {
+          this.treeTheme = "darkTree";
+        }
       });
 
     var timer = setInterval(function() {
@@ -1430,6 +1437,7 @@ export default {
     bridge.$off("newRootFolder");
     bridge.$off("AllFile");
     bridge.$off("uploadFile");
+    bridge.$off("changeAllTheme");
   }
 };
 </script>
@@ -1450,7 +1458,7 @@ export default {
 }
 
 .hhhaha:hover {
-  color: #275cd4;
+  color: #949090;
 }
 
 .root {
@@ -1459,7 +1467,7 @@ export default {
 }
 
 .root:hover {
-  color: #275cd4;
+  color: #949090;
 }
 
 .ivu-tree ul li {
@@ -1515,12 +1523,15 @@ export default {
   background-color: #464e57;
   margin: 0;
 }
-.mytree >>> .ivu-tree-title {
+.darkTree >>> .ivu-tree-title {
   border-radius: 0px;
-  color: #fff;
+  color: #ececec;
 }
-
+.lightTree >>> .ivu-tree-title {
+  border-radius: 0px;
+  color: #4b4b4d;
+}
 .mytree >>> .ivu-tree-title-selected {
-  color: #275cd4;
+  color: #949090;
 }
 </style> 

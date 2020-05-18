@@ -24,21 +24,19 @@
     </Sider>
 
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="treemark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="settingmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MySetting
@@ -49,7 +47,7 @@
       ></MySetting>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="uploadmark"
       collapsed-width="0"
@@ -63,11 +61,10 @@
       ></MyCloudUpload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="downloadmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyCloudDownload
@@ -78,11 +75,10 @@
       ></MyCloudDownload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="preferencemark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyPreference
@@ -93,11 +89,10 @@
       ></MyPreference>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '95vh', overflow: 'auto', 'background-color': childSiderColor, 'color': childFontColor}"
       collapsible
       v-model="notebookmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyNotebook
@@ -185,7 +180,8 @@ export default {
       firstInto: true,
       myEditor: undefined,
       menuTheme: "dark",
-      childSiderColor: "#808695"
+      childSiderColor: "#333333",
+      childFontColor: "#ececec"
     };
   },
   methods: {
@@ -399,8 +395,12 @@ export default {
       bridge.$on("changeAllTheme", obj => {
         if (this.menuTheme == "dark") {
           this.menuTheme = "light";
+          this.childSiderColor = "#fafafa";
+          this.childFontColor="#4b4b4d";
         } else {
           this.menuTheme = "dark";
+          this.childSiderColor= "#333333";
+          this.childFontColor="#ececec";
         }
       });
   },
