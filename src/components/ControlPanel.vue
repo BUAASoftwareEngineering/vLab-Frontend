@@ -277,7 +277,7 @@ export default {
       return "editor_" + Index;
     },
     changeTree: function() {
-      this.treemark = !this.treemark;
+      this.treemark = false;
       this.uploadmark = true;
       this.downloadmark = true;
       this.settingmark = true;
