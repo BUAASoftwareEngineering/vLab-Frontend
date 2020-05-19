@@ -1,6 +1,6 @@
 <template>
   <Layout :style="{marginLeft: '0vh'}" :class="controlTheme">
-    <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">
+    <Sider :style="{height: '94vh', overflow: 'hidden'}" width="60">
       <Menu
         active-name="mySider"
         :theme="menuTheme"
@@ -24,7 +24,7 @@
     </Sider>
 
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="treemark"
       collapsed-width="0"
@@ -33,7 +33,7 @@
       <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="settingmark"
       collapsed-width="0"
@@ -47,7 +47,7 @@
       ></MySetting>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="uploadmark"
       collapsed-width="0"
@@ -61,7 +61,7 @@
       ></MyCloudUpload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="downloadmark"
       collapsed-width="0"
@@ -75,7 +75,7 @@
       ></MyCloudDownload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="preferencemark"
       collapsed-width="0"
@@ -89,7 +89,7 @@
       ></MyPreference>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="notebookmark"
       collapsed-width="0"
@@ -102,7 +102,7 @@
         :projectname="projectname"
       ></MyNotebook>
     </Sider>
-    <Layout :style="{height: '95vh', overflow: 'hidden'}">
+    <Layout :style="{height: '94vh', overflow: 'hidden'}">
       <Split ref="sp" v-model="split2" mode="vertical" @on-moving="fit" @on-move-end="fit">
         <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
           <Tabs
@@ -118,8 +118,8 @@
             </template>
           </Tabs>
         </div>
-        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow: 'auto'">
-          <FootTerminal :projectid="projectid" style="width:100%;height:100%;overflow: 'auto'"></FootTerminal>
+        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow:hidden;" >
+          <FootTerminal :class="myFootTheme" :projectid="projectid" style="width:100%;height:100%;overflow: 'auto';"></FootTerminal>
         </div>
       </Split>
     </Layout>
@@ -181,6 +181,7 @@ export default {
       firstInto: true,
       myEditor: undefined,
       menuTheme: "light",
+      myFootTheme: "lightFoot",
       controlTheme: "lightcontrol"
     };
   },
@@ -222,6 +223,8 @@ export default {
               false,
               new_tabPane.id
             );
+           
+
             _this.currentTab = id;
             _this.editorMap[id] = tempEditor;
             if (overwrite == true) {
@@ -395,12 +398,14 @@ export default {
       bridge.$on("changeAllTheme", themeName => {
         if (themeName == "light") {
           this.menuTheme = "light";
-          this.controlTheme = "lightcontrol"
+          this.controlTheme = "lightcontrol";
+          this.myFootTheme = "lightFoot";
           terminal.settheme("light");
           setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
           this.controlTheme = "darkcontrol"
+          this.myFootTheme = "darkFoot";
           terminal.settheme("dark");
           setTheme("tomorrow-night");
         }
@@ -409,6 +414,7 @@ export default {
   //TODO
   watch: {
     currentTab: function() {
+      console.log(this.currentTab);
       bus.$emit("currentTab", this.currentTab);
     }
   },
@@ -544,14 +550,16 @@ export default {
 .lightcontrol >>> .ivu-split-trigger-bar {
    background: #4b4b4d;
 }
-.layout {
-  border: 1px solid #d7dde4;
-  background: #f0f0f0;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 100%;
+
+.lightFoot >>> #myFoot {
+  background: #ffffff;
 }
+
+.darkFoot >>> #myFoot {
+  background: #000000;
+}
+
+
 .layout-header-bar {
   background: #fff;
 }
@@ -618,4 +626,5 @@ export default {
   display: inline;
   line-height: 5px;
 }
+
 </style> 
