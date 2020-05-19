@@ -289,7 +289,7 @@ export default {
           Editor.setMinimapOnOff(this.editorMap[this.currentTab], "off");
         }
       }
-    },
+    }
     /*
     themeSwitch: function (val, oldVal) {
       if (val == true) {
@@ -301,7 +301,7 @@ export default {
     */
   },
   beforeCreate: function() {
-      document.getElementsByTagName("body")[0].className="myLightDrop";
+    document.getElementsByTagName("body")[0].className = "myLightDrop";
   },
   data() {
     return {
@@ -450,17 +450,17 @@ export default {
       if (status) {
         this.Menutheme = "dark";
         this.myDropTheme = "myDarkDrop";
-        this.childSiderColor= "#333333";
-        this.childFontColor="#ececec";
-        document.getElementsByTagName("body")[0].className="myDarkDrop";
+        this.childSiderColor = "#333333";
+        this.childFontColor = "#ececec";
+        document.getElementsByTagName("body")[0].className = "myDarkDrop";
         bridge.$emit("changeAllTheme", "dark");
         this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
         this.myDropTheme = "myLightDrop";
         this.childSiderColor = "#fafafa";
-        this.childFontColor="#4b4b4d";
-        document.getElementsByTagName("body")[0].className="myLightDrop";        
+        this.childFontColor = "#4b4b4d";
+        document.getElementsByTagName("body")[0].className = "myLightDrop";
         bridge.$emit("changeAllTheme", "light");
         this.$Message.info("light");
       }
@@ -486,21 +486,33 @@ export default {
     bridge.$off("settingProject");
     bridge.$off("currentTab");
     bridge.$off("changeAllTheme");
-    document.body.removeAttribute("class",this.myDropTheme);
+    document.body.removeAttribute("class", this.myDropTheme);
   }
 };
 </script>
 <style>
-  .myDarkDrop .ivu-select-dropdown {
-    background-color: #4b4b4d;
-    color: #f3f3f3;
-  }
-  .myDarkDrop .ivu-dropdown-item:hover {
+.myDarkDrop .ivu-select-dropdown {
+  background-color: #4b4b4d;
+  color: #f3f3f3;
+}
+.myDarkDrop .ivu-dropdown-item:hover {
   background: #5b5b5d;
 }
- .myDarkDrop .ivu-dropdown-item {
-   color: #f3f3f3;
- }
+.myDarkDrop .ivu-dropdown-item {
+  color: #f3f3f3;
+}
+
+.myLightDrop
+  .ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item-selected,
+.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item-selected:hover {
+  color: #4b4b4d;
+}
 </style>
 <style scoped>
 .ivu-btn {
@@ -585,8 +597,6 @@ export default {
   .ivu-menu-item {
   background: #4b4b4d;
   color: #f3f3f3;
-  font-family:Consolas;
+  font-family: Consolas;
 }
-
-
 </style>
