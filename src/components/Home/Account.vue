@@ -5,10 +5,10 @@
         <Input v-model="newusername[0]" @keyup.enter.native="submit"></Input>
       </FormItem>
       <FormItem label="重置密码">
-        <Input type="password" v-model="newpassword1" @keyup.enter.native="submit"></Input>
+        <Input type="password" password v-model="newpassword1" @keyup.enter.native="submit"></Input>
       </FormItem>
       <FormItem label="确认密码">
-        <Input type="password" v-model="newpassword2" @keyup.enter.native="submit"></Input>
+        <Input type="password" password v-model="newpassword2" @keyup.enter.native="submit"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="submit">确认</Button>

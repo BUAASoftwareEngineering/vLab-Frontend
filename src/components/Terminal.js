@@ -1,10 +1,11 @@
 import '../../node_modules/xterm/css/xterm.css'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-import { AttachAddon } from 'xterm-addon-attach'
+import AttachAddonTools from '../assets/js/AttachAddon.js'
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 import api from '../assets/js/api'
 
+const AttachAddon = AttachAddonTools.AttachAddon
 const that = {}
 that.socketURL = 'ws://120.53.27.31:'
 that.project = {}
@@ -23,6 +24,15 @@ function beforeDestroy() {
 }
 
 function initTerm() {
+  if (that.project.theme == 'dark') {
+    that.project.foreground = 'white'
+    that.project.background = '#000000'
+    that.project.cursor = 'white'
+  } else if (that.project.theme == 'light') {
+    that.project.foreground = 'black'
+    that.project.background = '#ffffff'
+    that.project.cursor = 'black'
+  }
   if (that.project.foreground == undefined) {
     that.project.foreground = 'white'
   }
@@ -63,7 +73,25 @@ function initTerm() {
   }
 }
 
-function setcolor(setting) {
+function settheme(theme='dark') {
+  let setting = {}
+  switch (theme) {
+    case 'light':
+      setting = {
+        background : '#ffffff',
+        foreground : 'black',
+        cursor : 'black'
+      }
+      break
+    case 'dark':
+    default:
+      setting = {
+        background : '#000000',
+        foreground : 'white',
+        cursor : 'white'
+      }
+      break;
+  }
   if (setting.background == undefined) {
     setting.background = that.project.background
   }
@@ -93,7 +121,7 @@ function initSocket() {
     socketOnClose();
     socketOnOpen();
     socketOnError();
-  }, 2000)
+  }, 5000)
 
   //   that.socket.onmessage = () => {
   //       that.term.resize()
@@ -229,6 +257,7 @@ function run(submit) {
 
 function ctrlc() {
   that.socket.send(new TextEncoder().encode('\x00\x03'))
+  that.socket.send(new TextEncoder().encode('\r'))
 }
 
 export default {
@@ -236,7 +265,7 @@ export default {
   fit,
   run,
   compile,
-  setcolor,
+  settheme,
   runcommand,
   ctrlc
 }

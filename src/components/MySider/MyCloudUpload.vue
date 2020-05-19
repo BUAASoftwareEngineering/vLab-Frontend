@@ -8,7 +8,7 @@
     <Divider style="margin:10px auto"/>
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <Upload :before-upload="handleBeforeUpload" action>
+        <Upload :before-upload="handleBeforeUpload" action="" >
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
@@ -90,7 +90,7 @@ export default {
         reader.readAsText(file);
         reader.onload = e => {
           filecontent = e.target.result;
-          //    console.log(filecontent )
+           console.log(filecontent )
         };
         var _this = this;
         this.$Spin.show();
@@ -103,7 +103,7 @@ export default {
               function(response) {
                 _this.$Spin.hide();
                 if (response.code == 0) {
-                  //    console.log('上传成功')
+                  console.log('上传成功')
                   bridge.$emit("uploadFile", filename);
                   bridge.$emit("changeTree");
                 } else if (response.code == -101) {
@@ -135,7 +135,7 @@ export default {
         });
       }
     },
-    async gitUrlModalOk() {
+    async gitUrlModalOk() { 
       console.log(this.gitUrl);
       if (GiturlIsleagal(this.gitUrl)) {
         this.gitUrlModal = false;
