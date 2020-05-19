@@ -67,7 +67,7 @@ function initTerm() {
 function settheme(theme='dark') {
   let setting = {}
   switch (theme) {
-    case 'white':
+    case 'light':
       setting = {
         background : '#ffffff',
         foreground : 'black',
