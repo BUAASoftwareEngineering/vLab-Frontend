@@ -24,6 +24,15 @@ function beforeDestroy() {
 }
 
 function initTerm() {
+  if (that.project.theme == 'dark') {
+    that.project.foreground = 'white'
+    that.project.background = '#000000'
+    that.project.cursor = 'white'
+  } else if (that.project.theme == 'light') {
+    that.project.foreground = 'black'
+    that.project.background = '#ffffff'
+    that.project.cursor = 'black'
+  }
   if (that.project.foreground == undefined) {
     that.project.foreground = 'white'
   }
