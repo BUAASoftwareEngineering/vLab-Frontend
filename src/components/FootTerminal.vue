@@ -1,8 +1,8 @@
 <template>
   <Layout style="background-color: inherit; color: inherit;">
     <div id="footDiv" style="height:100%;bordor:none;padding:0px;margin:0px;">
-      <div style="padding-top:5px;width:100%;height:25px;font-size:15px;text-align:center;">调试控制台</div>
-      <div id="myFoot" style="width: 100%;height:calc(100% - 25px);"></div>
+      <div style="padding-top:5px;width:100%;height:23x;font-size:13px;text-align:center;">调试控制台</div>
+      <div id="myFoot" style="width: 100%;height:calc(100% - 23px);"></div>
     </div>
   </Layout>
 </template>
