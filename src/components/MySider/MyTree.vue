@@ -1,16 +1,18 @@
 <template>
-  <Layout style="background-color: #808695" height="80vh" visible="visible" width="1000px">
-    <Row>
-      <Col span="24">
-        <Card style="border-radius: 0vh; width:100%" visible="visible">
-          <p slot="title">文件管理器
-            <Button type="primary" shape="circle" size="small" icon="ios-refresh" style="float:right" @click="UpdateData(projectId)"></Button>
+  <Layout style="background-color: inherit;color: inherit;" height="80vh" visible="visible" width="1000px" >
+    <Row type="flex" justify="center" align="middle">
+      <Col span="12">
+        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;">文件管理
           </p>
-          
-        </Card>
+      </Col>
+      <Col span="12">
+          <Button style="height:100%;width:30px;float:right;margin-right:5px;margin-top:2px;font-size:15px; padding:0px;" @click="UpdateData(projectId)">
+            <Icon type="ios-refresh" ></Icon>
+          </Button>
       </Col>
     </Row>
-    <Tree :data="data4" :render="renderContent"></Tree>
+    <Divider style="margin:10px auto"/>
+    <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
     <Dropdown
       transfer
       ref="contentRootMenu"
@@ -121,6 +123,7 @@ export default {
       userName: "",
       projectId: 0,
       projectName: "",
+      treeTheme: "lightTree",
       data4: [
         {
           title: "",
@@ -134,7 +137,7 @@ export default {
                 style: {
                   display: "inline-block",
                   lineHeight: "20px",
-                  width: "100%",
+                  
                   cursor: "pointer"
                 },
                 on: {
@@ -283,7 +286,7 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
             attrs: {
@@ -416,7 +419,7 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
             attrs: {
@@ -1341,6 +1344,14 @@ export default {
         } else if (response.code == 500) {
         } else {
           _this.$Message.error("未知错误");
+          }
+        });
+      }),
+       bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "dark") {
+          this.treeTheme = "darkTree";
+        } else {
+          this.treeTheme = "lightTree";
         }
       });
       */
@@ -1362,6 +1373,14 @@ export default {
         clearInterval(timer);
       }
     }, 1000);
+    
+    bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "dark") {
+          this.treeTheme = "darkTree";
+        } else {
+          this.treeTheme = "lightTree";
+        }
+    });
 
   },
   
@@ -1370,6 +1389,7 @@ export default {
     bridge.$off("newRootFolder");
     bridge.$off("AllFile");
     bridge.$off("uploadFile");
+    bridge.$off("changeAllTheme");
   }
 };
 </script>
@@ -1390,7 +1410,7 @@ export default {
 }
 
 .hhhaha:hover {
-  color: #275cd4;
+  color: #949090;
 }
 
 .root {
@@ -1399,7 +1419,7 @@ export default {
 }
 
 .root:hover {
-  color: #275cd4;
+  color: inherit;
 }
 
 .ivu-tree ul li {
@@ -1451,12 +1471,32 @@ export default {
   background-color: #464e57;
   margin: 0;
 }
-.mytree >>> .ivu-tree-title {
+.darkTree >>> .ivu-tree-title {
   border-radius: 0px;
-  color: #fff;
+  color: #ececec;
+  width: 100%;
+  font-family: Consolas;
+}
+.lightTree >>> .ivu-tree-title {
+  border-radius: 0px;
+  color: #4b4b4d;
+  width: 100%;
+  font-family: Consolas;
+}
+.lightTree >>> .ivu-tree-title:hover {
+  background: #d0ecf380;
+  color: #4b4b4d;
 }
 
-.mytree >>> .ivu-tree-title-selected {
-  color: #275cd4;
+.lightTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #d0ecf3;
+}
+
+.darkTree >>> .ivu-tree-title:hover {
+  background: #4b4b4d79;
+}
+
+.darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #4b4b4d;
 }
 </style> 

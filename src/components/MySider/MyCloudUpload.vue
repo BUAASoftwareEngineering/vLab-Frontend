@@ -1,14 +1,11 @@
 <template>
-  <Layout style="background-color: #808695">
+  <Layout style="background-color: inherit; color: inherit;">
     <Row type="flex" justify="center" align="middle">
       <Col span="24">
-        <Card style="border-radius: 0vh">
-          <p slot="title">上传与导入</p>
-          <p style="height:2.4vh;padding-left:0.4vh;color:white">{{ this.projectname }}</p>
-        </Card>
+        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">上传与导入</p>
       </Col>
     </Row>
-    <br />
+    <Divider style="margin:10px auto"/>
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
         <Upload :before-upload="handleBeforeUpload" action="" >
