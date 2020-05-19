@@ -189,9 +189,9 @@ export default {
 
     getUpdateData(projectid) {
       var _this = this;
-      this.$Spin.show();
+      // this.$Spin.show();
       api.file_struct(projectid, "/code/", function(response) {
-        _this.$Spin.hide();
+        // _this.$Spin.hide();
         if (response.code == 0) {
           _this.$set(
             _this.data4[0],
@@ -1346,6 +1346,9 @@ export default {
       */
       this.UpdateData(this.projectId);
     });
+    bridge.$on("FleshFilesTree", () => {
+      this.UpdateData(this.projectId);
+    })
 
     var timer = setInterval(function() {
       if (_this.rootData.length != 0) {
