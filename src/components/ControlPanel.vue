@@ -119,7 +119,7 @@
           </Tabs>
         </div>
         <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow:hidden;" >
-          <FootTerminal :projectid="projectid" style="width:100%;height:100%;overflow: 'auto';"></FootTerminal>
+          <FootTerminal :class="myFootTheme" :projectid="projectid" style="width:100%;height:100%;overflow: 'auto';"></FootTerminal>
         </div>
       </Split>
     </Layout>
@@ -181,6 +181,7 @@ export default {
       firstInto: true,
       myEditor: undefined,
       menuTheme: "light",
+      myFootTheme: "lightFoot",
       controlTheme: "lightcontrol"
     };
   },
@@ -397,12 +398,14 @@ export default {
       bridge.$on("changeAllTheme", themeName => {
         if (themeName == "light") {
           this.menuTheme = "light";
-          this.controlTheme = "lightcontrol"
+          this.controlTheme = "lightcontrol";
+          this.myFootTheme = "lightFoot";
           terminal.settheme("light");
           setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
           this.controlTheme = "darkcontrol"
+          this.myFootTheme = "darkFoot";
           terminal.settheme("dark");
           setTheme("tomorrow-night");
         }
@@ -547,14 +550,16 @@ export default {
 .lightcontrol >>> .ivu-split-trigger-bar {
    background: #4b4b4d;
 }
-.layout {
-  border: 1px solid #d7dde4;
-  background: #f0f0f0;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 100%;
+
+.lightFoot >>> #myFoot {
+  background: #ffffff;
 }
+
+.darkFoot >>> #myFoot {
+  background: #000000;
+}
+
+
 .layout-header-bar {
   background: #fff;
 }
@@ -621,4 +626,5 @@ export default {
   display: inline;
   line-height: 5px;
 }
+
 </style> 
