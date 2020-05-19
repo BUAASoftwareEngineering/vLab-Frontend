@@ -396,10 +396,12 @@ export default {
         if (themeName == "light") {
           this.menuTheme = "light";
           this.controlTheme = "lightcontrol"
+          terminal.settheme("light");
           setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
           this.controlTheme = "darkcontrol"
+          terminal.settheme("dark");
           setTheme("tomorrow-night");
         }
       });
@@ -526,6 +528,18 @@ export default {
    background: #444444;
    height: 7px;
 }
+.darkcontrol >>> .ivu-split-trigger {
+   border : 1px solid #777777;
+}
+.darkcontrol >>> .ivu-split-trigger-bar {
+   background: #ffffff;
+}
+.lightcontrol >>> .ivu-split-trigger {
+   border : 1px solid #c0c0c0;
+}
+.lightcontrol >>> .ivu-split-trigger-bar {
+   background: #4b4b4d;
+}
 .layout {
   border: 1px solid #d7dde4;
   background: #f5f7f9;
@@ -538,13 +552,6 @@ export default {
   background: #fff;
 }
 
-.ivu-layout-header {
-  height: 36px;
-  line-height: 36px;
-  padding: 0;
-  background-color: #464e57;
-  margin: 0;
-}
 .ivu-tree-title {
   border-radius: 0px;
   color: #fff;

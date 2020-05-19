@@ -300,7 +300,9 @@ export default {
     },
     */
   },
-
+  beforeCreate: function() {
+      document.getElementsByTagName("body")[0].className="myLightDrop";
+  },
   data() {
     return {
       projectId: 0,
@@ -450,13 +452,15 @@ export default {
         this.myDropTheme = "myDarkDrop";
         this.childSiderColor= "#333333";
         this.childFontColor="#ececec";
+        document.getElementsByTagName("body")[0].className="myDarkDrop";
         bridge.$emit("changeAllTheme", "dark");
         this.$Message.info("dark");
       } else {
         this.Menutheme = "light";
         this.myDropTheme = "myLightDrop";
         this.childSiderColor = "#fafafa";
-        this.childFontColor="#4b4b4d";        
+        this.childFontColor="#4b4b4d";
+        document.getElementsByTagName("body")[0].className="myLightDrop";        
         bridge.$emit("changeAllTheme", "light");
         this.$Message.info("light");
       }
@@ -482,10 +486,22 @@ export default {
     bridge.$off("settingProject");
     bridge.$off("currentTab");
     bridge.$off("changeAllTheme");
+    document.body.removeAttribute("class",this.myDropTheme);
   }
 };
 </script>
-
+<style>
+  .myDarkDrop .ivu-select-dropdown {
+    background-color: #4b4b4d;
+    color: #f3f3f3;
+  }
+  .myDarkDrop .ivu-dropdown-item:hover {
+  background: #5b5b5d;
+}
+ .myDarkDrop .ivu-dropdown-item {
+   color: #f3f3f3;
+ }
+</style>
 <style scoped>
 .ivu-btn {
   border-radius: 0px;
@@ -571,8 +587,6 @@ export default {
   color: #f3f3f3;
   font-family:Consolas;
 }
-#myDarkDrop >>> .ivu-select-dropdown {
-  background-color: #4b4b4d;
-}
+
 
 </style>

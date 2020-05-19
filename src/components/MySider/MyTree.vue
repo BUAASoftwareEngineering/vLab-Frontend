@@ -133,7 +133,7 @@ export default {
                 style: {
                   display: "inline-block",
                   lineHeight: "20px",
-                  width: "100%",
+                  
                   cursor: "pointer"
                 },
                 on: {
@@ -228,7 +228,7 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
             attrs: {
@@ -349,7 +349,7 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
             on: {
