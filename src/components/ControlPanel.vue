@@ -215,7 +215,7 @@ export default {
             }
             if (_this.firstInto) {
               _this.firstInto = false;
-              _this.myEditor = editor.createMonacoApp(project_now, "/code/");
+              _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme);
             }
             var tempEditor = await _this.myEditor.addEditor(
               id,
@@ -454,7 +454,7 @@ export default {
 }
 
 .lightcontrol >>> .ivu-layout-sider {
-    background-color: #f7f7f7;
+    background-color: #f5f5f5;
     color: #4b4b4d;
     overflow-x: hidden;
 }
@@ -462,6 +462,10 @@ export default {
 .lightcontrol >>> .ivu-tabs-bar {
     background-color: #f0f0f0;
     font-family: Consolas;
+}
+
+.lightcontrol >>> .ivu-layout {
+   background-color: #eeeeee;
 }
 
 .darkcontrol >>> .ivu-btn {
@@ -542,7 +546,7 @@ export default {
 }
 .layout {
   border: 1px solid #d7dde4;
-  background: #f5f7f9;
+  background: #f0f0f0;
   position: relative;
   border-radius: 4px;
   overflow: hidden;

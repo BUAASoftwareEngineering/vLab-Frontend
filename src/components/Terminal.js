@@ -73,7 +73,7 @@ function initTerm() {
   }
 }
 
-function settheme(theme='dark') {
+function settheme(theme='light') {
   let setting = {}
   switch (theme) {
     case 'light':
