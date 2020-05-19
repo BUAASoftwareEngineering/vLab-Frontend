@@ -35,7 +35,7 @@ export default {
                 break;
               }
             }
-            _this.project_now = 'light';
+            _this.project_now.theme = 'light';
             terminal.mounted(_this.project_now, "myFoot");
             bridge.$emit("settingProject", _this.project_now);
           }

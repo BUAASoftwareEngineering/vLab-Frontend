@@ -1,9 +1,14 @@
 <template>
   <Layout style="background-color: inherit;color: inherit;" height="80vh" visible="visible" width="1000px" >
     <Row type="flex" justify="center" align="middle">
-      <Col span="24">
-        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">文件管理
-        <Button type="primary" shape="circle" size="small" icon="ios-refresh" style="float:right" @click="UpdateData(projectId)"></Button></p>
+      <Col span="12">
+        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;">文件管理
+          </p>
+      </Col>
+      <Col span="12">
+          <Button style="height:100%;width:30px;float:right;margin-right:5px;margin-top:2px;font-size:15px; padding:0px;" @click="UpdateData(projectId)">
+            <Icon type="ios-refresh" ></Icon>
+          </Button>
       </Col>
     </Row>
     <Divider style="margin:10px auto"/>
