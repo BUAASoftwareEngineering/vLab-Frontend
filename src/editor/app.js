@@ -1,29 +1,31 @@
+import "./style.css";
+
 import * as appearance from './Appearances.js';
 import * as File from './File';
 import { removeUnnecessaryMenu } from './Appearances';
 import bridge from '../components/bridge';
 
 import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
-import { version } from 'vscode';
 
 var overrided = false;
 export var MonacoAppSingleton;
 
 export class MonacoApp {
-	constructor(project_info_data_element, BASE_DIR, editorTheme='light') {
+	constructor(project_info_data_element, BASE_DIR, editorTheme = 'light', author = undefined) {
 		this.currentProject = project_info_data_element;
 		this.BASE_DIR = BASE_DIR;
+		this.authorName = author;
 		this.wsUrl = "ws://" + this.currentProject.ip + ":" + this.currentProject.languagePort;
 		switch (editorTheme) {
 			case 'light':
-			  appearance.setTheme('xcode-default');
-			  break;
+				appearance.setTheme('xcode-default');
+				break;
 			case 'dark':
-			  appearance.setTheme('tomorrow-night');
-			  break;
+				appearance.setTheme('tomorrow-night');
+				break;
 			default:
-			  appearance.setTheme('xcode-default');
-			  break;
+				appearance.setTheme('xcode-default');
+				break;
 		}
 		this.model2editor = new Map();
 		removeUnnecessaryMenu();
@@ -31,10 +33,10 @@ export class MonacoApp {
 		removeUnnecessaryMenu();
 	}
 
-	async addEditor(filePath, newlyCreated = true, elementId) {
+	async addEditor(filePath, defaultCode = true, elementId) {
 		if (!overrided)
 			overrideMonaco();
-		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, newlyCreated, elementId);
+		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, defaultCode, elementId);
 		editor.onDidChangeModelContent((e) => {
 			File.saveFile(this.currentProject.projectId, editor, filePath);
 		});
@@ -44,12 +46,11 @@ export class MonacoApp {
 
 	closeEditor(editor) {
 		this.model2editor.delete(editor.getModel());
-
 	}
 }
 
-export function createMonacoApp(project_info_data_element, BASE_DIR, editorTheme='light') {
-	MonacoAppSingleton = new MonacoApp(project_info_data_element, BASE_DIR, editorTheme);
+export function createMonacoApp(project_info_data_element, BASE_DIR, editorTheme = 'light', author = undefined) {
+	MonacoAppSingleton = new MonacoApp(project_info_data_element, BASE_DIR, editorTheme, author);
 	return MonacoAppSingleton;
 }
 
