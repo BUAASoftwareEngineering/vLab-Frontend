@@ -24,7 +24,28 @@
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
-        <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
+
+            <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+      
+
+         <uploader 
+                @file-success="onFileSuccess">
+                
+          <uploader-drop>
+            
+              <uploader-btn :directory="true" :single="true">
+                <DropdownItem style="width:120px">上传文件夹</DropdownItem>               
+              </uploader-btn>
+          </uploader-drop>
+              
+        </uploader>
+
       </DropdownMenu>
     </Dropdown>
     <Dropdown
@@ -43,6 +64,27 @@
         <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
         <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
         <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+          <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+      
+
+         <uploader 
+                @file-success="onFileSuccess">
+                
+          <uploader-drop>
+            
+              <uploader-btn :directory="true" :single="true">
+                <DropdownItem style="width:120px">上传文件夹</DropdownItem>               
+              </uploader-btn>
+          </uploader-drop>
+              
+        </uploader>
+
       </DropdownMenu>
     </Dropdown>
     <Dropdown
@@ -1502,5 +1544,33 @@ export default {
 
 .darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
   background: #4b4b4d;
+}
+.uploader-drop{
+  width:120px;
+  height: 33.2px;
+  background-color:#ffffff;
+  border:#ffffff;
+  padding: 0;
+ 
+
+}
+.uploader-btn{
+    border:#ffffff;
+  color:#515a6e;  
+      width:120px;
+      height: 33.2px;
+  padding: 0;
+
+}
+.ivu-upload{
+  width:100%;
+  height:100%
+}
+.uploader{
+    border:#ffffff;
+    width:120px;
+    height: 33.2px;
+      padding: 0;
+
 }
 </style> 
