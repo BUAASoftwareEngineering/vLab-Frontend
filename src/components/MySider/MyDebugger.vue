@@ -13,10 +13,11 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStart"
           :disabled = "!debugCanBegin"
-        ><Icon type="md-arrow-dropright-circle" />start</Button>
+        ><Icon type="md-arrow-dropright-circle" />&nbsp;&nbsp;&nbsp;Start</Button>
       </Col>
     </Row>
 
+    <!--
     <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
       <Col :span="24" style="text-align:center">
         <Button
@@ -27,6 +28,7 @@
         ><Icon type="ios-pause" />pause</Button>
       </Col>
     </Row>
+    -->
 
     <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
       <Col :span="24" style="text-align:center">
@@ -35,7 +37,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugContinue"
           :disabled = "!debugCanNext"
-        ><Icon type="md-play" />continue</Button>
+        ><Icon type="md-play" />&nbsp;&nbsp;&nbsp;Continue</Button>
       </Col>
     </Row>  
 
@@ -46,7 +48,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOver"
           :disabled = "!debugCanNext"
-        ><Icon type="ios-skip-forward" />stepOver</Button>
+        ><Icon type="ios-skip-forward" />&nbsp;&nbsp;&nbsp;Step over</Button>
       </Col>
     </Row>
 
@@ -57,7 +59,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepInto"
           :disabled = "!debugCanNext"
-        ><Icon type="ios-fastforward" />stepInto</Button>
+        ><Icon type="ios-fastforward" />&nbsp;&nbsp;&nbsp;Step into</Button>
       </Col>
     </Row>
 
@@ -68,7 +70,18 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOut"
           :disabled = "!debugCanNext"
-        ><Icon type="ios-redo" />stepOut</Button>
+        ><Icon type="ios-redo" />&nbsp;&nbsp;&nbsp;Step out</Button>
+      </Col>
+    </Row>
+
+    <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="click_debugShow"
+          :disabled = "!debugCanNext"
+        ><Icon type="ios-eye" />&nbsp;&nbsp;&nbsp;Local variables</Button>
       </Col>
     </Row>
 
@@ -78,8 +91,8 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStop"
-          :disabled = "debugCanBegin"
-        ><Icon type="ios-square" />stop</Button>
+          :disabled = "!debugCanBegin"
+        ><Icon type="ios-square" />&nbsp;&nbsp;&nbsp;Stop</Button>
       </Col>
     </Row>
   </Layout>
@@ -87,6 +100,8 @@
 
 <script>
 import api from "../../assets/js/api";
+import bridge from "../bridge";
+import terminal from "../Terminal";
 export default {
   props: {
     username: {
@@ -105,40 +120,82 @@ export default {
   data() {
     return {
       debugCanBegin: true,
-      debugCanNext: false,
-      debugCanPause: false,
+      debugCanNext: true,
+      pythonMark: false,
     };
   },
   methods: {
     async click_debugStart() {
-      this.debugCanBegin = false;
-      this.debugCanNext = false;
-      this.debugCanPause = true;
-      console.log("debugStart");
+      //this.debugCanBegin = false;
+      //this.debugCanNext = false;
+      //this.debugCanPause = true;
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("run");
+      } else {
+        terminal.runcommand("continue");
+      }
+      //console.log("debugStart");
     },
-    async click_debugPause() {
-      this.debugCanBegin = false;
-      this.debugCanNext = true;
-      this.debugCanPause = false;
-      console.log("debugPause");
-    },
+    //async click_debugPause() {
+    //  this.debugCanBegin = false;
+    //  this.debugCanNext = true;
+    //  this.debugCanPause = false;
+    //  console.log("debugPause");
+    //},
     async click_debugContinue() {
-      console.log("debugContinue");
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("continue");
+      } else {
+        terminal.runcommand("continue");
+      }
+      //console.log("debugContinue");
     },
     async click_debugStepOver() {
-      console.log("debugStepOver");
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("next");
+      } else {
+        terminal.runcommand("next");
+      }
+      //console.log("debugStepOver");
     },
     async click_debugStepInto() {
-      console.log("debugStepInto");
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("step");
+      } else {
+        terminal.runcommand("step");
+      }
+      //console.log("debugStepInto");
     },
     async click_debugStepOut() {
-      console.log("debugStepOut");
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("finish");
+      } else {
+        terminal.runcommand("return");
+      }
+      //console.log("debugStepOut");
+    },
+    async click_debugShow() {
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("info locals");
+      } else {
+        terminal.runcommand("showLocalVars(locals())");
+      }
+      //console.log("debugShow");
     },
     async click_debugStop() {
-      this.debugCanBegin = true;
-      this.debugCanNext = false;
-      this.debugCanPause = false;
-      console.log("debugContinue");
+      terminal.ctrlc();
+      if (this.pythonMark == false) {
+        terminal.runcommand("quit");
+      } else {
+        terminal.runcommand("quit");
+      }      
+      //console.log("debugContinue");
     },
     /*
     upDateButtonDisalbe() {
@@ -151,6 +208,17 @@ export default {
       this.stepoverButtonDisable= !this.debugBegintatus || !this.debugPauseStatus;  
     },
     */
+  },
+  mounted () {
+    bridge.$on("settingProject", Project => {
+      console.log(Project.imageType)
+      if (Project.imageType == "PYTHON3") {
+        this.pythonMark = true;
+      }
+    });
+  },
+  beforeDestroy() {
+    bridge.$off("settingProject");
   }
 };
 

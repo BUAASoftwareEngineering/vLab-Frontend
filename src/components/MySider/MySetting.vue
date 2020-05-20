@@ -201,6 +201,46 @@ export default {
       }
     },
     debug() {
+      if (this.pythonMark) {
+        let filepath = "";
+        let count = 0;
+        for (var key in this.Show) {
+          if (this.Show[key] == true) {
+            count++;
+            filepath = "/code/" + key;
+          }
+        }
+        if (count == 0) {
+          this.$Message.error("请在侧边栏的构建选项中选择一个python类型文件");
+          this.openSetting();
+        } else if (count == 1) {
+          let command = "python3 -m pdb " + filepath;
+          terminal.runcommand(command);
+        } else if (count > 1) {
+          this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
+          this.openSetting();
+        }
+      } else {
+        let filepath = "";
+        let count = 0;
+        for (var key in this.Show) {
+          if (this.Show[key] == true) {
+            count++;
+            filepath = "/code/" + key;
+          }
+        }
+        if (count == 0) {
+          this.$Message.error("请在侧边栏的构建选项中选择一个cpp类型文件");
+          this.openSetting();
+        } else if (count == 1) {
+          let command = "g++ -g " + filepath + " -o fordebug";
+          terminal.runcommand(command);
+          terminal.runcommand("gdb fordebug");
+        } else if (count > 1) {
+          this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
+          this.openSetting();
+        }
+      }
       bridge.$emit("readyForDebug");
     }
   },
