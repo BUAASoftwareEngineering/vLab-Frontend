@@ -11,7 +11,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugStart"
+          :disabled = "!debugCanBegin"
         ><Icon type="md-arrow-dropright-circle" />start</Button>
       </Col>
     </Row>
@@ -21,7 +22,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugPause"
+          :disabled = "!debugCanPause"
         ><Icon type="ios-pause" />pause</Button>
       </Col>
     </Row>
@@ -31,7 +33,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugContinue"
+          :disabled = "!debugCanNext"
         ><Icon type="md-play" />continue</Button>
       </Col>
     </Row>  
@@ -41,7 +44,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugStepOver"
+          :disabled = "!debugCanNext"
         ><Icon type="ios-skip-forward" />stepOver</Button>
       </Col>
     </Row>
@@ -51,7 +55,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugStepInto"
+          :disabled = "!debugCanNext"
         ><Icon type="ios-fastforward" />stepInto</Button>
       </Col>
     </Row>
@@ -61,7 +66,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugStepOut"
+          :disabled = "!debugCanNext"
         ><Icon type="ios-redo" />stepOut</Button>
       </Col>
     </Row>
@@ -71,7 +77,8 @@
         <Button
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          @click=""
+          @click="click_debugStop"
+          :disabled = "debugCanBegin"
         ><Icon type="ios-square" />stop</Button>
       </Col>
     </Row>
@@ -95,59 +102,60 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      debugCanBegin: true,
+      debugCanNext: false,
+      debugCanPause: false,
+    };
+  },
   methods: {
-    download() {
-      api.file_download(this.projectid);
-    }
+    async click_debugStart() {
+      this.debugCanBegin = false;
+      this.debugCanNext = false;
+      this.debugCanPause = true;
+      console.log("debugStart");
+    },
+    async click_debugPause() {
+      this.debugCanBegin = false;
+      this.debugCanNext = true;
+      this.debugCanPause = false;
+      console.log("debugPause");
+    },
+    async click_debugContinue() {
+      console.log("debugContinue");
+    },
+    async click_debugStepOver() {
+      console.log("debugStepOver");
+    },
+    async click_debugStepInto() {
+      console.log("debugStepInto");
+    },
+    async click_debugStepOut() {
+      console.log("debugStepOut");
+    },
+    async click_debugStop() {
+      this.debugCanBegin = true;
+      this.debugCanNext = false;
+      this.debugCanPause = false;
+      console.log("debugContinue");
+    },
+    /*
+    upDateButtonDisalbe() {
+      this.startButtonDisable = this.debugBeginStatus;
+      this.stopButtonDisable = !this.debugBegintatus;
+      this.stepintoButtonDisable = !this.debugBegintatus || !this.debugPauseStatus;
+      this.pauseButtonDisable = !this.debugBegintatus || !this.debugPauseStatus;
+      this.continueButtonDisable = !this.debugBegintatus || !this.debugRunStatus;
+      this.stepoutButtonDisable= !this.debugBegintatus || !this.debugPauseStatus;
+      this.stepoverButtonDisable= !this.debugBegintatus || !this.debugPauseStatus;  
+    },
+    */
   }
 };
+
 </script>
 
 <style scoped>
-.my-setting .ivu-tabs-bar {
-  margin-bottom: 0vh;
-}
-.ivu-card-head {
-  padding: 0.4vh;
-}
-.ivu-card-body {
-  padding: 0vh;
-  height: 2.4vh;
-  background: #363e4f;
-  margin: -0.1vh;
-}
-.ivu-btn {
-  border-radius: 0px;
-  color: #f5f7f9;
-  background-color: #464e57;
-  border-color: #464e57;
-  margin: 0px;
-  border: 0px solid transparent;
-  padding: 6px 16px 6px;
-  margin: -3px;
-}
-.layout {
-  border: 1px solid #d7dde4;
-  background: #f5f7f9;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.layout-header-bar {
-  background: #fff;
-}
-.ivu-btn:hover {
-  background-color: dimgrey;
-}
-.ivu-layout-header {
-  height: 36px;
-  line-height: 36px;
-  padding: 0;
-  background-color: #464e57;
-  margin: 0;
-}
-.ivu-tree-title {
-  border-radius: 0px;
-  color: #fff;
-}
+
 </style> 

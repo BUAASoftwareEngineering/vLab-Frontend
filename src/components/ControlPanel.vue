@@ -491,7 +491,7 @@ export default {
 .lightcontrol >>> .ivu-btn {
   border-radius: 0px;
   color: #4b4b4d;
-  background-color: #dfdfdf;
+  background-color: #dddddd;
   border-color: #bbbbbb;
   margin: 0px;
   border: 0px solid transparent;
@@ -528,14 +528,23 @@ export default {
   padding: 6px 16px 6px;
   margin: -3px;
 }
-
 .lightcontrol >>> .ivu-btn:hover {
   background-color: #cccccc;
+}
+.lightcontrol >>> .ivu-btn:disabled {
+  background-color: #dddddd1c;
+  color: #9999997a;
 }
 
 .darkcontrol >>> .ivu-btn:hover {
   background-color: dimgrey;
 }
+
+.darkcontrol >>> .ivu-btn:disabled {
+  background-color: #3333336c;
+  color: #eeeeee7a;
+}
+
 
 .darkcontrol >>> .ivu-layout-sider {
     background-color: #333333;
