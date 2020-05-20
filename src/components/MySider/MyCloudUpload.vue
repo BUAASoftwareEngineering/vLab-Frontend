@@ -9,20 +9,22 @@
       </Col>
     </Row>
     <br />
-    <Row type="flex" justify="center" align="middle">
-      <Col :span="24" style="text-align:center">
-        <Upload 
-        :before-upload="handleBeforeUpload" 
-        action="http"
-        multiple 
-        >
-          <Button
-            type="primary"
-            style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          >上传文件到Notebook...</Button>
-        </Upload>
-      </Col>
-    </Row>
+    
+      <Row type="flex" justify="center" align="middle">
+        <Col :span="24" style="text-align:center">                  
+          <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+            <Button
+              type="primary"
+              style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+            >上传文件到Notebook...</Button>
+
+          </Upload>
+        </Col>
+      </Row>
     <br />
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
@@ -31,7 +33,11 @@
                 
           <uploader-drop>
             
-              <uploader-btn :directory="true" :single="true">上传文件夹到Notebook...</uploader-btn>
+              <uploader-btn :directory="true" :single="true">
+                <div style="height:23px;text-align:center;line-height:23px">
+                上传文件夹到Notebook...
+                </div>
+              </uploader-btn>
           </uploader-drop>
               
         </uploader>
@@ -240,11 +246,22 @@ export default {
         });
     }
 
-  }
+  },
+ 
 };
 </script>
 
 <style scoped>
+.center-in-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 .uploader>>>.uploader-drop{
   text-align: center;
 
@@ -254,7 +271,7 @@ export default {
 }
 .uploader-drop{
   width: 200px;
-  height: 32px;
+  height: 33px;
   background-color:#464e57;
   border:#464e57;
   padding: 0;
@@ -264,7 +281,7 @@ export default {
 }
 .uploader-btn{
   width: 200px;
-  height: 32px;
+  height: 33px;
   color:#f5f7f9;
     text-align: center;
   

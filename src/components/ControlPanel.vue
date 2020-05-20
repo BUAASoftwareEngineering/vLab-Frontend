@@ -277,7 +277,7 @@ export default {
       return "editor_" + Index;
     },
     changeTree: function() {
-      this.treemark = false;
+      this.treemark = !this.treemark;
       this.uploadmark = true;
       this.downloadmark = true;
       this.settingmark = true;
@@ -335,7 +335,12 @@ export default {
   },
   mounted() {
     bridge.$on("changeTree", val => {
-      this.changeTree();
+      this.treemark = false;
+       this.uploadmark = true;
+      this.downloadmark = true;
+      this.settingmark = true;
+      this.preferencemark = true;
+      this.notebookmark = true;
     }),
       bridge.$on("add", path_label => {
         if (!this.tabsMap.hasOwnProperty(path_label[0])) {
@@ -388,7 +393,8 @@ export default {
         if (this.settingmark) {
           this.changeSetting();
         }
-      });
+      })
+   
   },
   //TODO
   watch: {
