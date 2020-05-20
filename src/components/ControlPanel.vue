@@ -1,7 +1,13 @@
 <template>
-  <Layout :style="{marginLeft: '0vh'}" id="wtf">
-    <Sider :style="{height: '95vh', overflow: 'hidden'}" width="60">
-      <Menu active-name="mySider" theme="dark" width="50" :open-names="['1']">
+  <Layout :style="{marginLeft: '0vh'}" :class="controlTheme">
+    <Sider :style="{height: '94vh', overflow: 'hidden'}" width="60">
+      <Menu
+        active-name="mySider"
+        :theme="menuTheme"
+        width="50"
+        :open-names="['1']"
+        style="height:100%"
+      >
         <MenuItem name="1-1" @click.native="changeTree">
           <Icon type="md-folder" />
         </MenuItem>
@@ -18,21 +24,19 @@
     </Sider>
 
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="treemark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="settingmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MySetting
@@ -43,11 +47,10 @@
       ></MySetting>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="uploadmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyCloudUpload
@@ -58,11 +61,10 @@
       ></MyCloudUpload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="downloadmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyCloudDownload
@@ -73,11 +75,10 @@
       ></MyCloudDownload>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="preferencemark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyPreference
@@ -88,11 +89,10 @@
       ></MyPreference>
     </Sider>
     <Sider
-      :style="{height: '95vh', overflow: 'auto'}"
+      :style="{height: '94vh', overflow: 'auto'}"
       collapsible
       v-model="notebookmark"
       collapsed-width="0"
-      style="background-color: #808695"
       width="250"
     >
       <MyNotebook
@@ -102,12 +102,12 @@
         :projectname="projectname"
       ></MyNotebook>
     </Sider>
-    <Layout :style="{height: '95vh', overflow: 'hidden'}">
+    <Layout :style="{height: '94vh', overflow: 'hidden'}">
       <Split ref="sp" v-model="split2" mode="vertical" @on-moving="fit" @on-move-end="fit">
         <div slot="top" class="demo-split-pane" style="width: 100%; height: 100%">
           <Tabs
             type="card"
-            style="height: 100%"
+            :style="{'height': '100%'}"
             v-model="currentTab"
             @on-tab-remove="handleTabRemove"
           >
@@ -118,8 +118,8 @@
             </template>
           </Tabs>
         </div>
-        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow: 'auto'">
-          <FootTerminal :projectid="projectid" style="width:100%;height:100%;overflow: 'auto'"></FootTerminal>
+        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow:hidden;" >
+          <FootTerminal :class="myFootTheme" :projectid="projectid" style="width:100%;height:100%;overflow: 'auto';"></FootTerminal>
         </div>
       </Split>
     </Layout>
@@ -134,6 +134,7 @@ import MyCloudDownload from "./MySider/MyCloudDownload";
 import MyPreference from "./MySider/MyPreference";
 import MyNotebook from "./MySider/MyNotebook";
 import * as editor from "../editor/app";
+import { setTheme } from "../editor/Appearances"
 import bridge from "./bridge";
 import api from "../assets/js/api.js";
 import terminal from "./Terminal";
@@ -178,7 +179,10 @@ export default {
       count: 0,
       currentTab: "",
       firstInto: true,
-      myEditor: undefined
+      myEditor: undefined,
+      menuTheme: "light",
+      myFootTheme: "lightFoot",
+      controlTheme: "lightcontrol"
     };
   },
   methods: {
@@ -212,13 +216,15 @@ export default {
             }
             if (_this.firstInto) {
               _this.firstInto = false;
-              _this.myEditor = editor.createMonacoApp(project_now, "/code/");
+              _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme);
             }
             var tempEditor = await _this.myEditor.addEditor(
               id,
               false,
               new_tabPane.id
             );
+           
+
             _this.currentTab = id;
             _this.editorMap[id] = tempEditor;
             if (overwrite == true) {
@@ -393,12 +399,28 @@ export default {
         if (this.settingmark) {
           this.changeSetting();
         }
-      })
-   
+      }),
+      bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "light") {
+          this.menuTheme = "light";
+          this.controlTheme = "lightcontrol";
+          this.myFootTheme = "lightFoot";
+          terminal.settheme("light");
+          setTheme("xcode-default");
+        } else {
+          this.menuTheme = "dark";
+          this.controlTheme = "darkcontrol"
+          this.myFootTheme = "darkFoot";
+          terminal.settheme("dark");
+          setTheme("tomorrow-night");
+        }
+      });
+
   },
   //TODO
   watch: {
     currentTab: function() {
+      console.log(this.currentTab);
       bus.$emit("currentTab", this.currentTab);
     }
   },
@@ -410,6 +432,7 @@ export default {
     bridge.$off("renameFile");
     bridge.$off("renameFloder");
     bridge.$off("overrideMonaco");
+    bridge.$off("changeAllTheme");
   }
 };
 </script>
@@ -427,7 +450,37 @@ export default {
   background: #363e4f;
   margin: -0.1vh;
 }
-.ivu-btn {
+.lightcontrol >>> .ivu-btn {
+  border-radius: 0px;
+  color: #4b4b4d;
+  background-color: #dfdfdf;
+  border-color: #bbbbbb;
+  margin: 0px;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  margin: -3px;
+}
+
+.lightcontrol >>> .ivu-tabs-content {
+  background-color: #ffffff;
+}
+
+.lightcontrol >>> .ivu-layout-sider {
+    background-color: #f5f5f5;
+    color: #4b4b4d;
+    overflow-x: hidden;
+}
+
+.lightcontrol >>> .ivu-tabs-bar {
+    background-color: #f0f0f0;
+    font-family: Consolas;
+}
+
+.lightcontrol >>> .ivu-layout {
+   background-color: #eeeeee;
+}
+
+.darkcontrol >>> .ivu-btn {
   border-radius: 0px;
   color: #f5f7f9;
   background-color: #464e57;
@@ -437,26 +490,86 @@ export default {
   padding: 6px 16px 6px;
   margin: -3px;
 }
-.layout {
-  border: 1px solid #d7dde4;
-  background: #f5f7f9;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
+
+.lightcontrol >>> .ivu-btn:hover {
+  background-color: #cccccc;
 }
+
+.darkcontrol >>> .ivu-btn:hover {
+  background-color: dimgrey;
+}
+
+.darkcontrol >>> .ivu-layout-sider {
+    background-color: #333333;
+    color: #ececec;
+    overflow-x: hidden;
+}
+
+.darkcontrol >>> .ivu-divider {
+  background-color: #3f3f3f;
+}
+
+.darkcontrol >>> .ivu-tabs-content {
+  background-color: #222222;
+}
+
+.darkcontrol >>> .ivu-tabs-bar {
+    background-color: #404040;
+    border-bottom:#222222;
+    font-family: Consolas;
+}
+
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab {
+    background-color: #505050;
+    color: #ececec;
+    border: 1px solid #303030;
+}
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active {
+    background-color: #222222;
+    color: #ffffff;
+}
+.darkcontrol >>> .ivu-tabs-nav-container:focus .ivu-tabs-tab-focused {
+   border-color: #6d6d6d!important;
+}
+.darkcontrol >>> .ivu-layout {
+   background: #333333;
+   color: #ffffff;
+}
+
+.darkcontrol >>> .demo-split-pane >>> .ivu-layout {
+   background: #ffffff;
+}
+
+.darkcontrol >>> .ivu-split-trigger-horizontal {
+   background: #444444;
+   height: 7px;
+}
+.darkcontrol >>> .ivu-split-trigger {
+   border : 1px solid #777777;
+}
+.darkcontrol >>> .ivu-split-trigger-bar {
+   background: #ffffff;
+}
+.lightcontrol >>> .ivu-split-trigger {
+   border : 1px solid #c0c0c0;
+}
+.lightcontrol >>> .ivu-split-trigger-bar {
+   background: #4b4b4d;
+}
+
+.lightFoot >>> #myFoot {
+  background: #ffffff;
+}
+
+.darkFoot >>> #myFoot {
+  background: #000000;
+}
+
+
 .layout-header-bar {
   background: #fff;
 }
-.ivu-btn:hover {
-  background-color: dimgrey;
-}
-.ivu-layout-header {
-  height: 36px;
-  line-height: 36px;
-  padding: 0;
-  background-color: #464e57;
-  margin: 0;
-}
+
 .ivu-tree-title {
   border-radius: 0px;
   color: #fff;
@@ -519,4 +632,5 @@ export default {
   display: inline;
   line-height: 5px;
 }
+
 </style> 

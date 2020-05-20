@@ -10,11 +10,21 @@ var overrided = false;
 export var MonacoAppSingleton;
 
 export class MonacoApp {
-	constructor(project_info_data_element, BASE_DIR) {
+	constructor(project_info_data_element, BASE_DIR, editorTheme='light') {
 		this.currentProject = project_info_data_element;
 		this.BASE_DIR = BASE_DIR;
 		this.wsUrl = "ws://" + this.currentProject.ip + ":" + this.currentProject.languagePort;
-		appearance.setTheme('xcode-default');
+		switch (editorTheme) {
+			case 'light':
+			  appearance.setTheme('xcode-default');
+			  break;
+			case 'dark':
+			  appearance.setTheme('tomorrow-night');
+			  break;
+			default:
+			  appearance.setTheme('xcode-default');
+			  break;
+		}
 		this.model2editor = new Map();
 		removeUnnecessaryMenu();
 		removeUnnecessaryMenu();
@@ -38,8 +48,8 @@ export class MonacoApp {
 	}
 }
 
-export function createMonacoApp(project_info_data_element, BASE_DIR) {
-	MonacoAppSingleton = new MonacoApp(project_info_data_element, BASE_DIR);
+export function createMonacoApp(project_info_data_element, BASE_DIR, editorTheme='light') {
+	MonacoAppSingleton = new MonacoApp(project_info_data_element, BASE_DIR, editorTheme);
 	return MonacoAppSingleton;
 }
 

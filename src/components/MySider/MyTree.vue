@@ -1,13 +1,18 @@
 <template>
-  <Layout style="background-color: #808695" height="80vh" visible="visible" width="1000px">
-    <Row>
-      <Col span="24">
-        <Card style="border-radius: 0vh; width:100%" visible="visible">
-          <p slot="title">文件管理器</p>
-        </Card>
+  <Layout style="background-color: inherit;color: inherit;" height="80vh" visible="visible" width="1000px" >
+    <Row type="flex" justify="center" align="middle">
+      <Col span="12">
+        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;">文件管理
+          </p>
+      </Col>
+      <Col span="12">
+          <Button style="height:100%;width:30px;float:right;margin-right:5px;margin-top:2px;font-size:15px; padding:0px;" @click="UpdateData(projectId)">
+            <Icon type="ios-refresh" ></Icon>
+          </Button>
       </Col>
     </Row>
-    <Tree :data="data4" :render="renderContent"></Tree>
+    <Divider style="margin:10px auto"/>
+    <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
     <Dropdown
       transfer
       ref="contentRootMenu"
@@ -19,6 +24,7 @@
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+
             <Upload 
           :before-upload="handleBeforeUpload" 
           action="http"
@@ -39,6 +45,7 @@
           </uploader-drop>
               
         </uploader>
+
       </DropdownMenu>
     </Dropdown>
     <Dropdown
@@ -55,6 +62,7 @@
         <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
         <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
+        <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
         <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
           <Upload 
           :before-upload="handleBeforeUpload" 
@@ -122,34 +130,7 @@ export default {
     },
     projectid: function(newVal, oldVal) {
       this.projectId = newVal;
-      // console.log("projectid"+this.projectId);
-      var _this = this;
-      this.$Spin.show();
-      //  var timer = setInterval(function(){
-      api.file_struct(newVal, "/code/", function(response) {
-        _this.$Spin.hide();
-        if (response.code == 0) {
-          _this.$set(
-            _this.data4[0],
-            "children",
-            _this.clearFileData(response.data)
-          );
-          // console.log(newVal+ "获得文件长度"+response.data.length)
-          // clearInterval(timer);
-        } else if (response.code == -101) {
-          _this.$Message.error("cookie验证失败");
-          _this.$router.push("/");
-          //  clearInterval(timer);
-        } else if (response.code == -102) {
-          _this.$Message.error("权限不足");
-          //  clearInterval(timer);
-        } else if (response.code == 500) {
-        } else {
-          _this.$Message.error("未知错误");
-          // clearInterval(timer);
-        }
-      });
-      // }, 1000)
+      this.UpdateData(newVal);
     }
   },
 
@@ -161,6 +142,7 @@ export default {
       userName: "",
       projectId: 0,
       projectName: "",
+      treeTheme: "lightTree",
       data4: [
         {
           title: "",
@@ -174,12 +156,22 @@ export default {
                 style: {
                   display: "inline-block",
                   lineHeight: "20px",
-                  width: "100%",
+                  
                   cursor: "pointer"
                 },
                 on: {
+                  dragover: () => {
+                    this.handleDragOver(root, node, data);
+                  },
+                  dragend: () => {
+                    this.handleDragEnd(root, node, data);
+                  },
+                  drop: () => {
+                    this.handleDrop(root, node, data);
+                  },
                   contextmenu: e => {
                     e.preventDefault();
+                    this.hiddenRightMenu();
                     this.nodeInfo = data;
                     this.$refs.contentRootMenu.$refs.reference = event.target;
                     this.$refs.contentRootMenu.currentVisible = !this.$refs
@@ -201,11 +193,80 @@ export default {
       doculist: [],
       nodeInfo: [], //当前选中节点信息
       copyInfo: [], //当前选中待复制节点信息
-      rootData: []
+      rootData: [],
+      dragstartNode: "", //被拖动结点Node
+      dragstartData: "" //被拖动结点Data
     };
   },
 
   methods: {
+    uploadFiles(root, nodekey, data) {
+      var path = this.getPath(root, nodekey, data);
+      bridge.$emit("uploadFiles", path);
+    },
+
+    UpdateData(projectid) {
+      var _this = this;
+      var formerData = _this.deepcopy(_this.rootData);
+  
+      api.file_struct(projectid, "/code/", function(response) {
+        if (response.code == 0) {
+          _this.$set(
+            _this.data4[0],
+            "children",
+            _this.clearFileData(response.data)
+          );
+          
+         _this.$nextTick(() => {
+           _this.sortAll();
+           //console.log("————————————————————————");
+         //console.log("原长度：" + formerData.length + "现长度：" + _this.rootData.length);
+          for (let i = 0; i < _this.rootData.length; i++) {
+            if ((_this.rootData[i].children != undefined)) {
+              var targetData = _this.rootData[i].node;
+              //console.log("发现一个文件夹：" + targetData.title);
+              var targetPath = _this.getPath(_this.rootData, i, targetData);
+              //console.log("路径为：" + targetPath)
+              for (let j = 0; j < formerData.length; j++) {
+                var oriData = formerData[j].node;
+                if ((oriData.title == targetData.title) && (oriData.expand == true)) {
+                  var oriPath = _this.getPath(formerData, j, oriData);
+                  //console.log("原来有一个展开文件夹：" + oriPath);
+                  if (oriPath == targetPath) {
+                    //console.log("YES!");
+                    //console.log(targetData.expand);
+                    _this.$set(targetData, "expand", true);
+                  }
+                }
+                
+              }
+            }
+          }
+         });
+        } else if (response.code == -101) {
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        } else if (response.code == -102) {
+          _this.$Message.error("权限不足");
+        } else if (response.code == 500) {
+        } else {
+          _this.$Message.error("未知错误");
+        }
+      });
+      
+    },
+
+    sortAll() {
+       var _this = this;
+       console.log("这里的长度是" + _this.rootData.length);
+       for (let i = 0; i < _this.rootData.length; i++) {
+          var shownode = _this.rootData[i].node;
+          if (shownode.children === undefined) {
+            _this.sort(_this.rootData, shownode);
+          }
+        }
+    },
+
     deepcopy(copyInfo) {
       var newInfo = [];
       newInfo = JSON.parse(JSON.stringify(copyInfo));
@@ -269,13 +330,25 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
             attrs: {
               draggable: "true"
             },
             on: {
+              dragstart: () => {
+                this.handleDragStart(root, node, data);
+              },
+              dragover: () => {
+                this.handleDragOver(root, node, data);
+              },
+              dragend: () => {
+                this.handleDragEnd(root, node, data);
+              },
+              drop: () => {
+                this.handleDrop(root, node, data);
+              },
               click: () => {
                 data.editState
                   ? ""
@@ -283,6 +356,7 @@ export default {
               },
               contextmenu: e => {
                 e.preventDefault();
+                this.hiddenRightMenu();
                 this.nodeInfo = data;
                 this.$refs.contentFolderMenu.$refs.reference = event.target;
                 this.$refs.contentFolderMenu.currentVisible = !this.$refs
@@ -390,10 +464,25 @@ export default {
             style: {
               display: "inline-block",
               lineHeight: "20px",
-              width: "100%",
+              
               cursor: "pointer"
             },
+            attrs: {
+              draggable: "true"
+            },
             on: {
+              dragstart: () => {
+                this.handleDragStart(root, node, data);
+              },
+              dragover: () => {
+                this.handleDragOver(root, node, data);
+              },
+              dragend: () => {
+                this.handleDragEnd(root, node, data);
+              },
+              drop: () => {
+                this.handleDrop(root, node, data);
+              },
               click: () => {
                 data.editState
                   ? ""
@@ -401,6 +490,7 @@ export default {
               },
               contextmenu: e => {
                 e.preventDefault();
+                this.hiddenRightMenu();
                 this.nodeInfo = data;
                 this.$refs.contentFileMenu.$refs.reference = event.target;
                 this.$refs.contentFileMenu.currentVisible = !this.$refs
@@ -503,6 +593,38 @@ export default {
       }
     },
 
+    handleDragStart(root, node, data) {
+      const event = window.event || arguments[0];
+      this.dragstartNode = node;
+      this.dragstartData = data;
+    },
+
+    handleDragOver(root, node, data) {
+      const event = window.event || arguments[0];
+      event.preventDefault();
+    },
+
+    handleDragEnd(root, node, data) {
+      const event = window.event || arguments[0];
+      event.preventDefault();
+    },
+
+    handleDrop(root, node, data) {
+      event.preventDefault();
+      if (node === this.dragstartNode) return; //若拖动到源结点上，则无改变
+      var targetPath = this.getPath(root, node.nodeKey, data);
+      var originPath = this.getPath(
+        root,
+        this.dragstartNode.nodeKey,
+        this.dragstartData
+      );
+      if (targetPath == originPath) {
+        var _this = this;
+        _this.$Message.error("粘贴到了同一路径下！");
+      } else {
+        this.pasteMove(root, node.nodeKey, data, false, this.dragstartData, originPath, targetPath, false);
+      }
+    },
     saveEdit(root) {
       var i;
       var findnode = undefined;
@@ -515,6 +637,304 @@ export default {
       }
       if (findnode != undefined) {
         this.confirmTheChange(root, i, findnode);
+      }
+    },
+
+    pasteMove(
+      root,
+      nodekey,
+      data,
+      copyflag,
+      copyInfo,
+      originPath,
+      targetPath,
+      force
+    ) {
+      //copyflag为1为复制行为，为0为剪切行为
+      //copyInfo为被复制的内容
+      //data为复制到的对象，可以为文件夹也可以为文件
+      //force为Boolean值
+      var _this = this;
+      if (copyflag) {
+        //复制行为
+        this.$Spin.show();
+        if (copyInfo.children == undefined) {
+          //复制文件
+          api.file_copy(
+            _this.projectId,
+            originPath + copyInfo.title,
+            targetPath + copyInfo.title,
+            force,
+            function(response) {
+              _this.$Spin.hide();
+              console.log("粘贴返回" + response.code);
+              if (response.code == 0) {
+                if (data.children == undefined) {
+                  //若粘贴目标为文件
+                  var parentKey = root[nodekey].parent;
+                  var parent = root[parentKey].node;
+                  const children = parent.children || [];
+                  var newnode = _this.deepcopy(copyInfo);
+                  children.push(newnode);
+                  _this.$set(parent, "children", children);
+                  _this.sort(root, parent.children[0]);
+                  _this.$set(parent, "expand", true);
+                } else {
+                  //若粘贴目标为文件夹
+                  const children = data.children || [];
+                  var newnode = _this.deepcopy(copyInfo);
+                  children.push(newnode);
+                  _this.$set(data, "children", children);
+                  _this.sort(root, data.children[0]);
+                  _this.$set(data, "expand", true);
+                }
+                _this.$Message.info("粘贴成功");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else if (response.code == -301) {
+                _this.$Modal.confirm({
+                  title: "提示",
+                  content: "在目标文件夹中有同名文件，是否覆盖？",
+                  onOk: () => {
+                    _this.pasteMove(
+                      root,
+                      nodekey,
+                      data,
+                      copyflag,
+                      copyInfo,
+                      originPath,
+                      targetPath,
+                      true
+                    );
+                  },
+                  onCancel: () => {
+                    _this.$Message.info("取消");
+                  }
+                });
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        } else {
+          //复制文件夹
+          api.dir_copy(
+            _this.projectId,
+            originPath,
+            targetPath + copyInfo.title + "/",
+            force,
+            function(response) {
+              _this.$Spin.hide();
+              console.log("粘贴返回" + response.code);
+              if (response.code == 0) {
+                if (data.children == undefined) {
+                  //若粘贴目标为文件
+                  var parentKey = root[nodekey].parent;
+                  var parent = root[parentKey].node;
+                  const children = parent.children || [];
+                  var newnode = _this.deepcopy(copyInfo);
+                  children.push(newnode);
+                  _this.$set(parent, "children", children);
+                  _this.sort(root, parent.children[0]);
+                  _this.$set(parent, "expand", true);
+                } else {
+                  //若粘贴目标为文件夹
+                  const children = data.children || [];
+                  var newnode = _this.deepcopy(copyInfo);
+                  children.push(newnode);
+                  _this.$set(data, "children", children);
+                  _this.sort(root, data.children[0]);
+                  _this.$set(data, "expand", true);
+                }
+                _this.$Message.info("粘贴成功");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else if (response.code == -301) {
+                _this.$Modal.confirm({
+                  title: "提示",
+                  content: "在目标文件夹中有同名文件，是否覆盖？",
+                  onOk: () => {
+                    _this.pasteMove(
+                      root,
+                      nodekey,
+                      data,
+                      copyflag,
+                      copyInfo,
+                      originPath,
+                      targetPath,
+                      true
+                    );
+                  },
+                  onCancel: () => {
+                    _this.$Message.info("取消");
+                  }
+                });
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        }
+      } else {
+        //剪切行为
+        this.$Spin.show();
+        if (copyInfo.children == undefined) {
+          //剪切文件
+          console.log("剪切文件" +  _this.projectId + " " +
+            originPath + copyInfo.title + " " +
+            targetPath + copyInfo.title + " " +
+            force)
+          api.file_move(
+            _this.projectId,
+            originPath + copyInfo.title,
+            targetPath + copyInfo.title,
+            force,
+            function(response) {
+              _this.$Spin.hide();
+              console.log("粘贴返回" + response.code);
+              if (response.code == 0) {
+                var IDmap = {};
+                IDmap[originPath + copyInfo.title] = [
+                  targetPath + copyInfo.title,
+                  copyInfo.title,
+                  "/code/"
+                ];
+                bridge.$emit("renameFile", IDmap);
+
+                _this.removenode(root, copyInfo.nodeKey, copyInfo);
+
+                if (data.children == undefined) {
+                  //若粘贴目标为文件
+                  var parentKey = root[nodekey].parent;
+                  var parent = root[parentKey].node;
+                  const children = parent.children || [];
+                  children.push(copyInfo);
+                  _this.$set(parent, "children", children);
+                  _this.sort(root, parent.children[0]);
+                  _this.$set(parent, "expand", true);
+                } else {
+                  //若粘贴目标为文件夹
+                  const children = data.children || [];
+                  children.push(copyInfo);
+                  _this.$set(data, "children", children);
+                  _this.sort(root, data.children[0]);
+                  _this.$set(data, "expand", true);
+                }
+                _this.copyInfo = [];
+                _this.$Message.info("粘贴成功");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else if (response.code == -301) {
+                _this.$Modal.confirm({
+                  title: "提示",
+                  content: "在目标文件夹中有同名文件，是否覆盖？",
+                  onOk: () => {
+                    _this.pasteMove(
+                      root,
+                      nodekey,
+                      data,
+                      copyflag,
+                      copyInfo,
+                      originPath,
+                      targetPath,
+                      true
+                    );
+                  },
+                  onCancel: () => {
+                    _this.$Message.info("取消");
+                  }
+                });
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        } else {
+          //剪切文件夹
+          console.log("剪切文件夹" +  _this.projectId + " " +
+            originPath + " " +
+            targetPath + copyInfo.title + "/" + " " +
+            force)
+          api.dir_move(
+            _this.projectId,
+            originPath,
+            targetPath + copyInfo.title + "/",
+            force,
+            function(response) {
+              _this.$Spin.hide();
+              console.log("粘贴返回" + response.code);
+              if (response.code == 0) {
+                var leaves = _this.getLeafPath(root, copyInfo.nodeKey);
+                var IDmap = {};
+                var oldID = "";
+                var newID = "";
+                for (let i = 0; i < leaves.length; i++) {
+                  oldID = originPath + leaves[i];
+                  newID = targetPath + copyInfo.title + "/" + leaves;
+                  console.log(oldID + " " + newID);
+                  IDmap[oldID] = [newID, "/code/"];
+                }
+                bridge.$emit("renameFloder", IDmap);
+
+                _this.removenode(root, copyInfo.nodeKey, copyInfo);
+                if (data.children == undefined) {
+                  //若粘贴目标为文件
+                  var parentKey = root[nodekey].parent;
+                  var parent = root[parentKey].node;
+                  const children = parent.children || [];
+                  children.push(copyInfo);
+                  _this.$set(parent, "children", children);
+                  _this.sort(root, parent.children[0]);
+                  _this.$set(parent, "expand", true);
+                } else {
+                  //若粘贴目标为文件夹
+                  const children = data.children || [];
+                  children.push(copyInfo);
+                  _this.$set(data, "children", children);
+                  _this.sort(root, data.children[0]);
+                  _this.$set(data, "expand", true);
+                }
+                _this.$Message.info("粘贴成功");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else if (response.code == -301) {
+                _this.$Modal.confirm({
+                  title: "提示",
+                  content: "在目标文件夹中有同名文件，是否覆盖？",
+                  onOk: () => {
+                    _this.pasteMove(
+                      root,
+                      nodekey,
+                      data,
+                      copyflag,
+                      copyInfo,
+                      originPath,
+                      targetPath,
+                      true
+                    );
+                  },
+                  onCancel: () => {
+                    _this.$Message.info("取消");
+                  }
+                });
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        }
       }
     },
 
@@ -614,424 +1034,7 @@ export default {
           var _this = this;
           _this.$Message.error("粘贴到了同一路径下！");
         } else {
-          if (this.copyflag) {
-            //复制行为
-            var _this = this;
-            this.$Spin.show();
-            if (_this.copyInfo.children == undefined) {
-              // console.log("文件从目录"+originPath+_this.copyInfo.title+"移动到目录"+targetPath+_this.copyInfo.title)
-              api.file_copy(
-                _this.projectId,
-                originPath + _this.copyInfo.title,
-                targetPath + _this.copyInfo.title,
-                false,
-                function(response) {
-                  _this.$Spin.hide();
-                  // console.log("粘贴返回"+response.code)
-                  if (response.code == 0) {
-                    if (data.children == undefined) {
-                      //若粘贴目标为文件
-                      var parentKey = root[nodekey].parent;
-                      var parent = root[parentKey].node;
-                      const children = parent.children || [];
-                      var newnode = _this.deepcopy(_this.copyInfo);
-                      children.push(newnode);
-                      _this.$set(parent, "children", children);
-                      _this.sort(root, parent.children[0]);
-                    } else {
-                      //若粘贴目标为文件夹
-                      const children = data.children || [];
-                      var newnode = _this.deepcopy(_this.copyInfo);
-                      children.push(newnode);
-                      _this.$set(data, "children", children);
-                      _this.sort(root, data.children[0]);
-                    }
-                    _this.$Message.info("粘贴成功");
-                  } else if (response.code == -101) {
-                    _this.$Message.error("cookie验证失败");
-                    _this.$router.push("/");
-                  } else if (response.code == -102) {
-                    _this.$Message.error("权限不足");
-                  } else if (response.code == -301) {
-                    _this.$Modal.confirm({
-                      title: "提示",
-                      content: "在目标文件夹中有同名文件，是否覆盖？",
-                      onOk: () => {
-                        api.file_copy(
-                          _this.projectId,
-                          originPath + _this.copyInfo.title,
-                          targetPath + _this.copyInfo.title,
-                          true,
-                          function(response) {
-                            _this.$Spin.hide();
-                            // console.log("粘贴返回"+response.code)
-                            if (response.code == 0) {
-                              if (data.children == undefined) {
-                                //若粘贴目标为文件
-                                var parentKey = root[nodekey].parent;
-                                var parent = root[parentKey].node;
-                                const children = parent.children || [];
-                                var newnode = _this.deepcopy(_this.copyInfo);
-                                children.push(newnode);
-                                _this.$set(parent, "children", children);
-                                _this.sort(root, parent.children[0]);
-                              } else {
-                                //若粘贴目标为文件夹
-                                const children = data.children || [];
-                                var newnode = _this.deepcopy(_this.copyInfo);
-                                children.push(newnode);
-                                _this.$set(data, "children", children);
-                                _this.sort(root, data.children[0]);
-                              }
-                              _this.$Message.info("粘贴成功");
-                            } else if (response.code == -101) {
-                              _this.$Message.error("cookie验证失败");
-                              _this.$router.push("/");
-                            } else if (response.code == -102) {
-                              _this.$Message.error("权限不足");
-                            } else {
-                              _this.$Message.error("未知错误");
-                            }
-                          }
-                        );
-                      },
-                      onCancel: () => {
-                        _this.$Message.info("取消");
-                      }
-                    });
-                  } else {
-                    _this.$Message.error("未知错误");
-                  }
-                }
-              );
-            } else {
-              // console.log("文件夹从目录"+ originPath +"移动到目录"+targetPath+_this.copyInfo.title+"/")
-              api.dir_copy(
-                _this.projectId,
-                originPath,
-                targetPath + _this.copyInfo.title + "/",
-                false,
-                function(response) {
-                  _this.$Spin.hide();
-                  // console.log("粘贴返回"+response.code)
-                  if (response.code == 0) {
-                    if (data.children == undefined) {
-                      //若粘贴目标为文件
-                      var parentKey = root[nodekey].parent;
-                      var parent = root[parentKey].node;
-                      const children = parent.children || [];
-                      var newnode = _this.deepcopy(_this.copyInfo);
-                      children.push(newnode);
-                      _this.$set(parent, "children", children);
-                      _this.sort(root, parent.children[0]);
-                    } else {
-                      //若粘贴目标为文件夹
-                      const children = data.children || [];
-                      var newnode = _this.deepcopy(_this.copyInfo);
-                      children.push(newnode);
-                      _this.$set(data, "children", children);
-                      _this.sort(root, data.children[0]);
-                    }
-                    _this.$Message.info("粘贴成功");
-                  } else if (response.code == -101) {
-                    _this.$Message.error("cookie验证失败");
-                    _this.$router.push("/");
-                  } else if (response.code == -102) {
-                    _this.$Message.error("权限不足");
-                  } else if (response.code == -301) {
-                    _this.$Modal.confirm({
-                      title: "提示",
-                      content: "在目标文件夹中有同名文件，是否覆盖？",
-                      onOk: () => {
-                        api.dir_copy(
-                          _this.projectId,
-                          originPath,
-                          targetPath + _this.copyInfo.title + "/",
-                          true,
-                          function(response) {
-                            _this.$Spin.hide();
-                            // console.log("粘贴返回"+response.code)
-                            if (response.code == 0) {
-                              if (data.children == undefined) {
-                                //若粘贴目标为文件
-                                var parentKey = root[nodekey].parent;
-                                var parent = root[parentKey].node;
-                                const children = parent.children || [];
-                                var newnode = _this.deepcopy(_this.copyInfo);
-                                children.push(newnode);
-                                _this.$set(parent, "children", children);
-                                _this.sort(root, parent.children[0]);
-                              } else {
-                                //若粘贴目标为文件夹
-                                const children = data.children || [];
-                                var newnode = _this.deepcopy(_this.copyInfo);
-                                children.push(newnode);
-                                _this.$set(data, "children", children);
-                                _this.sort(root, data.children[0]);
-                              }
-                              _this.$Message.info("粘贴成功");
-                            } else if (response.code == -101) {
-                              _this.$Message.error("cookie验证失败");
-                              _this.$router.push("/");
-                            } else if (response.code == -102) {
-                              _this.$Message.error("权限不足");
-                            } else {
-                              _this.$Message.error("未知错误");
-                            }
-                          }
-                        );
-                      },
-                      onCancel: () => {
-                        _this.$Message.info("取消");
-                      }
-                    });
-                  } else {
-                    _this.$Message.error("未知错误");
-                  }
-                }
-              );
-            }
-          } else {
-            //剪切行为
-            var _this = this;
-            this.$Spin.show();
-            if (_this.copyInfo.children == undefined) {
-              // console.log("文件从目录"+originPath+_this.copyInfo.title+"剪切到目录"+targetPath+_this.copyInfo.title)
-              api.file_move(
-                _this.projectId,
-                originPath + _this.copyInfo.title,
-                targetPath + _this.copyInfo.title,
-                false,
-                function(response) {
-                  _this.$Spin.hide();
-                  // console.log("粘贴返回"+response.code)
-                  if (response.code == 0) {
-                    var IDmap = {};
-                    IDmap[originPath + _this.copyInfo.title] = [
-                      targetPath + _this.copyInfo.title,
-                      _this.copyInfo.title,
-                      "/code/"
-                    ];
-                    bridge.$emit("renameFile", IDmap);
-
-                    _this.removenode(
-                      root,
-                      _this.copyInfo.nodeKey,
-                      _this.copyInfo
-                    );
-                    if (data.children == undefined) {
-                      //若粘贴目标为文件
-                      var parentKey = root[nodekey].parent;
-                      var parent = root[parentKey].node;
-                      const children = parent.children || [];
-                      children.push(_this.copyInfo);
-                      _this.$set(parent, "children", children);
-                      _this.sort(root, parent.children[0]);
-                    } else {
-                      //若粘贴目标为文件夹
-                      const children = data.children || [];
-                      children.push(_this.copyInfo);
-                      _this.$set(data, "children", children);
-                      _this.sort(root, data.children[0]);
-                    }
-                    _this.copyInfo = [];
-                    _this.$Message.info("粘贴成功");
-                  } else if (response.code == -101) {
-                    _this.$Message.error("cookie验证失败");
-                    _this.$router.push("/");
-                  } else if (response.code == -102) {
-                    _this.$Message.error("权限不足");
-                  } else if (response.code == -301) {
-                    _this.$Modal.confirm({
-                      title: "提示",
-                      content: "在目标文件夹中有同名文件，是否覆盖？",
-                      onOk: () => {
-                        api.file_move(
-                          _this.projectId,
-                          originPath + _this.copyInfo.title,
-                          targetPath + _this.copyInfo.title,
-                          true,
-                          function(response) {
-                            _this.$Spin.hide();
-                            // console.log("粘贴返回"+response.code)
-                            if (response.code == 0) {
-                              var IDmap = {};
-                              IDmap[originPath + _this.copyInfo.title] = [
-                                targetPath + _this.copyInfo.title,
-                                _this.copyInfo.title,
-                                "/code/"
-                              ];
-                              bridge.$emit("renameFile", IDmap);
-
-                              _this.removenode(
-                                root,
-                                _this.copyInfo.nodeKey,
-                                _this.copyInfo
-                              );
-                              if (data.children == undefined) {
-                                //若粘贴目标为文件
-                                var parentKey = root[nodekey].parent;
-                                var parent = root[parentKey].node;
-                                const children = parent.children || [];
-                                children.push(_this.copyInfo);
-                                _this.$set(parent, "children", children);
-                                _this.sort(root, parent.children[0]);
-                              } else {
-                                //若粘贴目标为文件夹
-                                const children = data.children || [];
-                                children.push(_this.copyInfo);
-                                _this.$set(data, "children", children);
-                                _this.sort(root, data.children[0]);
-                              }
-                              _this.copyInfo = [];
-                              _this.$Message.info("粘贴成功");
-                            } else if (response.code == -101) {
-                              _this.$Message.error("cookie验证失败");
-                              _this.$router.push("/");
-                            } else if (response.code == -102) {
-                              _this.$Message.error("权限不足");
-                            } else {
-                              _this.$Message.error("未知错误");
-                            }
-                          }
-                        );
-                      },
-                      onCancel: () => {
-                        _this.$Message.info("取消");
-                      }
-                    });
-                  } else {
-                    _this.$Message.error("未知错误");
-                  }
-                }
-              );
-            } else {
-              // console.log("文件夹从目录"+originPath+"剪切到目录"+targetPath+_this.copyInfo.title+"/")
-              api.dir_move(
-                _this.projectId,
-                originPath,
-                targetPath + _this.copyInfo.title + "/",
-                false,
-                function(response) {
-                  _this.$Spin.hide();
-                  // console.log("粘贴返回"+response.code)
-                  if (response.code == 0) {
-                    var leaves = _this.getLeafPath(
-                      root,
-                      _this.copyInfo.nodeKey
-                    );
-                    var IDmap = {};
-                    var oldID = "";
-                    var newID = "";
-                    for (let i = 0; i < leaves.length; i++) {
-                      oldID = originPath + leaves[i];
-                      newID = targetPath + _this.copyInfo.title + "/" + leaves;
-                      console.log(oldID + " " + newID);
-                      IDmap[oldID] = [newID, "/code/"];
-                    }
-                    bridge.$emit("renameFloder", IDmap);
-
-                    _this.removenode(
-                      root,
-                      _this.copyInfo.nodeKey,
-                      _this.copyInfo
-                    );
-                    if (data.children == undefined) {
-                      //若粘贴目标为文件
-                      var parentKey = root[nodekey].parent;
-                      var parent = root[parentKey].node;
-                      const children = parent.children || [];
-                      children.push(_this.copyInfo);
-                      _this.$set(parent, "children", children);
-                      _this.sort(root, parent.children[0]);
-                    } else {
-                      //若粘贴目标为文件夹
-                      const children = data.children || [];
-                      children.push(_this.copyInfo);
-                      _this.$set(data, "children", children);
-                      _this.sort(root, data.children[0]);
-                    }
-                    _this.$Message.info("粘贴成功");
-                  } else if (response.code == -101) {
-                    _this.$Message.error("cookie验证失败");
-                    _this.$router.push("/");
-                  } else if (response.code == -102) {
-                    _this.$Message.error("权限不足");
-                  } else if (response.code == -301) {
-                    _this.$Modal.confirm({
-                      title: "提示",
-                      content: "在目标文件夹中有同名文件，是否覆盖？",
-                      onOk: () => {
-                        api.dir_move(
-                          _this.projectId,
-                          originPath,
-                          targetPath + _this.copyInfo.title + "/",
-                          true,
-                          function(response) {
-                            _this.$Spin.hide();
-                            // console.log("粘贴返回"+response.code)
-                            if (response.code == 0) {
-                              var leaves = _this.getLeafPath(
-                                root,
-                                _this.copyInfo.nodeKey
-                              );
-                              var IDmap = {};
-                              var oldID = "";
-                              var newID = "";
-                              for (let i = 0; i < leaves.length; i++) {
-                                oldID = originPath + leaves[i];
-                                newID =
-                                  targetPath +
-                                  _this.copyInfo.title +
-                                  "/" +
-                                  leaves;
-                                IDmap[oldID] = [newID, "/code/"];
-                              }
-                              bridge.$emit("renameFloder", IDmap);
-
-                              _this.removenode(
-                                root,
-                                _this.copyInfo.nodeKey,
-                                _this.copyInfo
-                              );
-                              if (data.children == undefined) {
-                                //若粘贴目标为文件
-                                var parentKey = root[nodekey].parent;
-                                var parent = root[parentKey].node;
-                                const children = parent.children || [];
-                                children.push(_this.copyInfo);
-                                _this.$set(parent, "children", children);
-                                _this.sort(root, parent.children[0]);
-                              } else {
-                                //若粘贴目标为文件夹
-                                const children = data.children || [];
-                                children.push(_this.copyInfo);
-                                _this.$set(data, "children", children);
-                                _this.sort(root, data.children[0]);
-                              }
-                              _this.$Message.info("粘贴成功");
-                            } else if (response.code == -101) {
-                              _this.$Message.error("cookie验证失败");
-                              _this.$router.push("/");
-                            } else if (response.code == -102) {
-                              _this.$Message.error("权限不足");
-                            } else {
-                              _this.$Message.error("未知错误");
-                            }
-                          }
-                        );
-                      },
-                      onCancel: () => {
-                        _this.$Message.info("取消");
-                      }
-                    });
-                  } else {
-                    _this.$Message.error("未知错误");
-                  }
-                }
-              );
-            }
-          }
+          this.pasteMove(root, nodekey, data, this.copyflag, this.copyInfo, originPath, targetPath, false);
         }
       }
     },
@@ -1039,24 +1042,11 @@ export default {
     appendfile(root, nodekey, data) {
       this.hiddenRightMenu();
       event.stopPropagation();
-      var path = "";
-      var findkey = nodekey;
-      while (findkey !== 0) {
-        var parentKey = root.find(el => el.nodeKey === findkey).parent;
-        if (parentKey == 0) {
-          break;
-        }
-        var parent = root.find(el => el.nodeKey === parentKey).node;
-        path = parent.title + "/" + path;
-        var findkey = parentKey;
-      }
-      if (nodekey != 0) {
-        path = path + data.title + "/";
-      }
+      var path = this.getPath(root, nodekey, data);
       var _this = this;
       this.$Spin.show();
-      // console.log(this.projectId + "当前新建文件》》" + "/code/" + path +"新建文件");
-      api.file_new(this.projectId, "/code/" + path + "新建文件", function(
+      console.log(this.projectId + "当前新建文件》》" + path +"新建文件");
+      api.file_new(this.projectId, path + "新建文件", function(
         response
       ) {
         _this.$Spin.hide();
@@ -1086,25 +1076,11 @@ export default {
     appendfolder(root, nodekey, data) {
       this.hiddenRightMenu();
       event.stopPropagation();
-
-      var path = "";
-      var findkey = nodekey;
-      while (findkey !== 0) {
-        var parentKey = root.find(el => el.nodeKey === findkey).parent;
-        if (parentKey == 0) {
-          break;
-        }
-        var parent = root.find(el => el.nodeKey === parentKey).node;
-        path = parent.title + "/" + path;
-        var findkey = parentKey;
-      }
-      if (nodekey != 0) {
-        path = path + data.title + "/";
-      }
+      var path = this.getPath(root, nodekey, data);
       var _this = this;
       this.$Spin.show();
-      // console.log(this.projectId + "当前新建文件夹》》" + "/code/" + path + "新建文件夹/");
-      api.dir_new(this.projectId, "/code/" + path + "新建文件夹/", function(
+      console.log(this.projectId + "当前新建文件夹》》" +  path + "新建文件夹/");
+      api.dir_new(this.projectId, path + "新建文件夹/", function(
         response
       ) {
         _this.$Spin.hide();
@@ -1147,24 +1123,14 @@ export default {
         title: "提示",
         content: `您确定删除 “${data.title}” 吗？`,
         onOk: () => {
-          var path = "";
-          var findkey = nodekey;
-          while (findkey !== 0) {
-            var parentKey = root.find(el => el.nodeKey === findkey).parent;
-            if (parentKey == 0) {
-              break;
-            }
-            var parent = root.find(el => el.nodeKey === parentKey).node;
-            path = parent.title + "/" + path;
-            var findkey = parentKey;
-          }
+          var path = this.getPath(root, nodekey, data);
           var _this = this;
           this.$Spin.show();
           if (data.children != undefined) {
-            // console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
+            console.log("当前删除文件夹》》" + path);
             api.dir_delete(
               this.projectId,
-              "/code/" + path + data.title + "/",
+              path,
               function(response) {
                 _this.$Spin.hide();
                 // console.log("response.code:" + response.code);
@@ -1175,13 +1141,11 @@ export default {
                   const index = parent.children.indexOf(data);
                   parent.children.splice(index, 1);
                   _this.$Message.info("删除成功");
-
                   // console.log("当前删除文件夹》》" + "/code/" + path + data.title + "/");
-
                   var leaves = _this.getLeafPath(root, nodekey);
                   var oldID = [];
                   for (let i = 0; i < leaves.length; i++) {
-                    oldID.push("/code/" + path + data.title + "/" + leaves[i]);
+                    oldID.push(path + leaves[i]);
                   }
                   bridge.$emit("deleteFloder", oldID);
                 } else if (response.code == -101) {
@@ -1195,10 +1159,10 @@ export default {
               }
             );
           } else {
-            // console.log("当前删除文件》》" + "/code/" + path + data.title);
+            console.log("当前删除文件》》" + path + data.title);
             api.file_delete(
               this.projectId,
-              "/code/" + path + data.title,
+              path + data.title,
               function(response) {
                 _this.$Spin.hide();
                 // console.log("response.code:" + response.code);
@@ -1210,8 +1174,7 @@ export default {
                   parent.children.splice(index, 1);
                   _this.$Message.info("删除成功");
                   // console.log("当前删除文件》》" + "/code/" + path + data.title);
-
-                  bridge.$emit("deleteFile", "/code/" + path + data.title);
+                  bridge.$emit("deleteFile", path + data.title);
                 } else if (response.code == -101) {
                   _this.$Message.error("cookie验证失败");
                   _this.$router.push("/");
@@ -1364,27 +1327,19 @@ export default {
       //    title: '取消修改',
       //});
       this.setStates(data);
+      this.sort(this.rootData, data);
     },
     // 点击Tree节点触发
     handleClickTreeNode(root, nodekey, data) {
       // console.log("当前点击》》"+data.title);
+      this.saveEdit(root);
       this.nodeInfo = data;
       if (data.children == undefined) {
-        var path = "";
-        var findkey = nodekey;
-        while (findkey !== 0) {
-          var parentKey = root.find(el => el.nodeKey === findkey).parent;
-          if (parentKey == 0) {
-            break;
-          }
-          var parent = root.find(el => el.nodeKey === parentKey).node;
-          path = parent.title + "/" + path;
-          var findkey = parentKey;
-        }
+        var path = this.getPath(root, nodekey, data);
         bridge.$emit("add", [
-          "/code/" + path + data.title,
+          path + data.title,
           data.title,
-          "/code/" + path
+          path
         ]);
       }
     }
@@ -1406,41 +1361,51 @@ export default {
       // console.log(i,this.doculist[i])//暂且验证一下
       // }
       bridge.$emit("ReturnAllFile", _this.doculist);
-    }),
-      bridge.$on("uploadFile", fileName => {
-        // console.log('接收上传文件'+fileName)
-        /*
+    });
+
+    bridge.$on("uploadFile", fileName => {
+      // console.log('接收上传文件'+fileName)
+      /*
                 const children = _this.rootData[0].children || [];
                 children.push({
                     title: fileName
                 });
                 _this.$set(_this.rootData[0], 'children', children);*/
-        var _this = this;
-        this.$Spin.show();
-        api.file_struct(this.projectid, "/code/", function(response) {
-          _this.$Spin.hide();
-          if (response.code == 0) {
-            _this.$set(
-              _this.data4[0],
-              "children",
-              _this.clearFileData(response.data)
-            );
-            //  console.log(newVal+ "获得文件长度"+response.data.length)
-            // clearInterval(timer);
-          } else if (response.code == -101) {
-            _this.$Message.error("cookie验证失败");
-            _this.$router.push("/");
-            // clearInterval(timer);
-          } else if (response.code == -102) {
-            _this.$Message.error("权限不足");
-            // clearInterval(timer);
-          } else if (response.code == 500) {
-          } else {
-            _this.$Message.error("未知错误");
-            // clearInterval(timer);
+      /*
+      var _this = this;
+      this.$Spin.show();
+      api.file_struct(this.projectid, "/code/", function(response) {
+        _this.$Spin.hide();
+        if (response.code == 0) {
+          _this.$set(
+            _this.data4[0],
+            "children",
+            _this.clearFileData(response.data)
+          );
+        } else if (response.code == -101) {
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        } else if (response.code == -102) {
+          _this.$Message.error("权限不足");
+        } else if (response.code == 500) {
+        } else {
+          _this.$Message.error("未知错误");
           }
         });
+      }),
+       bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "dark") {
+          this.treeTheme = "darkTree";
+        } else {
+          this.treeTheme = "lightTree";
+        }
       });
+      */
+      this.UpdateData(this.projectId);
+    });
+    bridge.$on("FleshFilesTree", () => {
+      this.UpdateData(this.projectId);
+    })
 
     var timer = setInterval(function() {
       if (_this.rootData.length != 0) {
@@ -1450,27 +1415,27 @@ export default {
             _this.sort(_this.rootData, shownode);
           }
         }
+        console.log("完成初始化刷新");
         clearInterval(timer);
       }
     }, 1000);
+    
+    bridge.$on("changeAllTheme", themeName => {
+        if (themeName == "dark") {
+          this.treeTheme = "darkTree";
+        } else {
+          this.treeTheme = "lightTree";
+        }
+    });
+
   },
-  created() {
-    /*
-            var _this=this
-            document.onkeydown = function (e) {
-                var key = window.event.keyCode ? window.event.keyCode : window.event.which_
-                if (key == 46) {
-                    //delete
-                    _this.remove(_this.rootData, _this.nodeInfo.nodeKey, _this.nodeInfo);
-                }
-            }
-            */
-  },
+  
   beforeDestroy() {
     bridge.$off("newRootFile");
     bridge.$off("newRootFolder");
     bridge.$off("AllFile");
     bridge.$off("uploadFile");
+    bridge.$off("changeAllTheme");
   }
 };
 </script>
@@ -1491,7 +1456,7 @@ export default {
 }
 
 .hhhaha:hover {
-  color: #275cd4;
+  color: #949090;
 }
 
 .root {
@@ -1500,7 +1465,7 @@ export default {
 }
 
 .root:hover {
-  color: #275cd4;
+  color: inherit;
 }
 
 .ivu-tree ul li {
@@ -1514,6 +1479,15 @@ export default {
 
 
 <style scoped>
+.ivu-btn {
+  color: #f5f7f9;
+  background-color: #464e57;
+  border-color: #464e57;
+}
+.ivu-btn:hover {
+  background-color: dimgrey;
+}
+
 .my-setting .ivu-tabs-bar {
   margin-bottom: 0vh;
 }
@@ -1526,16 +1500,6 @@ export default {
   background: #363e4f;
   margin: -0.1vh;
 }
-.ivu-btn {
-  border-radius: 0px;
-  color: #f5f7f9;
-  background-color: #464e57;
-  border-color: #464e57;
-  margin: 0px;
-  border: 0px solid transparent;
-  padding: 6px 16px 6px;
-  margin: -3px;
-}
 .layout {
   border: 1px solid #d7dde4;
   background: #f5f7f9;
@@ -1546,9 +1510,6 @@ export default {
 .layout-header-bar {
   background: #fff;
 }
-.ivu-btn:hover {
-  background-color: dimgrey;
-}
 .ivu-layout-header {
   height: 36px;
   line-height: 36px;
@@ -1556,13 +1517,33 @@ export default {
   background-color: #464e57;
   margin: 0;
 }
-.mytree >>> .ivu-tree-title {
+.darkTree >>> .ivu-tree-title {
   border-radius: 0px;
-  color: #fff;
+  color: #ececec;
+  width: 100%;
+  font-family: Consolas;
+}
+.lightTree >>> .ivu-tree-title {
+  border-radius: 0px;
+  color: #4b4b4d;
+  width: 100%;
+  font-family: Consolas;
+}
+.lightTree >>> .ivu-tree-title:hover {
+  background: #d0ecf380;
+  color: #4b4b4d;
 }
 
-.mytree >>> .ivu-tree-title-selected {
-  color: #275cd4;
+.lightTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #d0ecf3;
+}
+
+.darkTree >>> .ivu-tree-title:hover {
+  background: #4b4b4d79;
+}
+
+.darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
+  background: #4b4b4d;
 }
 .uploader-drop{
   width:120px;

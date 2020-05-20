@@ -50,7 +50,6 @@ export default {
         _this.$router.push("/");
       }
     });
-    
   }
   /*
           destroyed(){     
@@ -83,6 +82,29 @@ export default {
 .mycontrol >>> .ivu-layout-sider-trigger {
   visibility: hidden;
 }
+.mycontrol >>> .ivu-menu-dark.ivu-menu {
+  background:#3f3f3f;
+}
+
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu) {
+  color:#ffffff;
+}
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
+  background:#5d5d5d;
+}
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+  color: #ffffff;
+  background: #5d5d5d75;
+}
+
+.mycontrol >>> .ivu-menu-light.ivu-menu {
+  background:#c0c0c0;
+  border: none;
+}
+
+.mycontrol >>> .ivu-menu-item-active {
+  border: none;
+}
 .mymenu >>> .ivu-dropdown-rel {
   height: 5vh;
   text-align: middle;
@@ -96,9 +118,12 @@ export default {
   height: 3.6vh;
   z-index: 999;
 }
-
 .mymenu >>> .ivu-menu-dark.ivu-menu-horizontal {
-  color:#ffffff;
+  color:#ececec;
+  background:#4b4b4d;
+}
+.mymenu >>> .ivu-menu-light.ivu-menu-horizontal {
+  background:#e2e2e2;
 }
 .mymenu >>> .ivu-menu-item-active {
   color:inherit;
