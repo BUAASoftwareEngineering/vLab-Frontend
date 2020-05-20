@@ -2,7 +2,7 @@
   <Layout :style="{marginLeft: '0vh'}" :class="controlTheme">
     <Sider :style="{height: '94vh', overflow: 'hidden'}" width="60">
       <Menu
-        active-name="mySider"
+        :active-name="mySiderActive"
         :theme="menuTheme"
         width="50"
         :open-names="['1']"
@@ -13,6 +13,9 @@
         </MenuItem>
         <MenuItem name="2-1" @click.native="changeSetting">
           <Icon type="md-build" />
+        </MenuItem>
+        <MenuItem name="5-1" @click.native="changeDebugger">
+          <Icon type="ios-bug" />
         </MenuItem>
         <MenuItem name="3-1" @click.native="changeUpload">
           <Icon type="md-cloud-upload" />
@@ -45,6 +48,20 @@
         :projectid="projectid"
         :projectname="projectname"
       ></MySetting>
+    </Sider>
+    <Sider
+      :style="{height: '94vh', overflow: 'auto'}"
+      collapsible
+      v-model="debuggermark"
+      collapsed-width="0"
+      width="250"
+    >
+      <MyDebugger
+        class="mydebugger"
+        :username="username"
+        :projectid="projectid"
+        :projectname="projectname"
+      ></MyDebugger>
     </Sider>
     <Sider
       :style="{height: '94vh', overflow: 'auto'}"
@@ -133,6 +150,7 @@ import MyCloudUpload from "./MySider/MyCloudUpload";
 import MyCloudDownload from "./MySider/MyCloudDownload";
 import MyPreference from "./MySider/MyPreference";
 import MyNotebook from "./MySider/MyNotebook";
+import MyDebugger from "./MySider/MyDebugger";
 import * as editor from "../editor/app";
 import { setTheme } from "../editor/Appearances"
 import bridge from "./bridge";
@@ -147,7 +165,8 @@ export default {
     MyCloudUpload,
     MyCloudDownload,
     MyPreference,
-    MyNotebook
+    MyNotebook,
+    MyDebugger
   },
   props: {
     username: {
@@ -173,6 +192,7 @@ export default {
       preferencemark: true,
       notebookmark: true,
       isCollapsed: true,
+      debuggermark: true,
       tabs: [],
       tabsMap: {},
       editorMap: {},
@@ -182,7 +202,8 @@ export default {
       myEditor: undefined,
       menuTheme: "light",
       myFootTheme: "lightFoot",
-      controlTheme: "lightcontrol"
+      controlTheme: "lightcontrol",
+      mySiderActive: "1-1",
     };
   },
   methods: {
@@ -283,10 +304,12 @@ export default {
       return "editor_" + Index;
     },
     changeTree: function() {
+      this.mySiderActive="1-1";
       this.treemark = !this.treemark;
       this.uploadmark = true;
       this.downloadmark = true;
       this.settingmark = true;
+      this.debuggermark = true;
       this.preferencemark = true;
       this.notebookmark = true;
     },
@@ -294,25 +317,41 @@ export default {
       if (this.settingmark) {
         bridge.$emit("AllFile");
       }
+      this.mySiderActive="2-1";
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = true;
+      this.debuggermark = true;
       this.settingmark = !this.settingmark;
       this.preferencemark = true;
       this.notebookmark = true;
     },
     changeUpload: function() {
+      this.mySiderActive="3-1";
       this.treemark = true;
       this.uploadmark = !this.uploadmark;
       this.downloadmark = true;
+      this.debuggermark = true;
       this.settingmark = true;
       this.preferencemark = true;
       this.notebookmark = true;
     },
     changeDownload: function() {
+      this.mySiderActive="4-1";
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = !this.downloadmark;
+      this.debuggermark = true;
+      this.settingmark = true;
+      this.preferencemark = true;
+      this.notebookmark = true;
+    },
+    changeDebugger: function() {
+      this.mySiderActive="5-1";
+      this.treemark = true;
+      this.uploadmark = true;
+      this.downloadmark = true;
+      this.debuggermark = !this.debuggermark;
       this.settingmark = true;
       this.preferencemark = true;
       this.notebookmark = true;
@@ -321,6 +360,7 @@ export default {
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = true;
+      this.debuggermark = true;
       this.settingmark = true;
       this.preferencemark = !this.preferencemark;
       this.notebookmark = true;
@@ -409,6 +449,9 @@ export default {
           terminal.settheme("dark");
           setTheme("tomorrow-night");
         }
+      }),
+      bridge.$on("readyForDebug", obj => {
+        this.changeDebugger();
       });
   },
   //TODO
@@ -427,6 +470,7 @@ export default {
     bridge.$off("renameFloder");
     bridge.$off("overrideMonaco");
     bridge.$off("changeAllTheme");
+    bridge.$off("readyForDebug");
   }
 };
 </script>

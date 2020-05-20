@@ -64,6 +64,17 @@
         >运行</Button>
       </Col>
     </Row>
+
+    <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="click_debug"
+        >调试</Button>
+      </Col>
+    </Row>  
+
   </Layout>
 </template>
 <script>
@@ -109,6 +120,10 @@ export default {
     },
     openSetting() {
       bridge.$emit("openSetting");
+    },
+    async click_debug() {
+      terminal.ctrlc()
+      this.debug()
     },
     async click_compile() {
       terminal.ctrlc()
@@ -184,6 +199,9 @@ export default {
           this.run();
         }
       }
+    },
+    debug() {
+      bridge.$emit("readyForDebug");
     }
   },
   mounted() {
@@ -211,6 +229,9 @@ export default {
       bridge.$on("torun", val => {
         this.run();
       }),
+      bridge.$on("todebug", val => {
+        this.debug();
+      }),
       bridge.$on("tocompilerun", val => {
         this.compileAndRun();
       });
@@ -222,6 +243,7 @@ export default {
     bridge.$off("tocompile");
     bridge.$off("torun");
     bridge.$off("tocompilerun");
+    bridge.$off("readyForDebug");
   }
 };
 </script>
