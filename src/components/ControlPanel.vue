@@ -381,7 +381,12 @@ export default {
   },
   mounted() {
     bridge.$on("changeTree", val => {
-      this.changeTree();
+      this.treemark = false;
+       this.uploadmark = true;
+      this.downloadmark = true;
+      this.settingmark = true;
+      this.preferencemark = true;
+      this.notebookmark = true;
     }),
       bridge.$on("add", path_label => {
         if (!this.tabsMap.hasOwnProperty(path_label[0])) {
@@ -453,6 +458,7 @@ export default {
       bridge.$on("readyForDebug", obj => {
         this.changeDebugger();
       });
+
   },
   //TODO
   watch: {
@@ -499,6 +505,31 @@ export default {
   margin: -3px;
 }
 
+.lightcontrol >>> .uploader-drop{
+  width: 200px;
+  height: 33px;
+  background-color:#dfdfdf;
+  border:#4b4b4d;
+  padding: 0;
+  margin-left:24px;
+  border-radius:0px;
+}
+.lightcontrol >>> .uploader-btn{
+  border-radius: 0px;
+  background-color: #dfdfdf;
+  border-color: #bbbbbb;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  width: 200px;
+  height: 33px;
+  margin: 0px;
+  color:#4b4b4d;
+  text-align: center;
+  
+}
+.lightcontrol >>> .uploader-btn:hover{
+  background-color: #cccccc;
+}
 .lightcontrol >>> .ivu-tabs-content {
   background-color: #ffffff;
 }
@@ -517,6 +548,9 @@ export default {
 .lightcontrol >>> .ivu-layout {
    background-color: #eeeeee;
 }
+
+
+
 
 .darkcontrol >>> .ivu-btn {
   border-radius: 0px;
@@ -543,6 +577,32 @@ export default {
 .darkcontrol >>> .ivu-btn:disabled {
   background-color: #3333336c;
   color: #eeeeee7a;
+}
+
+
+.darkcontrol >>> .uploader-drop{
+  width: 200px;
+  height: 33px;
+  background-color:#464e57;
+  border:#464e57;
+  padding: 0;
+  margin-left:25px;
+  border-radius:0px;
+
+}
+.darkcontrol >>> .uploader-btn{
+  border-radius: 0px;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  width: 200px;
+  height: 33px;
+  margin: 0px;
+  color:#f5f7f9;
+  text-align: center;
+  
+}
+.darkcontrol >>> .uploader-btn:hover{
+  background-color:dimgrey
 }
 
 

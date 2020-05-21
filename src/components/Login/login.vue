@@ -302,11 +302,7 @@ export default {
     },
     send_captcha(){
       console.log('发送')
-      if(!this.submit){
-        this.submit=!this.submit
-      }else{
-        return
-      }
+      
       if(this.email==""){
          this.error_message2="邮箱不能为空"
         this.error2=true
@@ -326,6 +322,11 @@ export default {
                 _this.error2=true
 
               }else{
+                if(!_this.submit){
+                  _this.submit=!_this.submit
+                }else{
+                  return
+                }
                 _this.warning=true
                 _this.butt1=false
                 _this.butt2=true
@@ -361,7 +362,9 @@ export default {
 </script>
 
 <style scoped>
-
+.ivu-icon{
+      line-height: 40px;
+}
 .center-in-center {
   position: absolute;
   top: 50%;

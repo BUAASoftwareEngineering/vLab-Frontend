@@ -21,6 +21,7 @@
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
+    "vue-simple-uploader": "^0.7.4",
     "xterm": "^4.5.0",
     "xterm-addon-attach": "^0.5.0",
     "xterm-addon-fit": "^0.3.0"

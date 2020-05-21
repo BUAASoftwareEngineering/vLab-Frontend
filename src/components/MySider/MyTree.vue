@@ -24,7 +24,28 @@
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
-        <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
+
+            <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+      
+
+         <uploader 
+                @file-success="onFileSuccess">
+                
+          <uploader-drop>
+            
+              <uploader-btn :directory="true" :single="true">
+                <DropdownItem style="width:120px">上传文件夹</DropdownItem>               
+              </uploader-btn>
+          </uploader-drop>
+              
+        </uploader>
+
       </DropdownMenu>
     </Dropdown>
     <Dropdown
@@ -43,6 +64,27 @@
         <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
         <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
         <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+          <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+      
+
+         <uploader 
+                @file-success="onFileSuccess">
+                
+          <uploader-drop>
+            
+              <uploader-btn :directory="true" :single="true">
+                <DropdownItem style="width:120px">上传文件夹</DropdownItem>               
+              </uploader-btn>
+          </uploader-drop>
+              
+        </uploader>
+
       </DropdownMenu>
     </Dropdown>
     <Dropdown
@@ -88,30 +130,7 @@ export default {
     },
     projectid: function(newVal, oldVal) {
       this.projectId = newVal;
-      // console.log("projectid"+this.projectId);
       this.UpdateData(newVal);
-      /*
-      var _this = this;
-      this.$Spin.show();
-      api.file_struct(newVal, "/code/", function(response) {
-        _this.$Spin.hide();
-        if (response.code == 0) {
-          _this.$set(
-            _this.data4[0],
-            "children",
-            _this.clearFileData(response.data)
-          );
-        } else if (response.code == -101) {
-          _this.$Message.error("cookie验证失败");
-          _this.$router.push("/");
-        } else if (response.code == -102) {
-          _this.$Message.error("权限不足");
-        } else if (response.code == 500) {
-        } else {
-          _this.$Message.error("未知错误");
-        }
-      });
-      */
     }
   },
 
@@ -152,6 +171,7 @@ export default {
                   },
                   contextmenu: e => {
                     e.preventDefault();
+                    this.hiddenRightMenu();
                     this.nodeInfo = data;
                     this.$refs.contentRootMenu.$refs.reference = event.target;
                     this.$refs.contentRootMenu.currentVisible = !this.$refs
@@ -186,21 +206,43 @@ export default {
     },
 
     UpdateData(projectid) {
-      this.getUpdateData(projectid);
-      this.sortAll();
-    },
-
-    getUpdateData(projectid) {
       var _this = this;
-      // this.$Spin.show();
+      var formerData = _this.deepcopy(_this.rootData);
+  
       api.file_struct(projectid, "/code/", function(response) {
-        // _this.$Spin.hide();
         if (response.code == 0) {
           _this.$set(
             _this.data4[0],
             "children",
             _this.clearFileData(response.data)
           );
+          
+         _this.$nextTick(() => {
+           _this.sortAll();
+           //console.log("————————————————————————");
+         //console.log("原长度：" + formerData.length + "现长度：" + _this.rootData.length);
+          for (let i = 0; i < _this.rootData.length; i++) {
+            if ((_this.rootData[i].children != undefined)) {
+              var targetData = _this.rootData[i].node;
+              //console.log("发现一个文件夹：" + targetData.title);
+              var targetPath = _this.getPath(_this.rootData, i, targetData);
+              //console.log("路径为：" + targetPath)
+              for (let j = 0; j < formerData.length; j++) {
+                var oriData = formerData[j].node;
+                if ((oriData.title == targetData.title) && (oriData.expand == true)) {
+                  var oriPath = _this.getPath(formerData, j, oriData);
+                  //console.log("原来有一个展开文件夹：" + oriPath);
+                  if (oriPath == targetPath) {
+                    //console.log("YES!");
+                    //console.log(targetData.expand);
+                    _this.$set(targetData, "expand", true);
+                  }
+                }
+                
+              }
+            }
+          }
+         });
         } else if (response.code == -101) {
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
@@ -211,11 +253,13 @@ export default {
           _this.$Message.error("未知错误");
         }
       });
+      
     },
 
     sortAll() {
-      var _this = this;
-      for (let i = 0; i < _this.rootData.length; i++) {
+       var _this = this;
+       console.log("这里的长度是" + _this.rootData.length);
+       for (let i = 0; i < _this.rootData.length; i++) {
           var shownode = _this.rootData[i].node;
           if (shownode.children === undefined) {
             _this.sort(_this.rootData, shownode);
@@ -312,6 +356,7 @@ export default {
               },
               contextmenu: e => {
                 e.preventDefault();
+                this.hiddenRightMenu();
                 this.nodeInfo = data;
                 this.$refs.contentFolderMenu.$refs.reference = event.target;
                 this.$refs.contentFolderMenu.currentVisible = !this.$refs
@@ -445,6 +490,7 @@ export default {
               },
               contextmenu: e => {
                 e.preventDefault();
+                this.hiddenRightMenu();
                 this.nodeInfo = data;
                 this.$refs.contentFileMenu.$refs.reference = event.target;
                 this.$refs.contentFileMenu.currentVisible = !this.$refs
@@ -1498,5 +1544,33 @@ export default {
 
 .darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
   background: #4b4b4d;
+}
+.uploader-drop{
+  width:120px;
+  height: 33.2px;
+  background-color:#ffffff;
+  border:#ffffff;
+  padding: 0;
+ 
+
+}
+.uploader-btn{
+    border:#ffffff;
+  color:#515a6e;  
+      width:120px;
+      height: 33.2px;
+  padding: 0;
+
+}
+.ivu-upload{
+  width:100%;
+  height:100%
+}
+.uploader{
+    border:#ffffff;
+    width:120px;
+    height: 33.2px;
+      padding: 0;
+
 }
 </style> 

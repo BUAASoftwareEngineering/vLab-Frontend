@@ -7,10 +7,13 @@ import router from './router'
 import ViewUI from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import VueResource from 'vue-resource'
+import uploader from 'vue-simple-uploader'
+
 
 Vue.use(VueResource)
 Vue.config.productionTip = false
 Vue.use(ViewUI) //使用iview组件 
+Vue.use(uploader)
 
 /* eslint-disable no-new */
 new Vue({
