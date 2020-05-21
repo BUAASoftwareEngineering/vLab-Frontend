@@ -13,7 +13,7 @@
         <Col :span="24" style="text-align:center">                  
           <Upload 
           :before-upload="handleBeforeUpload" 
-          action="http"
+          action="http" 
           multiple 
           >
             <Button
@@ -24,7 +24,7 @@
           </Upload>
         </Col>
       </Row>
-    <br />
+    <br >
 
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
