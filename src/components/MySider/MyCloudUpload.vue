@@ -167,7 +167,7 @@ export default {
       if (GiturlIsleagal(this.gitUrl)) {
         this.gitUrlModal = false;
         this.$Message.info('Url OK');
-        var temp = "git clone " + this.gitUrl;
+        var temp = "cd /code/ && git clone " + this.gitUrl;
         terminal.ctrlc();
         terminal.runcommand(temp);
         bridge.$emit("uploadFile", '');
