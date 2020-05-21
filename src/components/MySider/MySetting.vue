@@ -216,6 +216,7 @@ export default {
         } else if (count == 1) {
           let command = "python3 -m pdb " + filepath;
           terminal.runcommand(command);
+          bridge.$emit("readyForDebug", filepath);
         } else if (count > 1) {
           this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
           this.openSetting();
@@ -236,12 +237,12 @@ export default {
           let command = "g++ -g " + filepath + " -o fordebug";
           terminal.runcommand(command);
           terminal.runcommand("gdb fordebug");
+          bridge.$emit("readyForDebug", filepath);
         } else if (count > 1) {
-          this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
+          this.$Message.error("cpp类型debug调试目前只支持一个入口，请取消多余勾选");
           this.openSetting();
         }
       }
-      bridge.$emit("readyForDebug");
     }
   },
   mounted() {

@@ -132,6 +132,7 @@ export default {
       terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("run");
+        terminal.runcommand("y");
       } else {
         terminal.runcommand("continue");
       }
@@ -192,8 +193,10 @@ export default {
       terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("quit");
+        terminal.runcommand("y");
       } else {
         terminal.runcommand("quit");
+        terminal.runcommand("y");
       }      
       //console.log("debugContinue");
     },

@@ -155,6 +155,7 @@ import * as editor from "../editor/app";
 import { setTheme } from "../editor/Appearances"
 import bridge from "./bridge";
 import api from "../assets/js/api.js";
+import { getBreakpointLines } from "../editor/Editor.js";
 import terminal from "./Terminal";
 import { bus } from "./bus.js";
 export default {
@@ -244,7 +245,6 @@ export default {
               false,
               new_tabPane.id
             );
-           
 
             _this.currentTab = id;
             _this.editorMap[id] = tempEditor;
@@ -455,9 +455,15 @@ export default {
           setTheme("tomorrow-night");
         }
       }),
-      bridge.$on("readyForDebug", obj => {
+      bridge.$on("readyForDebug", filepath => {
+        let breaklines = getBreakpointLines(this.editorMap[filepath]);
+        for (let i = 0; i < breaklines.length; i++) {
+          //let command = "b " + filepath + " " + breaklines[i];
+          let command = "b " + breaklines[i];
+          terminal.runcommand(command);
+        }
         this.changeDebugger();
-      });
+      });      
 
   },
   //TODO
