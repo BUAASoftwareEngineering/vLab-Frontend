@@ -24,9 +24,11 @@ var AttachAddon = (function () {
             }
             if (typeof data === 'string') {
                 for (let match in that.matches) {
-                    if (that[match]) {
-                        if (data.search(match) != -1) {
-                            that.matches[match]()
+                    if (that.matches[match]) {
+                        let Reg = new RegExp(match,"g")
+                        let result = ''
+                        while ((result = Reg.exec(data)) !== null) {
+                            that.matches[match](result[0])
                         }
                     }
                 }
