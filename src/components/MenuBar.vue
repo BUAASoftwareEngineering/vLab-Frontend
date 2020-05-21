@@ -257,6 +257,7 @@ import api from "../assets/js/api.js";
 import { bus } from "./bus.js";
 import * as Editor from "../editor/Appearances.js";
 import bridge from "./bridge.js";
+import terminal from "./Terminal.js"
 export default {
   props: {
     projectid: {
@@ -315,7 +316,8 @@ export default {
       MinimapOnOff: true,
       pythonMark: false,
       dropmenuColor: "#ececec",
-      dropmenuBack: "#4b4b4d"
+      dropmenuBack: "#4b4b4d",
+      terminal: terminal
     };
   },
   created() {
@@ -346,6 +348,7 @@ export default {
         var _this = this;
         this.$Spin.show();
         console.log("退出id为" + this.projectId);
+        terminal.beforeDestroy()
         api.project_exit(this.projectId, function(response) {
           _this.$Spin.hide();
           console.log("response.code:" + response.code);
@@ -357,8 +360,10 @@ export default {
             _this.$router.push("/");
           } else if (response.code == -102) {
             _this.$Message.error("权限不足");
+            _this.$router.push("/home");
           } else {
             _this.$Message.error("未知错误");
+            _this.$router.push("/home");
           }
         });
       }
