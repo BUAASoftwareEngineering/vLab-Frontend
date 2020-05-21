@@ -216,6 +216,9 @@ export default {
         } else if (count == 1) {
           let command = "python3 -m pdb " + filepath;
           terminal.runcommand(command);
+          //terminal.runcommand("from debugger import showLocalVars");
+          terminal.runcommand("import types")
+          terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
           bridge.$emit("readyForDebug", filepath);
         } else if (count > 1) {
           this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
