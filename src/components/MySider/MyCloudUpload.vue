@@ -256,7 +256,7 @@ export default {
   border: #464e57;
   padding: 0;
   margin-left: 25px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 .uploader-btn {
   width: 200px;

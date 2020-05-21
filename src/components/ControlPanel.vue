@@ -467,8 +467,8 @@ export default {
   background-color:#dfdfdf;
   border:#4b4b4d;
   padding: 0;
-  margin-left:24px;
-  border-radius:0px;
+  margin-left:25px;
+  border-radius:2px;
 }
 .lightcontrol >>> .uploader-btn{
   border-radius: 0px;
