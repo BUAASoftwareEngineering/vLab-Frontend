@@ -13,28 +13,26 @@
     </Row>
     <Divider style="margin:10px auto"/>
     <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
-    <Dropdown
+    <Dropdown 
       transfer
       ref="contentRootMenu"
       style="display: none;"
       trigger="click"
       placement="right-start"
     >
-      <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
+      <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;" >
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+                      <Divider style="margin:0"/>
+
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
-
-            <Upload 
-          :before-upload="handleBeforeUpload" 
-          action="http"
-          multiple 
-          >
-           <DropdownItem style="width:120px">上传文件</DropdownItem>
-          </Upload>
+        
+              <Divider style="margin:0"/>
+              <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载项目</DropdownItem>
+          
       
-
-         <uploader 
+        
+         <uploader :class="treeTheme"  
                 @file-success="onFileSuccess">
                 
           <uploader-drop>
@@ -45,6 +43,16 @@
           </uploader-drop>
               
         </uploader>
+        <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+      
+
+      
 
       </DropdownMenu>
     </Dropdown>
@@ -58,22 +66,21 @@
       <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+                     <Divider style="margin:0"/>
+
         <DropdownItem @click.native="movefolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
         <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+                      <Divider style="margin:0"/>
         <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
-        <DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>
-        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
-          <Upload 
-          :before-upload="handleBeforeUpload" 
-          action="http"
-          multiple 
-          >
-           <DropdownItem style="width:120px">上传文件</DropdownItem>
-          </Upload>
+        <!--<DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>-->
+         <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <Divider style="margin:0"/>
+        <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载文件夹</DropdownItem>  
+          
       
-
-         <uploader 
+        
+         <uploader :class="treeTheme"  
                 @file-success="onFileSuccess">
                 
           <uploader-drop>
@@ -84,6 +91,14 @@
           </uploader-drop>
               
         </uploader>
+        <Upload 
+          :before-upload="handleBeforeUpload" 
+          action="http"
+          multiple 
+          >
+           <DropdownItem style="width:120px">上传文件</DropdownItem>
+          </Upload>
+             
 
       </DropdownMenu>
     </Dropdown>
@@ -98,8 +113,11 @@
         <DropdownItem @click.native="movefile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
         <DropdownItem @click.native="copyfile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
         <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+                      <Divider style="margin:0"/>
         <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
         <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <Divider style="margin:0"/>    
+        <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载</DropdownItem>          
       </DropdownMenu>
     </Dropdown>
   </Layout>
@@ -200,6 +218,71 @@ export default {
   },
 
   methods: {
+    download(root, nodekey, data){
+      var path=this.getPath(root, nodekey, data)
+      
+      if (data.children != undefined){
+        path=path.substring(0,path.length-1)
+      }else{
+        path=path+data.title
+      }
+      api.file_download(this.projectid,path)
+    
+    },
+    handleBeforeUpload(file) {
+      var path=this.getPath(this.rootData, this.nodeInfo.nodeKey, this.nodeInfo)
+      // console.log(files.length)
+      console.log(file);
+      var filename = file.name;
+      var filecontent = "";
+      //  console.log(this.file)
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = e => {
+        filecontent = e.target.result;
+        console.log(filecontent);
+      };
+      var _this = this;
+      this.$Spin.show();
+      api.file_new(this.projectid, path + filename, function(response) {
+        if (response.code == 0) {
+          api.file_update(
+            _this.projectid,
+            path + filename,
+            new Buffer(filecontent),
+            function(response) {
+              _this.$Spin.hide();
+              if (response.code == 0) {
+                console.log("上传成功");
+                bridge.$emit("uploadFile", filename);
+                bridge.$emit("changeTree");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        } else if (response.code == -101) {
+          _this.$Spin.hide();
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        } else if (response.code == -102) {
+          _this.$Spin.hide();
+          _this.$Message.error("权限不足");
+        } else if (response.code == -301) {
+          _this.$Spin.hide();
+          _this.$Message.error("文件重名");
+        } else {
+          _this.$Spin.hide();
+          _this.$Message.error("未知错误");
+        }
+        return true;
+      });
+    },
     uploadFiles(root, nodekey, data) {
       var path = this.getPath(root, nodekey, data);
       bridge.$emit("uploadFiles", path);
@@ -1545,7 +1628,7 @@ export default {
 .darkTree >>> .ivu-tree-title-selected, .ivu-tree-title-selected:hover{
   background: #4b4b4d;
 }
-.uploader-drop{
+.lightTree>>>.uploader-drop{
   width:120px;
   height: 33.2px;
   background-color:#ffffff;
@@ -1554,23 +1637,45 @@ export default {
  
 
 }
-.uploader-btn{
+.lightTree>>>.uploader-btn{
     border:#ffffff;
   color:#515a6e;  
+      width:120px;
+  padding: 0;
+
+}
+.lightTree>>>.ivu-upload{
+  width:100%;
+  height:100%
+}
+.lightTree>>>.uploader{
+    border:#ffffff;
+    width:120px;
+      padding: 0;
+      margin:0
+  
+}
+.darkTree>>>.uploader-drop{
+  background-color:#4b4b4d;
+  border:#4b4b4d;
+  width:120px;
+  height: 33.2px;
+  padding: 0;
+        margin:0
+}
+.darkTree>>>.uploader{
+   border:#4b4b4d;
+    width:120px;
+    height: 33.2px;
+      padding: 0;
+}
+.darkTree>>>.uploader-btn{
+     border:#4b4b4d;
+  color:#4b4b4d;  
       width:120px;
       height: 33.2px;
   padding: 0;
 
 }
-.ivu-upload{
-  width:100%;
-  height:100%
-}
-.uploader{
-    border:#ffffff;
-    width:120px;
-    height: 33.2px;
-      padding: 0;
 
-}
 </style> 
