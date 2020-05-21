@@ -1,19 +1,36 @@
 // "use strict";
 import bridge from '../../components/bridge'
 var timer = undefined
+const that = {
+    show: true,
+    matches: {}
+}
 // Object.defineProperty(exports, "__esModule", { value: true });
 var AttachAddon = (function () {
     function AttachAddon(socket, options) {
         this._disposables = [];
         this._socket = socket;
         this._socket.binaryType = 'arraybuffer';
+        that.show = true
+        that.matches = {}
         this._bidirectional = (options && options.bidirectional === false) ? false : true;
     }
     AttachAddon.prototype.activate = function (terminal) {
         var _this = this;
         this._disposables.push(addSocketListener(this._socket, 'message', function (ev) {
             var data = ev.data;
-            terminal.write(typeof data === 'string' ? data : new Uint8Array(data));
+            if (that.show) {
+                terminal.write(typeof data === 'string' ? data : new Uint8Array(data));
+            }
+            if (typeof data === 'string') {
+                for (let match in that.matches) {
+                    if (that[match]) {
+                        if (data.search(match) != -1) {
+                            that.matches[match]()
+                        }
+                    }
+                }
+            }
             // console.log(data)
             if (timer) {
                 clearTimeout(timer)
@@ -36,7 +53,9 @@ var AttachAddon = (function () {
         if (this._socket.readyState !== 1) {
             return;
         }
-        this._socket.send(data);
+        if (that.show) {
+            this._socket.send(data);
+        }
     };
     AttachAddon.prototype._sendBinary = function (data) {
         if (this._socket.readyState !== 1) {
@@ -63,7 +82,25 @@ function addSocketListener(socket, type, handler) {
         }
     };
 }
+
+function setShowable(flag) {
+    that.show = flag
+}
+
+function setMatch(match, callback) {
+    that.matches[match] = callback
+}
+
+function disposeMatch(match) {
+    if (that.matches[match]) {
+        that.matches[match] = undefined
+    }
+}
+
 export default {
-    AttachAddon
+    AttachAddon,
+    setShowable,
+    setMatch,
+    disposeMatch
 }
 //# sourceMappingURL=AttachAddon.js.map

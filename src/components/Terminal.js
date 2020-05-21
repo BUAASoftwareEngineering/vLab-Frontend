@@ -19,11 +19,13 @@ function mounted(project, div_id) {
 }
 
 function beforeDestroy() {
+  that.init = false
   that.socket.close()
   that.term.dispose()
 }
 
 function initTerm() {
+  that.init = false
   if (that.project.theme == 'dark') {
     that.project.foreground = 'white'
     that.project.background = '#000000'
@@ -113,15 +115,14 @@ function settheme(theme='light') {
 
 function initSocket() {
   that.socket = new WebSocket(that.socketURL)
+  that.init = true
+  that.inittimes = 20
   socketOnClose();
   socketOnOpen();
   socketOnError();
-  that.timer = setInterval(function () {
-    that.socket = new WebSocket(that.socketURL);
-    socketOnClose();
-    socketOnOpen();
-    socketOnError();
-  }, 5000)
+  // that.timer = setInterval(function () {
+    
+  // }, 5000)
 
   //   that.socket.onmessage = () => {
   //       that.term.resize()
@@ -134,7 +135,7 @@ function runcommand(command) {
 
 function socketOnOpen() {
   that.socket.onopen = () => {
-    clearInterval(that.timer)
+    // clearInterval(that.timer)
     // 链接成功后
     initTerm()
   }
@@ -143,12 +144,24 @@ function socketOnOpen() {
 function socketOnClose() {
   that.socket.onclose = () => {
     // console.log('close socket')
+    console.log("I am closed")
+    if (that.init) {
+      that.inittimes -= 1 
+      if (that.inittimes > 0) {
+        that.socket = new WebSocket(that.socketURL);
+        socketOnClose();
+        socketOnOpen();
+        socketOnError();
+      }
+    }
   }
 }
 
 function socketOnError() {
   that.socket.onerror = () => {
+    // console.log("I am error")
     // console.log('socket 链接失败')
+    
   }
 }
 
@@ -260,6 +273,10 @@ function ctrlc() {
   that.socket.send(new TextEncoder().encode('\r'))
 }
 
+const setShowable = AttachAddonTools.setShowable
+const setMatch = AttachAddonTools.setMatch
+const disposeMatch = AttachAddonTools.disposeMatch
+
 export default {
   mounted,
   fit,
@@ -267,5 +284,9 @@ export default {
   compile,
   settheme,
   runcommand,
-  ctrlc
+  beforeDestroy,
+  ctrlc,
+  setShowable,
+  setMatch,
+  disposeMatch
 }
