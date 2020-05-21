@@ -461,6 +461,31 @@ export default {
   margin: -3px;
 }
 
+.lightcontrol >>> .uploader-drop{
+  width: 200px;
+  height: 33px;
+  background-color:#dfdfdf;
+  border:#4b4b4d;
+  padding: 0;
+  margin-left:24px;
+  border-radius:0px;
+}
+.lightcontrol >>> .uploader-btn{
+  border-radius: 0px;
+  background-color: #dfdfdf;
+  border-color: #bbbbbb;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  width: 200px;
+  height: 33px;
+  margin: 0px;
+  color:#4b4b4d;
+  text-align: center;
+  
+}
+.lightcontrol >>> .uploader-btn:hover{
+  background-color: #cccccc;
+}
 .lightcontrol >>> .ivu-tabs-content {
   background-color: #ffffff;
 }
@@ -480,6 +505,9 @@ export default {
    background-color: #eeeeee;
 }
 
+
+
+
 .darkcontrol >>> .ivu-btn {
   border-radius: 0px;
   color: #f5f7f9;
@@ -497,6 +525,31 @@ export default {
 
 .darkcontrol >>> .ivu-btn:hover {
   background-color: dimgrey;
+}
+
+.darkcontrol >>> .uploader-drop{
+  width: 200px;
+  height: 33px;
+  background-color:#464e57;
+  border:#464e57;
+  padding: 0;
+  margin-left:25px;
+  border-radius:0px;
+
+}
+.darkcontrol >>> .uploader-btn{
+  border-radius: 0px;
+  border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  width: 200px;
+  height: 33px;
+  margin: 0px;
+  color:#f5f7f9;
+  text-align: center;
+  
+}
+.darkcontrol >>> .uploader-btn:hover{
+  background-color:dimgrey
 }
 
 .darkcontrol >>> .ivu-layout-sider {
