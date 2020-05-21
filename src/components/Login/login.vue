@@ -27,6 +27,9 @@
       <br />
       <br />
       <span v-on:click="ToRegister">没有账号？马上注册</span>
+      <br><br>
+      <span v-on:click="ToPassChange">忘记密码？</span>
+
     </div>
 
     <div class="register-wrap" v-show="showRegister">
@@ -81,6 +84,44 @@
       <br />
       <br />
       <span v-on:click="ToLogin">已有账号？马上登录</span>
+    </div >
+    <div class="register-wrap" v-show="showPassChange">
+      <Input type="text" placeholder="请输入注册使用的邮箱" v-model="email" style="width:300px"
+       @on-blur="check_email"/>
+       <br>
+       <br>
+      <Tooltip content="至少6位，只能为字母数字.@#$-" placement="left" theme='light'>
+        <Input
+          type="password"
+          placeholder="请输入新密码"
+          v-model="newPassword1"
+          style="width: 300px"
+          password
+          @on-blur="check_password"
+        />
+      </Tooltip>
+      <br />
+      <br />
+      <Input
+          type="password"
+          placeholder="确认新密码"
+          v-model="newPassword2"
+          style="width: 300px"
+          password
+          @on-blur="check_password"
+
+      />
+      <br>
+      <br>
+      <Input type="text" placeholder="请输入收到的验证码" v-model="captcha" style="width:190px"
+      @on-enter="register"/>
+      <Button  v-if="butt1" type="info" style="width:110px" ghost @click="send_captcha" >发送验证码</Button>
+      <Button  v-if="butt2" type="info" style="width:110px" ghost disabled>{{time_count}}秒后可重发</Button>
+      <br><br>      
+      <Button type="primary" v-on:click="" >修改密码</Button>
+      <br><br>
+     <span v-on:click="ToLogin">返回登录</span>
+
     </div>
   </div>
 </template>
@@ -96,6 +137,7 @@ export default {
     return {
       showLogin: true,
       showRegister: false,
+      showPassChange:false,
       username: "",
       password: "",
       newUsername: "",
@@ -134,12 +176,19 @@ export default {
     ToRegister() {
       this.showRegister = true;
       this.showLogin = false;
+      this.showPassChange=false;
     },
     ToLogin() {
       this.showRegister = false;
       this.showLogin = true;
-    },
+      this.showPassChange=false;
 
+    },
+    ToPassChange(){
+      this.showRegister = false;
+      this.showLogin = false;
+      this.showPassChange=true;
+    },
     login() {
       if (this.username == "" || this.password == "") {
         this.$Message.warning("请输入用户名或密码");
