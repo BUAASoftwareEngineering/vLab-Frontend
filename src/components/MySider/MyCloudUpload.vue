@@ -93,12 +93,11 @@ export default {
     handleBeforeUpload(file) {
       // console.log(files.length)
       console.log(file);
-
       var filename = file.name;
       var filecontent = "";
       //  console.log(this.file)
       let reader = new FileReader();
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
       reader.onload = e => {
         filecontent = e.target.result;
         console.log(filecontent);
@@ -110,7 +109,7 @@ export default {
           api.file_update(
             _this.projectid,
             "/code/" + filename,
-            filecontent,
+            new Buffer(filecontent),
             function(response) {
               _this.$Spin.hide();
               if (response.code == 0) {
@@ -174,7 +173,7 @@ export default {
       var filecontent = "";
       //  console.log(this.file)
       let reader = new FileReader();
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
       reader.onload = e => {
         filecontent = e.target.result;
         console.log(filecontent);
@@ -192,7 +191,7 @@ export default {
           api.file_update(
             _this.projectid,
             "/code/" + rootFile,
-            filecontent,
+            new Buffer(filecontent),
             function(response) {
               console.log("file_update: " + response.code);
 
