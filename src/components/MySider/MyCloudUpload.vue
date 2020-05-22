@@ -1,7 +1,7 @@
 <template>
   
   <Layout style="background-color: inherit; color: inherit;">
-    <Modal v-model="modal1" draggable scrollable title="以下文件与已存在的文件或文件名重名" @on-ok="modal1_ok">
+    <Modal v-model="modal1" draggable scrollable title="以下文件与已存在的文件或文件名重名" @on-ok="modal1_ok" @on-cancel="modal1_ok">
       <div v-for="(data,index) in files_conflict" :key="index">
         {{data}}</div>
     </Modal>
@@ -17,7 +17,7 @@
 
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <Upload :before-upload="handleBeforeUpload" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple>
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
@@ -26,13 +26,11 @@
       </Col>
     </Row>
     <br />
-
-
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <uploader @file-success="onFileSuccess">
+        <uploader @file-success="handleFolder">
           <uploader-drop>
-            <uploader-btn :directory="true" :single="true">
+            <uploader-btn :directory="true" attrs="">
               上传文件夹到根目录...
             </uploader-btn>
           </uploader-drop>
@@ -82,7 +80,7 @@ export default {
       gitUrl: "",
       files_number:0,
       files_conflict:[],
-      modal1:false
+      modal1:false,
     };
   },
   props: {
@@ -100,11 +98,14 @@ export default {
     }
   },
   methods: {
+    
     modal1_ok(){
       this.files_conflict=[]
-      this.modal1=false
+      this.modal1=false      
+      window.location.reload()
+              
     },
-    handleBeforeUpload(file) {
+    handleFiles(file) {
        if(this.files_number==0)this.$Spin.show()
       this.files_number++
       var filename = file.name;
@@ -128,10 +129,12 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }
               if (response.code == 0) {
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
+                
               } else if (response.code == -101) {
                 _this.$Message.error("cookie验证失败");
                 _this.$router.push("/");
@@ -146,7 +149,10 @@ export default {
           _this.files_number--;
               if(_this.files_number==0){
                 _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+               if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
@@ -155,6 +161,9 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }
           _this.$Message.error("权限不足");
         } else if (response.code == -301) {
@@ -163,12 +172,20 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+                 
               }
           } else {
           _this.files_number--;
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+                 
               }
           _this.$Message.error("未知错误");
         }
@@ -188,9 +205,12 @@ export default {
         this.$Message.error("Url illegal!");
       }
     },
-    onFileSuccess(rootFile1, file1, response, chunk) {
-      console.log('处理文件')
-      if(this.files_number==0)this.$Spin.show()
+    handleFolder(rootFile1, file1, response, chunk) {
+      
+      if(this.files_number==0){
+        this.$Spin.show()
+        this.up_folder=true
+      }
       this.files_number++
       var file = file1.file;
    
@@ -225,10 +245,11 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
               }
-              if (response.code == 0) {
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
+              }
+              if (response.code == 0) {                
               } else if (response.code == -101) {
                 _this.$Message.error("cookie验证失败");
                 _this.$router.push("/");
@@ -244,6 +265,9 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }  
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
@@ -252,6 +276,9 @@ export default {
               if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }
           _this.$Message.error("权限不足");
         } else if (response.code == -301) {
@@ -260,12 +287,18 @@ export default {
           if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
                 }
           } else {
            _this.files_number--;
              if(_this.files_number==0){
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
               }
           _this.$Message.error("未知错误");
         }
