@@ -13,7 +13,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStart"
           :disabled = "!debugCanBegin"
-        ><Icon type="md-arrow-dropright-circle" />&nbsp;&nbsp;&nbsp;Start</Button>
+        ><Icon type="md-arrow-dropright-circle" />&nbsp;&nbsp;&nbsp;(Re)Start</Button>
       </Col>
     </Row>
 
@@ -130,12 +130,28 @@ export default {
       //this.debugCanNext = false;
       //this.debugCanPause = true;
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("run");
-        terminal.runcommand("y");
+
+        terminal.setMatch("Start it from the beginning", (obj) => {
+          terminal.runcommand("y");
+          terminal.disposeMatch("Start it from the beginning");
+        });
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("run");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("continue");
+        await terminal.ctrlc();
+        terminal.setShowable(false);
+        terminal.setMatch("python", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("python");
+        });
+        terminal.runcommand("quit");
+        bridge.$emit("todebug");
+        //terminal.runcommand("restart");
       }
       //console.log("debugStart");
     },
@@ -147,62 +163,137 @@ export default {
     //},
     async click_debugContinue() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("continue");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("continue");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("continue");
+        //await terminal.ctrlc();
+        //terminal.runcommand("continue");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("continue");
+        });
+        await terminal.ctrlc();
       }
       //console.log("debugContinue");
     },
     async click_debugStepOver() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("next");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("next");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("next");
+        //await terminal.ctrlc();
+        //terminal.runcommand("next");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("next");
+        });
+        await terminal.ctrlc();
       }
       //console.log("debugStepOver");
     },
     async click_debugStepInto() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("step");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("step");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("step");
+        //await terminal.ctrlc();
+        //terminal.runcommand("step");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("step");
+        });
+        await terminal.ctrlc();
       }
       //console.log("debugStepInto");
     },
     async click_debugStepOut() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("finish");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("finish");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("return");
+        //await terminal.ctrlc();
+        //terminal.runcommand("return");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("return");
+        });
+        await terminal.ctrlc();
       }
       //console.log("debugStepOut");
     },
     async click_debugShow() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("info locals");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("info locals");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("showLocalVars(locals())");
+        //await terminal.ctrlc();
+        //terminal.runcommand("showLocalVars(locals())");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("showLocalVars(locals())");
+        });
+        await terminal.ctrlc();
       }
       //console.log("debugShow");
     },
     async click_debugStop() {
       if (this.pythonMark == false) {
-        terminal.ctrlc();
-        terminal.runcommand("quit");
-        terminal.runcommand("y");
+        terminal.setShowable(false);
+        terminal.setMatch("Quit anyway", (obj) => {
+          terminal.runcommand("y");
+          terminal.disposeMatch("Quit anyway");
+        });
+        terminal.setMatch("Quit", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Quit");
+          terminal.runcommand("quit");
+        });
+        await terminal.ctrlc();
       } else {
-        terminal.ctrlc();
-        terminal.runcommand("quit");
+        //await terminal.ctrlc();
+        //terminal.runcommand("quit");
+        terminal.setShowable(false);
+        terminal.setMatch("Key", (obj) => {
+          terminal.setShowable(true);
+          terminal.disposeMatch("Key");
+          terminal.runcommand("quit");
+        });
+        await terminal.ctrlc();
       }      
       //console.log("debugContinue");
     },

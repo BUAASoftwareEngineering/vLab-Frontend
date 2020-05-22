@@ -462,7 +462,10 @@ export default {
           let command = "b " + breaklines[i];
           terminal.runcommand(command);
         }
-        this.changeDebugger();
+        terminal.runcommand("okCanDebug");
+        if (this.debuggermark == true) {
+          this.changeDebugger();
+        }
       });      
 
   },
