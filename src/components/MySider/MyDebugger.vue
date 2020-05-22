@@ -129,7 +129,7 @@ export default {
       //this.debugCanBegin = false;
       //this.debugCanNext = false;
       //this.debugCanPause = true;
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("run");
         terminal.runcommand("y");
@@ -145,7 +145,7 @@ export default {
     //  console.log("debugPause");
     //},
     async click_debugContinue() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("continue");
       } else {
@@ -154,7 +154,7 @@ export default {
       //console.log("debugContinue");
     },
     async click_debugStepOver() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("next");
       } else {
@@ -163,7 +163,7 @@ export default {
       //console.log("debugStepOver");
     },
     async click_debugStepInto() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("step");
       } else {
@@ -172,7 +172,7 @@ export default {
       //console.log("debugStepInto");
     },
     async click_debugStepOut() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("finish");
       } else {
@@ -181,7 +181,7 @@ export default {
       //console.log("debugStepOut");
     },
     async click_debugShow() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("info locals");
       } else {
@@ -190,13 +190,12 @@ export default {
       //console.log("debugShow");
     },
     async click_debugStop() {
-      terminal.ctrlc();
+      //terminal.ctrlc();
       if (this.pythonMark == false) {
         terminal.runcommand("quit");
         terminal.runcommand("y");
       } else {
         terminal.runcommand("quit");
-        terminal.runcommand("y");
       }      
       //console.log("debugContinue");
     },
