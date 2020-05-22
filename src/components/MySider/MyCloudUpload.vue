@@ -1,5 +1,10 @@
 <template>
+  
   <Layout style="background-color: inherit; color: inherit;">
+    <Modal v-model="modal1" draggable scrollable title="以下文件与已存在的文件或文件名重名" @on-ok="modal1_ok" @on-cancel="modal1_ok">
+      <div v-for="(data,index) in files_conflict" :key="index">
+        {{data}}</div>
+    </Modal>
     <Row type="flex" justify="center" align="middle">
       <Col span="24">
         <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">上传与导入</p>
@@ -12,23 +17,21 @@
 
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <Upload :before-upload="handleBeforeUpload" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple>
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
-          >上传文件到Notebook...</Button>
+          >上传文件到根目录...</Button>
         </Upload>
       </Col>
     </Row>
     <br />
-
-
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <uploader @file-success="onFileSuccess">
+        <uploader @file-success="handleFolder">
           <uploader-drop>
-            <uploader-btn :directory="true" :single="true">
-              上传文件夹到Notebook...
+            <uploader-btn :directory="true" attrs="">
+              上传文件夹到根目录...
             </uploader-btn>
           </uploader-drop>
         </uploader>
@@ -74,7 +77,10 @@ export default {
   data() {
     return {
       gitUrlModal: false,
-      gitUrl: ""
+      gitUrl: "",
+      files_number:0,
+      files_conflict:[],
+      modal1:false,
     };
   },
   props: {
@@ -92,9 +98,16 @@ export default {
     }
   },
   methods: {
-    handleBeforeUpload(file) {
-      // console.log(files.length)
-      console.log(file);
+    
+    modal1_ok(){
+      this.files_conflict=[]
+      this.modal1=false      
+      window.location.reload()
+              
+    },
+    handleFiles(file) {
+       if(this.files_number==0)this.$Spin.show()
+      this.files_number++
       var filename = file.name;
       var filecontent = "";
       //  console.log(this.file)
@@ -102,7 +115,6 @@ export default {
       reader.readAsArrayBuffer(file);
       reader.onload = e => {
         filecontent = e.target.result;
-        console.log(filecontent);
       };
       var _this = this;
       this.$Spin.show();
@@ -113,11 +125,16 @@ export default {
             "/code/" + filename,
             new Buffer(filecontent),
             function(response) {
-              _this.$Spin.hide();
+               _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
               if (response.code == 0) {
-                console.log("上传成功");
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
+                
               } else if (response.code == -101) {
                 _this.$Message.error("cookie验证失败");
                 _this.$router.push("/");
@@ -129,17 +146,47 @@ export default {
             }
           );
         } else if (response.code == -101) {
-          _this.$Spin.hide();
+          _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+               if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
         } else if (response.code == -102) {
-          _this.$Spin.hide();
+          _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
           _this.$Message.error("权限不足");
         } else if (response.code == -301) {
-          _this.$Spin.hide();
-          _this.$Message.error("文件重名");
-        } else {
-          _this.$Spin.hide();
+            _this.files_number--;
+            _this.files_conflict.push(filename)
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+                 
+              }
+          } else {
+          _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+                 
+              }
           _this.$Message.error("未知错误");
         }
         return true;
@@ -158,19 +205,24 @@ export default {
         this.$Message.error("Url illegal!");
       }
     },
-    onFileSuccess(rootFile1, file1, response, chunk) {
-      console.log("上传文件夹 success");
+    handleFolder(rootFile1, file1, response, chunk) {
+      
+      if(this.files_number==0){
+        this.$Spin.show()
+        this.up_folder=true
+      }
+      this.files_number++
       var file = file1.file;
-      console.log(file1);
+   
       var rootFile = file1.relativePath;
       var folder = "";
       for (var i = rootFile.lenth - 1; i >= 0; i--) {
-        if (rootFile[i] == "/") {
+        if (rootFile[i] == '/') {
           folder = rootFile.substring(0, i + 1);
           break;
         }
       }
-      console.log(rootFile);
+ 
       var filename = file.name;
       var filecontent = "";
       //  console.log(this.file)
@@ -178,16 +230,10 @@ export default {
       reader.readAsArrayBuffer(file);
       reader.onload = e => {
         filecontent = e.target.result;
-        console.log(filecontent);
       };
       var _this = this;
-      api.dir_new(this.projectid, folder, function(response) {
-        if (response.code == 0) {
-        }
-      });
-      this.$Spin.show();
-      api.file_new(this.projectid, "/code/" + rootFile, function(response) {
-        console.log("file_new: " + response.code);
+      console.log(rootFile)  
+      api.file_new(_this.projectid, "/code/"+rootFile, function(response) {
 
         if (response.code == 0) {
           api.file_update(
@@ -195,13 +241,15 @@ export default {
             "/code/" + rootFile,
             new Buffer(filecontent),
             function(response) {
-              console.log("file_update: " + response.code);
-
-              _this.$Spin.hide();
-              if (response.code == 0) {
-                console.log("上传成功");
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
+              _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
+              if (response.code == 0) {                
               } else if (response.code == -101) {
                 _this.$Message.error("cookie验证失败");
                 _this.$router.push("/");
@@ -213,20 +261,51 @@ export default {
             }
           );
         } else if (response.code == -101) {
-          _this.$Spin.hide();
+           _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }  
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
         } else if (response.code == -102) {
-          _this.$Spin.hide();
+           _this.files_number--;
+              if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
           _this.$Message.error("权限不足");
         } else if (response.code == -301) {
-          _this.$Spin.hide();
-          _this.$Message.error("文件重名");
-        } else {
-          _this.$Spin.hide();
+          _this.files_number--
+          _this.files_conflict.push(rootFile)
+          if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+                }
+          } else {
+           _this.files_number--;
+             if(_this.files_number==0){
+                _this.$Spin.hide();
+                if(_this.files_conflict.length!=0)_this.modal1=true
+                else{
+                window.location.reload()
+              }
+              }
           _this.$Message.error("未知错误");
         }
       });
+        
+      
+      
     }
   }
 };
