@@ -217,12 +217,15 @@ export default {
           this.$Message.error("请在侧边栏的构建选项中选择一个python类型文件");
           this.openSetting();
         } else if (count == 1) {
-
+          terminal.runcommand("");
           let command = "python3 -m pdb " + filepath;
           terminal.runcommand(command);
           //terminal.runcommand("from debugger import showLocalVars");
           //terminal.setShowable(false);
           console.log("debug beigin");
+          terminal.setMatch("Running 'cont'", (obj) => {
+            terminal.runcommand("cont");
+          });
           terminal.setMatch("The program finished and will be restarted", (obj) => {
             terminal.setShowable(false);
             terminal.runcommand("import types")
@@ -264,6 +267,7 @@ export default {
           this.$Message.error("请在侧边栏的构建选项中选择一个cpp类型文件");
           this.openSetting();
         } else if (count == 1) {
+          terminal.runcommand("");
           let command = "g++ -g " + filepath + " -o /code/fordebug";
           terminal.runcommand(command);
           terminal.runcommand("gdb /code/fordebug");

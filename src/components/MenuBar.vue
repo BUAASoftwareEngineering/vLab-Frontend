@@ -507,6 +507,10 @@ export default {
   color: #f3f3f3;
 }
 
+.myDarkDrop .myContentClass {
+  background-color:#4b4b4d;
+}
+
 .myLightDrop
   .ivu-menu-horizontal
   .ivu-menu-submenu
