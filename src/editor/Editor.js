@@ -192,10 +192,27 @@ export function getBreakpointLines(editor) {
 
 function autoRemoveBreakpoints(editor) {
 	editor.onDidChangeModelContent((e) => {
+		let prevPos = editor.getPosition();
+		let prevHasBpt = hasBreakpoint(editor, prevPos.lineNumber);
+		let prevBptRemoved = false;
 		process.nextTick(() => {
+			if (prevPos) {
+				let line = prevPos.lineNumber;
+				if (editor.getModel().getLineContent(line).trim() === '') {
+					removeBreakpoint(editor, line);
+					prevBptRemoved = true;
+				} else if (hasBreakpoint(editor, line)) {
+					removeBreakpoint(editor, line);
+					addBreakpoint(editor, line);
+				}
+			}
 			let pos = editor.getPosition();
 			if (pos) {
 				let line = pos.lineNumber;
+				if (prevHasBpt && prevBptRemoved) {
+					removeBreakpoint(editor, line);
+					addBreakpoint(editor, line);
+				}
 				if (editor.getModel().getLineContent(line).trim() === '') {
 					removeBreakpoint(editor, line);
 				} else if (hasBreakpoint(editor, line)) {

@@ -4,6 +4,7 @@ import * as appearance from './Appearances.js';
 import * as File from './File';
 import { removeUnnecessaryMenu } from './Appearances';
 import bridge from '../components/bridge';
+import { removeBreakpoint } from './Editor';
 
 import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
 
@@ -16,6 +17,7 @@ export class MonacoApp {
 		this.BASE_DIR = BASE_DIR;
 		this.authorName = author;
 		this.wsUrl = "ws://" + this.currentProject.ip + ":" + this.currentProject.languagePort;
+		this.fileupdateTimer = undefined;
 		switch (editorTheme) {
 			case 'light':
 				appearance.setTheme('xcode-default');
@@ -38,13 +40,19 @@ export class MonacoApp {
 			overrideMonaco();
 		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, defaultCode, elementId);
 		editor.onDidChangeModelContent((e) => {
-			File.saveFile(this.currentProject.projectId, editor, filePath);
+			if (this.fileupdateTimer) {
+				clearTimeout(this.fileupdateTimer);
+			}
+			this.fileupdateTimer = setTimeout(() => {
+				File.saveFile(this.currentProject.projectId, editor, filePath);
+			}, 200);
 		});
 		this.model2editor.set(editor.getModel(), editor);
 		return editor;
 	}
 
 	closeEditor(editor) {
+		removeBreakpoint(editor);
 		this.model2editor.delete(editor.getModel());
 	}
 }
