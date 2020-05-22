@@ -204,8 +204,13 @@ function file_content(project_id, file_path, callback) {
 function file_update(project_id, file_path, file_content, callback) {
     var url = server + '/file/update'
     var data =  'project_id=' + encodeURIComponent(project_id) + 
-                '&file_path=' + encodeURIComponent(file_path) + 
-                '&file_content=' + encodeURIComponent(JSON.stringify(Buffer(new TextEncoder('utf-8').encode(file_content))))
+                '&file_path=' + encodeURIComponent(file_path)
+    if (Buffer.isBuffer(file_content)) {
+        // console.log('yessss')
+        data += '&file_content=' + encodeURIComponent(JSON.stringify(file_content))
+    } else {
+        data += '&file_content=' + encodeURIComponent(JSON.stringify(Buffer(new TextEncoder('utf-8').encode(file_content))))
+    }
     post_request(url, data, callback)
 }
 
@@ -241,8 +246,8 @@ function file_copy(project_id, old_path, new_path, force, callback) {
     post_request(url, data, callback)
 }
 
-function file_download(project_id) {
-    var url = server + '/file/download?project_id=' + encodeURIComponent(project_id)
+function file_download(project_id, path='') {
+    var url = server + '/file/download?project_id=' + encodeURIComponent(project_id) + '&path=' + encodeURIComponent(path)
     let aTag = document.createElement('a')
     aTag.href = url
     aTag.click()
@@ -313,6 +318,33 @@ function util_send_captcha(email, callback) {
     post_request(url, data, callback)
 }
 
+function share_info(callback) {
+    var url = server + '/share/info'
+    var data = ''
+    post_request(url, data, callback)
+}
+
+function share_invite(project_id, user_name, writeable, callback) {
+    var url = server + '/share/invite'
+    var data =  'project_id=' + encodeURIComponent(project_id) +
+                '&user_name=' + encodeURIComponent(user_name) +
+                '&writeable' + encodeURIComponent(writeable)
+    post_request(url, data, callback)
+}
+
+function share_accept(project_id, callback) {
+    var url = server + '/share/accpet'
+    var data = 'project_id=' + encodeURIComponent(project_id)
+    post_request(url, data, callback)
+}
+
+function share_refuse(project_id, callback) {
+    var url = server + '/share/refuse'
+    var data = 'project_id=' + encodeURIComponent(project_id)
+    post_request(url, data, callback)
+}
+
+
 export default {
     user_login,
     user_logout,
@@ -342,6 +374,10 @@ export default {
     util_check_username,
     util_check_email,
     util_send_captcha,
+    share_info,
+    share_invite,
+    share_accept,
+    share_refuse,
     CPP,
     C,
     PYTHON2,
