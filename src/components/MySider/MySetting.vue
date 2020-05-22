@@ -264,9 +264,9 @@ export default {
           this.$Message.error("请在侧边栏的构建选项中选择一个cpp类型文件");
           this.openSetting();
         } else if (count == 1) {
-          let command = "g++ -g " + filepath + " -o fordebug";
+          let command = "g++ -g " + filepath + " -o /code/fordebug";
           terminal.runcommand(command);
-          terminal.runcommand("gdb fordebug");
+          terminal.runcommand("gdb /code/fordebug");
 
           terminal.setMatch("GNU gdb", (obj) => {
             console.log(obj);

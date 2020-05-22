@@ -301,6 +301,10 @@ export default {
           terminal.runcommand("y");
           terminal.disposeMatch("Quit anyway");
         });
+        terminal.setMatch("root", (obj) => {
+          terminal.runcommand("rm -f /code/fordebug");
+          terminal.disposeMatch("root");
+        });
         terminal.setMatch("Quit", (obj) => {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
