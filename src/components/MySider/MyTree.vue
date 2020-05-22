@@ -229,6 +229,78 @@ export default {
       api.file_download(this.projectid,path)
     
     },
+    onFileSuccess(rootFile1, file1, response, chunk) {
+      var path=this.getPath(this.rootData, this.nodeInfo.nodeKey, this.nodeInfo)
+      var file = file1.file;
+   
+      var rootFile = file1.relativePath;
+      var folder = "";
+      for (var i = rootFile.lenth - 1; i >= 0; i--) {
+        if (rootFile[i] == "/") {
+          folder = rootFile.substring(0, i + 1);
+          break;
+        }
+      }
+ 
+      var filename = file.name;
+      var filecontent = "";
+      //  console.log(this.file)
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = e => {
+        filecontent = e.target.result;
+        console.log(filecontent);
+      };
+      var _this = this;
+      api.dir_new(this.projectid, path+folder, function(response) {
+                console.log("dir_new: " + response.code);
+        if (response.code == 0||response.code==-301) {
+          _this.$Spin.show();
+      api.file_new(_this.projectid, path+rootFile, function(response) {
+
+        if (response.code == 0) {
+          api.file_update(
+            _this.projectid,
+            path + rootFile,
+            new Buffer(filecontent),
+            function(response) {
+              console.log("file_update: " + response.code);
+
+              _this.$Spin.hide();
+              if (response.code == 0) {
+                console.log("上传成功");
+                _this.UpdateData(_this.projectId);
+                //bridge.$emit("uploadFile", filename);
+                //bridge.$emit("changeTree");
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.$router.push("/");
+              } else if (response.code == -102) {
+                _this.$Message.error("权限不足");
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            }
+          );
+        } else if (response.code == -101) {
+          _this.$Spin.hide();
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        } else if (response.code == -102) {
+          _this.$Spin.hide();
+          _this.$Message.error("权限不足");
+        } else if (response.code == -301) {
+          _this.$Spin.hide();
+          _this.$Message.error("文件重名");
+        } else {
+          _this.$Spin.hide();
+          _this.$Message.error("未知错误");
+        }
+      });
+        }
+      });
+      
+    },
     handleBeforeUpload(file) {
       var path=this.getPath(this.rootData, this.nodeInfo.nodeKey, this.nodeInfo)
       // console.log(files.length)
@@ -254,8 +326,7 @@ export default {
               _this.$Spin.hide();
               if (response.code == 0) {
                 console.log("上传成功");
-                bridge.$emit("uploadFile", filename);
-                bridge.$emit("changeTree");
+               _this.UpdateData(_this.projectId);
               } else if (response.code == -101) {
                 _this.$Message.error("cookie验证失败");
                 _this.$router.push("/");
@@ -291,13 +362,14 @@ export default {
     UpdateData(projectid) {
       var _this = this;
       var formerData = _this.deepcopy(_this.rootData);
-  
+      this.$Spin.show()  
       api.file_struct(projectid, "/code/", function(response) {
+        _this.$Spin.hide()
         if (response.code == 0) {
           _this.$set(
             _this.data4[0],
             "children",
-            _this.clearFileData(response.data)
+            _this.clearFileData(response.data) 
           );
           
          _this.$nextTick(() => {
