@@ -12,7 +12,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStart"
-          :disabled = "!debugCanBegin"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="md-arrow-dropright-circle" />&nbsp;&nbsp;&nbsp;(Re)Start</Button>
       </Col>
     </Row>
@@ -36,7 +36,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugContinue"
-          :disabled = "!debugCanNext"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="md-play" />&nbsp;&nbsp;&nbsp;Continue</Button>
       </Col>
     </Row>  
@@ -47,7 +47,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOver"
-          :disabled = "!debugCanNext"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="ios-skip-forward" />&nbsp;&nbsp;&nbsp;Step over</Button>
       </Col>
     </Row>
@@ -58,7 +58,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepInto"
-          :disabled = "!debugCanNext"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="ios-fastforward" />&nbsp;&nbsp;&nbsp;Step into</Button>
       </Col>
     </Row>
@@ -69,7 +69,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOut"
-          :disabled = "!debugCanNext"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="ios-redo" />&nbsp;&nbsp;&nbsp;Step out</Button>
       </Col>
     </Row>
@@ -80,7 +80,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugShow"
-          :disabled = "!debugCanNext"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="ios-eye" />&nbsp;&nbsp;&nbsp;Local variables</Button>
       </Col>
     </Row>
@@ -119,7 +119,7 @@ export default {
   },
   data() {
     return {
-      debugCanBegin: true,
+      debugCanBegin: false,
       debugCanNext: true,
       pythonMark: false,
     };
@@ -130,7 +130,6 @@ export default {
       //this.debugCanNext = false;
       //this.debugCanPause = true;
       if (this.pythonMark == false) {
-
         terminal.setMatch("Start it from the beginning", (obj) => {
           terminal.runcommand("y");
           terminal.disposeMatch("Start it from the beginning");
@@ -140,17 +139,17 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("run");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
-        await terminal.ctrlc();
         terminal.setShowable(false);
-        terminal.setMatch("python", (obj) => {
+        terminal.setMatch("Key", (obj) => {
           terminal.setShowable(true);
-          terminal.disposeMatch("python");
+          terminal.disposeMatch("Key");
+          terminal.runcommand("restart");
         });
-        terminal.runcommand("quit");
-        bridge.$emit("todebug");
+        await terminal.ctrlc();
         //terminal.runcommand("restart");
       }
       //console.log("debugStart");
@@ -168,6 +167,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("continue");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
@@ -178,6 +178,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("continue");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       }
@@ -190,6 +191,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("next");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
@@ -200,6 +202,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("next");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       }
@@ -212,6 +215,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("step");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
@@ -222,6 +226,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("step");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       }
@@ -234,6 +239,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("finish");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
@@ -244,6 +250,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("return");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       }
@@ -256,6 +263,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Quit");
           terminal.runcommand("info locals");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       } else {
@@ -266,6 +274,7 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("showLocalVars(locals())");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
       }
@@ -292,10 +301,12 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("quit");
+          this.debugCanNext = false;
         });
         await terminal.ctrlc();
-      }      
-      //console.log("debugContinue");
+      }
+      this.debugCanBegin = false;
+      bridge.$emit("debugStop");
     },
     /*
     upDateButtonDisalbe() {
@@ -315,10 +326,18 @@ export default {
       if (Project.imageType == "PYTHON3") {
         this.pythonMark = true;
       }
+    }),
+    bridge.$on("beginDebug", Project => {
+      this.debugCanBegin = true;
+      terminal.setMatch("[(]Pdb[)]|[(]gdb[)]", (obj)=> {
+        this.debugCanNext = true;
+      });
     });
   },
   beforeDestroy() {
     bridge.$off("settingProject");
+    bridge.$off("debugStop");
+    bridge.$off("beginDebug");
   }
 };
 

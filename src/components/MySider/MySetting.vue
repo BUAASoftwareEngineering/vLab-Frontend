@@ -71,6 +71,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debug"
+          :disabled="debugRuning"
         >调试</Button>
       </Col>
     </Row>  
@@ -101,7 +102,8 @@ export default {
     return {
       Files: [],
       Show: {},
-      pythonMark: false
+      pythonMark: false,
+      debugRuning : false,
     };
   },
   filters: {
@@ -238,11 +240,13 @@ export default {
             terminal.setMatch("is not", (obj) => {
               terminal.setShowable(true);
               terminal.disposeMatch("is not");
+              bridge.$emit("beginDebug");
             });
             terminal.runcommand("import types")
             terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
             bridge.$emit("readyForDebug", filepath);
           });
+          this.debugRuning = true;
         } else if (count > 1) {
           this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
           this.openSetting();
@@ -272,9 +276,11 @@ export default {
               terminal.setShowable(true);
               terminal.runcommand("run");
               terminal.disposeMatch("Undefined command");
+              bridge.$emit("beginDebug");
             });
             bridge.$emit("readyForDebug", filepath);
           });
+          this.debugRuning = true;
         } else if (count > 1) {
           this.$Message.error("cpp类型debug调试目前只支持一个入口，请取消多余勾选");
           this.openSetting();
@@ -312,6 +318,9 @@ export default {
       }),
       bridge.$on("tocompilerun", val => {
         this.compileAndRun();
+      }),
+      bridge.$on("debugStop", val => {
+        this.debugRuning = false;
       });
   },
 
@@ -322,6 +331,8 @@ export default {
     bridge.$off("torun");
     bridge.$off("tocompilerun");
     bridge.$off("readyForDebug");
+    bridge.$off("debugStop");
+    bridge.$off("beginDebug");
   }
 };
 </script>
