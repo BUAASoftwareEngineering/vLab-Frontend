@@ -91,7 +91,7 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStop"
-          :disabled = "!debugCanBegin"
+          :disabled = "!debugCanBegin || !debugCanNext"
         ><Icon type="ios-square" />&nbsp;&nbsp;&nbsp;Stop</Button>
       </Col>
     </Row>
@@ -148,7 +148,21 @@ export default {
           terminal.setShowable(true);
           terminal.disposeMatch("Key");
           terminal.runcommand("restart");
+          terminal.setMatch("->", (obj) => {
+            console.log(obj);
+            terminal.disposeMatch("->");
+            terminal.setShowable(false);
+            terminal.setMatch("is not", (obj) => {
+              terminal.setShowable(true);
+              terminal.disposeMatch("is not");
+              this.debugCanBegin = true;
+            });
+            terminal.runcommand("import types")
+            terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
+            terminal.runcommand("okForDebug")
+          });
         });
+        this.debugCanBegin = false;
         await terminal.ctrlc();
         //terminal.runcommand("restart");
       }
