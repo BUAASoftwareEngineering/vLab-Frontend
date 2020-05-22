@@ -5,7 +5,7 @@
         <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">构建设置</p>
       </Col>
     </Row>
-    <Divider style="margin:10px auto"/>
+    <Divider style="margin:10px auto" />
 
     <template v-for="file in Files">
       <Checkbox
@@ -15,9 +15,7 @@
         :value="Show[file]"
         style="margin-left:10%;"
       >
-        <label
-          style="line-height:30px;font-family: Consolas;"
-        >{{file.split('/').reverse()[0]}}</label>
+        <label style="line-height:30px;font-family: Consolas;">{{file.split('/').reverse()[0]}}</label>
 
         <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
@@ -111,16 +109,16 @@ export default {
       bridge.$emit("openSetting");
     },
     async click_compile() {
-      terminal.ctrlc()
-      this.compile()
+      terminal.ctrlc();
+      this.compile();
     },
     async click_run() {
-      terminal.ctrlc()
-      this.run()
+      terminal.ctrlc();
+      this.run();
     },
     async click_compile_run() {
-      terminal.ctrlc()
-      this.compileAndRun()
+      terminal.ctrlc();
+      this.compileAndRun();
     },
     async compile() {
       let ret = "compile";
@@ -193,8 +191,19 @@ export default {
       this.$nextTick(function() {
         this.Show = {};
         for (let i = 0; i < Files.length; i++) {
-          this.Show[Files[i]] = false;
-          this.Files.push(Files[i]);
+          var end = Files[i].split(".").reverse()[0];
+          console.log(Files[i] + "    " + end);
+          if (this.pythonMark) {
+            if (end == "py") {
+              this.Show[Files[i]] = false;
+              this.Files.push(Files[i]);
+            }
+          } else {
+            if (end == "c" || end == "cpp" || end == "h" || end == "hpp") {
+              this.Show[Files[i]] = false;
+              this.Files.push(Files[i]);
+            }
+          }
         }
         // console.log(this.Files);
       });
