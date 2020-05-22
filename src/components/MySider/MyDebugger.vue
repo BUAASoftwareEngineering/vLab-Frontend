@@ -129,11 +129,12 @@ export default {
       //this.debugCanBegin = false;
       //this.debugCanNext = false;
       //this.debugCanPause = true;
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("run");
         terminal.runcommand("y");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("continue");
       }
       //console.log("debugStart");
@@ -145,56 +146,62 @@ export default {
     //  console.log("debugPause");
     //},
     async click_debugContinue() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("continue");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("continue");
       }
       //console.log("debugContinue");
     },
     async click_debugStepOver() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("next");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("next");
       }
       //console.log("debugStepOver");
     },
     async click_debugStepInto() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("step");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("step");
       }
       //console.log("debugStepInto");
     },
     async click_debugStepOut() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("finish");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("return");
       }
       //console.log("debugStepOut");
     },
     async click_debugShow() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("info locals");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("showLocalVars(locals())");
       }
       //console.log("debugShow");
     },
     async click_debugStop() {
-      //terminal.ctrlc();
       if (this.pythonMark == false) {
+        terminal.ctrlc();
         terminal.runcommand("quit");
         terminal.runcommand("y");
       } else {
+        terminal.ctrlc();
         terminal.runcommand("quit");
       }      
       //console.log("debugContinue");
