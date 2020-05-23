@@ -270,7 +270,7 @@ function run(submit) {
 
 function ctrlc() {
   that.socket.send(new TextEncoder().encode('\x00\x03'))
-  that.socket.send(new TextEncoder().encode('\r'))
+  //that.socket.send(new TextEncoder().encode('\r'))
 }
 
 const setShowable = AttachAddonTools.setShowable

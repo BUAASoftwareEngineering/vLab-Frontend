@@ -62,12 +62,25 @@
         >运行</Button>
       </Col>
     </Row>
+
+    <Row type="flex" justify="center" align="middle" style="margin-top: 10px;">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="click_debug"
+          :disabled="debugRuning"
+        >调试</Button>
+      </Col>
+    </Row>  
+
   </Layout>
 </template>
 <script>
 import bridge from "../bridge";
 import terminal from "../Terminal";
 import api from "../../assets/js/api";
+import Terminal from '../Terminal';
 export default {
   props: {
     username: {
@@ -87,7 +100,8 @@ export default {
     return {
       Files: [],
       Show: {},
-      pythonMark: false
+      pythonMark: false,
+      debugRuning : false,
     };
   },
   filters: {
@@ -107,6 +121,10 @@ export default {
     },
     openSetting() {
       bridge.$emit("openSetting");
+    },
+    async click_debug() {
+      terminal.ctrlc()
+      this.debug()
     },
     async click_compile() {
       terminal.ctrlc();
@@ -182,6 +200,94 @@ export default {
           this.run();
         }
       }
+    },
+    async debug() {
+      if (this.pythonMark) {
+        let filepath = "";
+        let count = 0;
+        for (var key in this.Show) {
+          if (this.Show[key] == true) {
+            count++;
+            filepath = "/code/" + key;
+          }
+        }
+        if (count == 0) {
+          this.$Message.error("请在侧边栏的构建选项中选择一个python类型文件");
+          this.openSetting();
+        } else if (count == 1) {
+          terminal.runcommand("");
+          let command = "python3 -m pdb " + filepath;
+          terminal.runcommand(command);
+          //terminal.runcommand("from debugger import showLocalVars");
+          //terminal.setShowable(false);
+          console.log("debug beigin");
+          terminal.setMatch("Running 'cont'", (obj) => {
+            terminal.runcommand("cont");
+          });
+          terminal.setMatch("The program finished and will be restarted", (obj) => {
+            terminal.setShowable(false);
+            terminal.runcommand("import types")
+            terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
+            terminal.runcommand("okForDebug");
+            terminal.setMatch("is not", (obj) => {
+              terminal.setShowable(true);
+              terminal.disposeMatch("is not");
+            });
+          });
+          terminal.setMatch("->", (obj) => {
+            console.log(obj);
+            terminal.disposeMatch("->");
+            terminal.setShowable(false);
+            terminal.setMatch("is not", (obj) => {
+              terminal.setShowable(true);
+              terminal.disposeMatch("is not");
+              bridge.$emit("beginDebug");
+            });
+            terminal.runcommand("import types")
+            terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
+            bridge.$emit("readyForDebug", filepath);
+          });
+          this.debugRuning = true;
+        } else if (count > 1) {
+          this.$Message.error("Python类型工程只能有一个入口，请取消多余勾选");
+          this.openSetting();
+        }
+      } else {
+        let filepath = "";
+        let count = 0;
+        for (var key in this.Show) {
+          if (this.Show[key] == true) {
+            count++;
+            filepath = "/code/" + key;
+          }
+        }
+        if (count == 0) {
+          this.$Message.error("请在侧边栏的构建选项中选择一个cpp类型文件");
+          this.openSetting();
+        } else if (count == 1) {
+          terminal.runcommand("");
+          let command = "g++ -g " + filepath + " -o /code/fordebug";
+          terminal.runcommand(command);
+          terminal.runcommand("gdb /code/fordebug");
+
+          terminal.setMatch("GNU gdb", (obj) => {
+            console.log(obj);
+            terminal.disposeMatch("GNU gdb");
+            terminal.setShowable(false);
+            terminal.setMatch("Undefined command", (obj) => {
+              terminal.setShowable(true);
+              terminal.runcommand("run");
+              terminal.disposeMatch("Undefined command");
+              bridge.$emit("beginDebug");
+            });
+            bridge.$emit("readyForDebug", filepath);
+          });
+          this.debugRuning = true;
+        } else if (count > 1) {
+          this.$Message.error("cpp类型debug调试目前只支持一个入口，请取消多余勾选");
+          this.openSetting();
+        }
+      }
     }
   },
   mounted() {
@@ -220,8 +326,14 @@ export default {
       bridge.$on("torun", val => {
         this.run();
       }),
+      bridge.$on("todebug", val => {
+        this.debug();
+      }),
       bridge.$on("tocompilerun", val => {
         this.compileAndRun();
+      }),
+      bridge.$on("debugStop", val => {
+        this.debugRuning = false;
       });
   },
 
@@ -231,6 +343,9 @@ export default {
     bridge.$off("tocompile");
     bridge.$off("torun");
     bridge.$off("tocompilerun");
+    bridge.$off("readyForDebug");
+    bridge.$off("debugStop");
+    bridge.$off("beginDebug");
   }
 };
 </script>
