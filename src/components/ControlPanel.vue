@@ -211,7 +211,7 @@ export default {
     fit() {
       terminal.fit();
     },
-    handleTabsAdd(id, label, BASE_DIR, overwrite = false) {
+    handleTabsAdd(id, label, BASE_DIR, overwrite = false, tempUse = false) {
       this.tabs.push(id);
       this.tabsMap[id] = label;
       // console.log(this.tabs);
@@ -220,7 +220,6 @@ export default {
         new_tabPane.id = this.getIDEId(id);
         new_tabPane.style.height = "100%";
         new_tabPane.style.width = "100%";
-        // console.log(id);
         document.getElementById(id).appendChild(new_tabPane);
         var _this = this;
         this.$Spin.show();
@@ -240,9 +239,10 @@ export default {
               _this.firstInto = false;
               _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme);
             }
+            //console.log(tempUse);
             var tempEditor = await _this.myEditor.addEditor(
               id,
-              false,
+              tempUse,
               new_tabPane.id
             );
 
@@ -390,7 +390,7 @@ export default {
     }),
       bridge.$on("add", path_label => {
         if (!this.tabsMap.hasOwnProperty(path_label[0])) {
-          this.handleTabsAdd(path_label[0], path_label[1], path_label[2]);
+          this.handleTabsAdd(path_label[0], path_label[1], path_label[2], false, path_label[3]);
         }
         this.currentTab = path_label[0];
       }),
