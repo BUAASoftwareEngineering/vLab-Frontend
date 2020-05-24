@@ -37,6 +37,7 @@
     <Dropdown transfer ref="contentRootMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">新建模板文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
@@ -60,6 +61,7 @@
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">新建模板文件</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
@@ -137,6 +139,7 @@ export default {
       projectId: 0,
       projectName: "",
       treeTheme: "lightTree",
+      tempMap: {},
       data4: [
         {
           title: "",
@@ -1213,7 +1216,7 @@ export default {
     },
 
     // 添加文件按钮
-    appendfile(root, nodekey, data) {
+    appendfile(root, nodekey, data, usetemp = false) {
       this.hiddenRightMenu();
       event.stopPropagation();
       var path = this.getPath(root, nodekey, data);
@@ -1229,6 +1232,9 @@ export default {
           children.push({
             title: "新建文件"
           });
+          if (usetemp) {
+            _this.tempMap[path + "新建文件"] = true;
+          }
           _this.$set(data, "children", children);
           _this.$set(data, "expand", true);
           _this.editTree(children[children.length - 1]);
@@ -1398,6 +1404,10 @@ export default {
                     newID =
                       "/code/" + path + _this.inputContent + "/" + leaves[i];
                     IDmap[oldID] = [newID, "/code/" + path];
+                    if (_this.tempMap[oldID]) {
+                      _this.tempMap[newID] = _this.tempMap[oldID];
+                      _this.tempMap[oldID] = _false;
+                    }
                   }
                   // console.log(this.getLeafPath(root, nodekey));
                   bridge.$emit("renameFloder", IDmap);
@@ -1434,7 +1444,11 @@ export default {
                   var IDmap = {};
                   IDmap[oldID] = [newID, _this.inputContent, "/code/" + path];
                   bridge.$emit("renameFile", IDmap);
-
+                  if (_this.tempMap[oldID]) {
+                    _this.tempMap[newID] = _this.tempMap[oldID];
+                    _this.tempMap[oldID] = false;
+                  }
+                
                   data.title = _this.inputContent;
                   _this.$Message.info("修改成功");
                   _this.setStates(data);
@@ -1492,7 +1506,9 @@ export default {
       this.nodeInfo = data;
       if (data.children == undefined) {
         var path = this.getPath(root, nodekey, data);
-        bridge.$emit("add", [path + data.title, data.title, path]);
+        //console.log("tzjhahah");
+        //console.log(this.tempMap[path + data.title]);
+        bridge.$emit("add", [path + data.title, data.title, path, this.tempMap[path + data.title]]);
       } else {
         this.$set(data, "expand", !data.expand);
       }
