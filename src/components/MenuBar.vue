@@ -315,6 +315,7 @@ export default {
       LineNumberOnOff: true,
       MinimapOnOff: true,
       pythonMark: false,
+      helpModal: false,
       dropmenuColor: "#ececec",
       dropmenuBack: "#4b4b4d",
       terminal: terminal
@@ -510,7 +511,16 @@ export default {
 .myDarkDrop .myContentClass {
   background-color:#4b4b4d;
 }
-
+.myDarkDrop .ivu-poptip-inner {
+  background-color:#4b4b4d;
+  color: #f3f3f3;
+}
+.myDarkDrop .ivu-poptip-title-inner  {
+  color: #f3f3f3;
+}
+.myDarkDrop .ivu-poptip-body-content-inner  {
+  color: #f3f3f3;
+}
 .myLightDrop
   .ivu-menu-horizontal
   .ivu-menu-submenu
