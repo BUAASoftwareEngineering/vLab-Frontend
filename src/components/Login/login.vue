@@ -38,7 +38,7 @@
           <Alert v-if="error2" type="error" show-icon >{{error_message2}}</Alert>
           <Alert v-if="error3" type="error" show-icon >{{error_message3}}</Alert>
           <Alert v-if="error4" type="error" show-icon >{{error_message4}}</Alert>
-          <Alert v-if="warning" type="warning" show-icon >我们使用vlab_team@163.com给您发送邮件，若未收到验证码，可能被您的邮箱视为垃圾邮件</Alert>
+          <Alert v-if="warning" type="warning" show-icon >我们使用vlab_team@yeah.net给您发送邮件，若未收到验证码，可能被您的邮箱视为垃圾邮件</Alert>
 
       <br>
       

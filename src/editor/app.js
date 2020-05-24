@@ -54,6 +54,7 @@ export class MonacoApp {
 	closeEditor(editor) {
 		removeBreakpoint(editor);
 		this.model2editor.delete(editor.getModel());
+		editor.getModel().dispose();
 	}
 }
 
