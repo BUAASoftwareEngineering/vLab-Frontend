@@ -235,7 +235,13 @@ export default {
             }
             if (_this.firstInto) {
               _this.firstInto = false;
-              _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme);
+              console.log("username:");
+              console.log(_this.username);
+              console.log("projectId:");
+              console.log(_this.projectid);
+              console.log("projectname:");
+              console.log(_this.projectname);
+              _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme, _this.username);
             }
             //console.log(tempUse);
             var tempEditor = await _this.myEditor.addEditor(

@@ -37,7 +37,7 @@
     <Dropdown transfer ref="contentRootMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">新建模板文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">使用默认代码新建</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
@@ -61,7 +61,7 @@
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
         <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">新建模板文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">使用默认代码新建</DropdownItem>
         <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
