@@ -15,6 +15,9 @@ function get_request(url, callback) {
     http.open("GET", url, true)
     http.send()
     http.onreadystatechange = function(data) {
+        if ((http == null) || (http == undefined)) {
+            return
+        }
         if (http.readyState == 4 && http.status == 200) {
             if (url.split('?')[0] == server + '/file/download') {
                 // console.log(new Buffer(data.currentTarget.response))
@@ -41,6 +44,9 @@ function get_request(url, callback) {
                     // console.log(new Buffer(obj.data.content))
                     obj.data.content = new TextDecoder('utf-8').decode(new Buffer(obj.data.content))
                 }
+                setTimeout(function() {
+                    http = null
+                }, 500)
                 callback(obj)
             }
         } else if (http.readyState == 4) {
@@ -52,12 +58,12 @@ function get_request(url, callback) {
                 message: "Http request fail!",
                 data: {}
             }
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         }
         // console.log(obj)
-        setTimeout(function() {
-            http = null
-        }, 500)
     }
 }
 
@@ -69,6 +75,9 @@ function post_request(url, data, callback) {
     //http.setRequestHeader("Cookie","type=lpx")
     http.send(data)
     http.onreadystatechange = function(data) {
+        if ((http == null) || (http == undefined)) {
+            return
+        }
         if (http.readyState == 4 && http.status == 200) {
             // console.log('post success')
             var obj = {}
@@ -89,6 +98,9 @@ function post_request(url, data, callback) {
                 obj.data = {}
             }
             // console.log(document.cookie)
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         } else if (http.readyState == 4) {
             // console.log('post fail')
@@ -99,12 +111,12 @@ function post_request(url, data, callback) {
                 message: "Http request fail!",
                 data: {}
             }
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         }
         // console.log(obj)
-        setTimeout(function() {
-            http = null
-        }, 500)
     }
 }
 
@@ -328,8 +340,12 @@ function share_invite(project_id, user_name, writeable, callback) {
     var url = server + '/share/invite'
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&user_name=' + encodeURIComponent(user_name) +
-                '&writeable' + encodeURIComponent(writeable)
-    post_request(url, data, callback)
+                '&writeable=' + encodeURIComponent(writeable)
+    let mycallback = function(obj) {
+        obj.username = user_name
+        callback(obj)
+    }
+    post_request(url, data, mycallback)
 }
 
 function share_accept(project_id, callback) {

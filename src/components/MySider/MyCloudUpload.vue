@@ -17,7 +17,7 @@
 
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <Upload :before-upload="handleFiles" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="uploadFiles">
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
@@ -28,9 +28,9 @@
     <br />
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <uploader @file-success="handleFolder">
+        <uploader @file-success="handleFolder" duplicate="true" ref="uploadFolder">
           <uploader-drop>
-            <uploader-btn :directory="true" attrs="">
+            <uploader-btn :directory="true">
               上传文件夹到根目录...
             </uploader-btn>
           </uploader-drop>
@@ -80,7 +80,7 @@ export default {
       gitUrl: "",
       files_number:0,
       files_conflict:[],
-      modal1:false,
+      modal1:false
     };
   },
   props: {
@@ -102,8 +102,10 @@ export default {
     modal1_ok(){
       this.files_conflict=[]
       this.modal1=false      
-      window.location.reload()
-              
+      // window.location.reload()
+      this.$refs.uploadFiles.clearFiles()
+      this.$refs.uploadFolder.uploader.cancel()
+      bridge.$emit('FleshFilesTree')
     },
     handleFiles(file) {
        if(this.files_number==0)this.$Spin.show()
@@ -130,7 +132,9 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
               }
               }
               if (response.code == 0) {
@@ -151,7 +155,9 @@ export default {
                 _this.$Spin.hide();
                if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
               }
               }
           _this.$Message.error("cookie验证失败");
@@ -162,7 +168,9 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
               }
               }
           _this.$Message.error("权限不足");
@@ -173,7 +181,9 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
               }
                  
               }
@@ -183,7 +193,9 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
               }
                  
               }
@@ -246,7 +258,11 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+
+                bridge.$emit('FleshFilesTree')
               }
               }
               if (response.code == 0) {                
@@ -266,7 +282,10 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
               }
               }  
           _this.$Message.error("cookie验证失败");
@@ -277,7 +296,10 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
               }
               }
           _this.$Message.error("权限不足");
@@ -288,7 +310,10 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
               }
                 }
           } else {
@@ -297,7 +322,10 @@ export default {
                 _this.$Spin.hide();
                 if(_this.files_conflict.length!=0)_this.modal1=true
                 else{
-                window.location.reload()
+                // window.location.reload()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
               }
               }
           _this.$Message.error("未知错误");

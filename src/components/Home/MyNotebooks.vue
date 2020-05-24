@@ -17,6 +17,35 @@
       <Input v-model="project_name" style="width:200px" @keyup.enter.native="update_ok"></Input>
     </Modal>
 
+    <Modal 
+      v-model="modal4" 
+      title="分享项目" 
+      :loading="loading" 
+      @on-ok="share_ok">
+      <p>添加用户：</p>
+      <br>
+      <Input search enter-button="Add" placeholder="请输入对方的用户名..." v-model="shareUsernameAdd" @on-search="addShareUser()" />
+      <br>
+      <Table border :columns="columns12" :data="data6" style="border-top=10px">
+        <template slot-scope="{ row }" slot="username">
+            <strong>{{ row.username }}</strong>
+        </template>
+        <template slot-scope="{ row, index }" slot="action">
+            <Button type="error" size="small" @click="removeShareUser(index)">Delete</Button>
+        </template>
+      </Table>
+      <br>
+      <RadioGroup v-model="project_right">
+        分享权限： 
+        <Radio label="可读分享" value="writeable"></Radio>
+        <Radio label="可写分享" value="readable"></Radio>
+      </RadioGroup>
+      <div slot="footer">
+        <Button type="text" @click="share_cancel">取消</Button>
+        <Button type="primary" @click="share_ok">分享</Button>
+      </div>
+    </Modal>
+
     <div style="margin-top:80px;margin-left:20vh">
       <Input
         v-model="search_name"
@@ -78,6 +107,13 @@
                     <Icon type="ios-more" />
                   </a>
                   <a
+                    style="position:absolute;left:35px;bottom:5px"
+                    @click="shareProject('PYTHON3',index)"
+                    v-show="iconshow"
+                  >
+                    <Icon type="ios-share-alt-outline" />
+                  </a>
+                  <a
                     style="position:absolute;right:5px;bottom:5px"
                     @click="delProject('PYTHON3',index)"
                     v-show="iconshow"
@@ -127,6 +163,13 @@
                     v-show="iconshow"
                   >
                     <Icon type="ios-more" />
+                  </a>
+                  <a
+                    style="position:absolute;left:35px;bottom:5px"
+                    @click="udtProject('CPP',index)"
+                    v-show="iconshow"
+                  >
+                    <Icon type="ios-share-alt-outline" />
                   </a>
                   <a
                     style="position:absolute;right:5px;bottom:5px"
@@ -219,6 +262,7 @@ export default {
       modal1: false,
       modal2: false,
       modal3: false,
+      modal4: false,
       project_name: "",
       project_type: "",
       project_index: 0,
@@ -226,11 +270,27 @@ export default {
       note_type: "PYTHON3",
       search_name: "",
       search_type: "PYTHON3",
+      shareUsernameAdd: "",
+      project_right: "",
       c_books: this.fc_books,
       cpp_books: this.fcpp_books,
       p2_books: this.fp2_books,
       p3_books: this.fp3_books,
-      j_books: this.fj_books
+      j_books: this.fj_books,
+      loading: true,
+      columns12: [
+          {
+              title: 'username',
+              slot: 'username'
+          },
+          {
+              title: 'Action',
+              slot: 'action',
+              width: 150,
+              align: 'center'
+          }
+      ],
+      data6: []
     };
   },
 
@@ -262,6 +322,42 @@ export default {
   },
 
   methods: {
+    addShareUser() {
+      if (this.shareUsernameAdd == "") {
+        this.$Message.error("用户名不能为空")
+        return
+      }
+      for (let i = 0; i < this.data6.length; i = i + 1) {
+        if (this.data6[i].username == this.shareUsernameAdd) {
+          this.$Message.error("用户" + this.shareUsernameAdd + "已添加")
+          return
+        }
+      }
+      let _this = this
+      api.util_check_username(this.shareUsernameAdd, function(obj) {
+        if (obj.code == 0) {
+          let check = obj.data == "true" ? true : false
+          if (check == false) {
+            _this.data6.push({
+              username: _this.shareUsernameAdd
+            })
+          } else {
+            _this.$Message.error("用户名不存在")
+          }
+        } else {
+          _this.$Message.error(obj.Message)
+        }
+        if (obj.code == -101) {
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        }
+        _this.shareUsernameAdd = ''
+      })
+      
+    },
+    removeShareUser(index) {
+      this.data6.splice(index, 1)
+    },
     newProject(type) {
       this.project_name = "";
       switch (type) {
@@ -330,7 +426,11 @@ export default {
       this.project_index = index;
       this.modal3 = true;
     },
-
+    shareProject(type, index) {
+      this.project_index = index
+      this.project_type = type
+      this.modal4 = true;
+    },
     new_ok() {
       if (this.project_name == "") {
         this.$Modal.error({
@@ -478,6 +578,96 @@ export default {
         }
       });
       this.modal3 = false;
+    },
+
+    share_ok() {
+      // console.log(this.data6)
+      if (this.data6.length == []) {
+        this.$Message.error("请添加要分享的用户")
+        return
+      }
+      if (this.project_right == '') {
+        this.$Message.error("请选择分享权限")
+        return
+      }
+      let _this = this
+      let callback = function() {
+        _this.shareUsernameAdd = ''
+        _this.project_right = ''
+        _this.data6 = []
+        _this.modal4 = false
+        _this.$Spin.hide()
+      }
+      let count = this.data6.length
+      let error_users = []
+      this.$Spin.show()
+      for (let i = 0; i < this.data6.length; i = i + 1) {
+        // console.log(this.project_right)
+        let pid = ''
+        if (this.project_type == api.C) {
+          pid = this.c_books[this.project_index].projectId;
+        } else if (this.project_type == api.CPP) {
+          pid = this.cpp_books[this.project_index].projectId;
+        } else if (this.project_type == api.PYTHON2) {
+          pid = this.p2_books[this.project_index].projectId;
+        } else if (this.project_type == api.PYTHON3) {
+          pid = this.p3_books[this.project_index].projectId;
+        } else {
+          pid = this.j_books[this.project_index].projectId;
+        }
+        let writeable = this.project_right == '可写分享' ? true : false
+        api.share_invite(pid, this.data6[i].username, writeable, function(res) {
+          count -= 1
+          // console.log(res)
+          if (res.code != undefined) {
+            
+            if (res.code == 0) {
+
+            } else {
+              // _this.$Message.error(res.Message)
+              error_users.push({
+                "username": res.username,
+                "message" : res.message
+              })
+            }
+          } else {
+            // _this.$Message.error("未知错误")
+            error_users.push({
+              "username": res.username,
+              "message": "未知错误"
+            })
+          }
+          if (res.code == -101) {
+            _this.$Message.error("cookie验证失败");
+            _this.$router.push("/");
+            count = 0
+            error_users = []
+          }
+          if (count == 0) {
+            callback()
+            // console.log(error_users)
+            if (error_users.length == 0) {
+              _this.$Message.success("分享成功")
+            } else {
+              let content = ''
+              for (let i = 0; i < error_users.length; i = i + 1) {
+                content += "用户名："+error_users[i]["username"]+"<br>原因："+error_users[i]["message"] + "<br><br>"
+              }
+              _this.$Modal.error({
+                title: "以下用户分享失败",
+                content: content
+              });
+            }
+            
+          }
+        })
+      }
+    },
+    share_cancel() {
+      this.data6 = []
+      this.shareUsernameAdd = ''
+      this.project_right = ''
+      this.modal4 = false
     },
     search() {
       this.c_books.length = [];

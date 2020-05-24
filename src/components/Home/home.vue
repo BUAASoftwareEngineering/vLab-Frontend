@@ -50,7 +50,8 @@ a {
     <Layout style="height:100%">
       <Header>
         <div class="title">
-          欢迎&ensp; {{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          <Icon ref="message" size="20" type="ios-chatboxes" color="message_color" />
+          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;欢迎&ensp; {{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
           <a @click="quit">注销</a>
         </div>
       </Header>
@@ -92,7 +93,7 @@ export default {
   data() {
     return {
       username: "",
-
+      message_color: "#00FF00",
       showNotebooks: true,
       showAccount: false,
       c_books: [],
@@ -110,6 +111,12 @@ export default {
   mounted() {
     this.$Spin.show();
     var _this = this;
+    // setInterval(function () {
+    //   if (_this.$refs.message.color == "#00FF00")
+    //     _this.$refs.message.color = "#C0C0C0"
+    //   else 
+    //     _this.$refs.message.color = "#00FF00"
+    // }, 2000)
     api.user_info(function(response) {
       _this.$Spin.hide();
       if (response.code != 0) {
