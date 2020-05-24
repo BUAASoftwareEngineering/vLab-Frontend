@@ -2,7 +2,14 @@
   <Layout style="background-color: inherit;width:250px;color: inherit;">
     <Row type="flex" justify="center" align="middle">
       <Col span="24">
-        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">构建设置</p>
+        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;float:left;">构建设置
+          <Poptip trigger="hover" title="选中单个py文件运行/调试" content="结果在右下方调试控制台中显示" v-if="pythonMark==true" transfer>
+            <Icon type="md-help-circle" />
+          </Poptip>
+          <Poptip trigger="hover" title="选中文件编译/运行/调试" content="结果在右下方调试控制台中显示" v-if="pythonMark==false" transfer>
+            <Icon type="md-help-circle" />
+          </Poptip>
+        </p>
       </Col>
     </Row>
     <Divider style="margin:10px auto" />
@@ -226,7 +233,7 @@ export default {
           });
           terminal.setMatch("The program finished and will be restarted", (obj) => {
             terminal.setShowable(false);
-            terminal.runcommand("import types")
+            terminal.runcommand("import types");
             terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
             terminal.runcommand("okForDebug");
             terminal.setMatch("is not", (obj) => {

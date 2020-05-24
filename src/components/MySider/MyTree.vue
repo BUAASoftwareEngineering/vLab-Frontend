@@ -17,7 +17,11 @@
     </Modal>
     <Row type="flex" justify="center" align="middle">
       <Col span="12">
-        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;">文件管理</p>
+        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;float:left;">文件管理
+        <Poptip trigger="hover" title="右击项目/文件夹新建文件" content="左击文件开始编辑" transfer>
+            <Icon type="md-help-circle" />
+        </Poptip>
+        </p>
       </Col>
       <Col span="12">
         <Button
