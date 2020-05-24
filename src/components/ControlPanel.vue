@@ -310,6 +310,7 @@ export default {
       this.debuggermark = true;
       this.preferencemark = true;
       this.notebookmark = true;
+      
     },
     changeSetting: function() {
       if (this.settingmark) {
@@ -380,7 +381,7 @@ export default {
   mounted() {
     bridge.$on("changeTree", val => {
       this.treemark = false;
-       this.uploadmark = true;
+      this.uploadmark = true;
       this.downloadmark = true;
       this.settingmark = true;
       this.preferencemark = true;

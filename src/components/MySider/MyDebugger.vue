@@ -13,6 +13,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStart"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "从头开始调试运行"
         ><Icon type="md-arrow-dropright-circle" />&nbsp;&nbsp;&nbsp;(Re)Start</Button>
       </Col>
     </Row>
@@ -37,6 +38,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugContinue"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "运行至下一断点/程序结束"
         ><Icon type="md-play" />&nbsp;&nbsp;&nbsp;Continue</Button>
       </Col>
     </Row>  
@@ -48,6 +50,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOver"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "执行下一条语句，当遇到函数调用时，也不进入函数体"
         ><Icon type="ios-skip-forward" />&nbsp;&nbsp;&nbsp;Step over</Button>
       </Col>
     </Row>
@@ -59,6 +62,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepInto"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "执行下一条语句，当遇到函数调用时，进入函数体"
         ><Icon type="ios-fastforward" />&nbsp;&nbsp;&nbsp;Step into</Button>
       </Col>
     </Row>
@@ -70,6 +74,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStepOut"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "运行程序，直到当前函数完成返回"
         ><Icon type="ios-redo" />&nbsp;&nbsp;&nbsp;Step out</Button>
       </Col>
     </Row>
@@ -81,6 +86,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugShow"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "查看当前堆栈区的所有变量"
         ><Icon type="ios-eye" />&nbsp;&nbsp;&nbsp;Local variables</Button>
       </Col>
     </Row>
@@ -92,6 +98,7 @@
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="click_debugStop"
           :disabled = "!debugCanBegin || !debugCanNext"
+          title = "退出调试运行交互模式"
         ><Icon type="ios-square" />&nbsp;&nbsp;&nbsp;Stop</Button>
       </Col>
     </Row>
