@@ -111,6 +111,7 @@ export default {
   mounted() {
     this.$Spin.show();
     var _this = this;
+    
     // setInterval(function () {
     //   if (_this.$refs.message.color == "#00FF00")
     //     _this.$refs.message.color = "#C0C0C0"
