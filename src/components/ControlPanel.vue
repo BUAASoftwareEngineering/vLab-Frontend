@@ -18,11 +18,9 @@
           <Icon type="ios-bug" />
         </MenuItem>
         <MenuItem name="3-1" @click.native="changeUpload">
-          <Icon type="md-cloud-upload" />
+          <Icon type="ios-cloud" />
         </MenuItem>
-        <MenuItem name="4-1" @click.native="changeDownload">
-          <Icon type="md-cloud-download" />
-        </MenuItem>
+       
       </Menu>
     </Sider>
 
