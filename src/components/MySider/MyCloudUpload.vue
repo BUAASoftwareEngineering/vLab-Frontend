@@ -53,6 +53,16 @@
         </div>
       </Modal>
     </Row>
+    <br>
+    <Row type="flex" justify="center" align="middle">
+      <Col :span="24" style="text-align:center">
+        <Button
+          type="primary"
+          style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+          @click="download"
+        >下载项目到本地...</Button>
+      </Col>
+    </Row>
     <!--
         <Row type="flex" justify="center" align="middle">
             <Col :span="24" style="text-align:center">
@@ -98,7 +108,9 @@ export default {
     }
   },
   methods: {
-    
+    download() {
+      api.file_download(this.projectid);
+    },
     modal1_ok(){
       this.files_conflict=[]
       this.modal1=false      
@@ -127,8 +139,10 @@ export default {
             function(response) {
                _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -148,8 +162,10 @@ export default {
         } else if (response.code == -101) {
           _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-               if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -159,8 +175,10 @@ export default {
         } else if (response.code == -102) {
           _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -170,8 +188,10 @@ export default {
             _this.files_number--;
             _this.files_conflict.push(filename)
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+               if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -180,8 +200,10 @@ export default {
           } else {
           _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+               if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -232,7 +254,6 @@ export default {
         filecontent = e.target.result;
       };
       var _this = this;
-      console.log(rootFile)  
       api.file_new(_this.projectid, "/code/"+rootFile, function(response) {
 
         if (response.code == 0) {
@@ -243,8 +264,11 @@ export default {
             function(response) {
               _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -263,8 +287,10 @@ export default {
         } else if (response.code == -101) {
            _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -274,8 +300,10 @@ export default {
         } else if (response.code == -102) {
            _this.files_number--;
               if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -285,8 +313,10 @@ export default {
           _this.files_number--
           _this.files_conflict.push(rootFile)
           if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+               if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
@@ -294,8 +324,10 @@ export default {
           } else {
            _this.files_number--;
              if(_this.files_number==0){
-                _this.$Spin.hide();
-                if(_this.files_conflict.length!=0)_this.modal1=true
+                if(_this.files_conflict.length!=0){
+                  _this.$Spin.hide()
+                  _this.modal1=true
+                }
                 else{
                 window.location.reload()
               }
