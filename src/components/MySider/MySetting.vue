@@ -22,9 +22,9 @@
         :value="Show[file]"
         style="margin-left:10%;"
       >
-        <label style="line-height:30px;font-family: 'Lucida Console', Consolas, monospace, sans-serif;">{{file.split('/').reverse()[0]}}</label>
+        <label style="line-height:30px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;">{{file.split('/').reverse()[0]}}</label>
 
-        <div style="font-size:12px;font-family: 'Lucida Console', Consolas, monospace, sans-serif;" :title="file">{{file | ellipsis}}</div>
+        <div style="font-size:12px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
     </template>
 
