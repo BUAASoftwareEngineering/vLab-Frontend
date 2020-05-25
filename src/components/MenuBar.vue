@@ -120,12 +120,12 @@
               <Icon type="ios-document" />文件
             </template>
             <MenuGroup title="新建" :style="{'width': '170px'}">
-              <MenuItem name="1-1" @click.native="newFile()">新建文件</MenuItem>
-              <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
-              <MenuItem name="1-3" @click.native="newTempFile()">使用默认代码新建</MenuItem>
+              <MenuItem name="1-1" @click.native="newFile()" :disabled="!isWriteable">新建文件</MenuItem>
+              <MenuItem name="1-2" @click.native="newFolder()" :disabled="!isWriteable">新建文件夹</MenuItem>
+              <MenuItem name="1-3" @click.native="newTempFile()" :disabled="!isWriteable">使用默认代码新建</MenuItem>
             </MenuGroup>
             <MenuGroup title="上传">
-              <MenuItem name="1-6" @click.native="uploadGitProject()">从github导入</MenuItem>
+              <MenuItem name="1-6" @click.native="uploadGitProject()" :disabled="!isWriteable">从github导入</MenuItem>
             </MenuGroup>
             <MenuGroup title="下载">
               <MenuItem name="1-7" @click.native="download()">下载项目</MenuItem>
@@ -356,15 +356,27 @@ export default {
   },
   methods: {
     newFile() {
+      if (!this.isWriteable) {
+        return
+      }
       bridge.$emit("newRootFile", false);
     },
     newFolder() {
+      if (!this.isWriteable) {
+        return
+      }
       bridge.$emit("newRootFolder");
     },
     newTempFile() {
+      if (!this.isWriteable) {
+        return
+      }
       bridge.$emit("newRootFile", true);
     },
     uploadGitProject() {
+      if (!this.isWriteable) {
+        return
+      }
       bridge.$emit("uploadGitProject");
     },
     download() {
@@ -396,24 +408,39 @@ export default {
       }
     },
     undo(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getModel().undo();
     },
     redo(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getModel().redo();
     },
     cut(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.clipboardCutAction").run();
     },
     copy(editor) {
       editor.getAction("editor.action.clipboardCopyAction").run();
     },
     paste(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.clipboardPasteAction").run();
     },
     search(editor) {
       editor.getAction("actions.find").run();
     },
     replace(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.startFindReplaceAction").run();
     },
     setLineNumberOnOff(editor) {
