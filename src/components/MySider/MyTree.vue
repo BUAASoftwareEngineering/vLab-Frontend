@@ -336,7 +336,7 @@ export default {
         filecontent = e.target.result;
       };
       var _this = this;
-      console.log(rootFile);
+      //console.log(rootFile);
       api.file_new(_this.projectid, path + rootFile, function(response) {
         if (response.code == 0) {
           api.file_update(
@@ -1058,7 +1058,7 @@ export default {
                 for (let i = 0; i < leaves.length; i++) {
                   oldID = originPath + leaves[i];
                   newID = targetPath + copyInfo.title + "/" + leaves;
-                  console.log(oldID + " " + newID);
+                  //console.log(oldID + " " + newID);
                   IDmap[oldID] = [newID, "/code/"];
                 }
                 bridge.$emit("renameFloder", IDmap);
@@ -1518,7 +1518,7 @@ export default {
     var _this = this;
 
     bridge.$on("newRootFile", val => {
-      _this.appendfile(_this.rootData, 0, _this.data4[0]);
+      _this.appendfile(_this.rootData, 0, _this.data4[0], val);
     });
 
     bridge.$on("newRootFolder", val => {

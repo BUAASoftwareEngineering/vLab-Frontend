@@ -116,9 +116,16 @@
             <template slot="title">
               <Icon type="ios-document" />文件
             </template>
-            <MenuGroup title="新建" :style="{'width': '150px'}">
+            <MenuGroup title="新建" :style="{'width': '170px'}">
               <MenuItem name="1-1" @click.native="newFile()">新建文件</MenuItem>
               <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
+              <MenuItem name="1-3" @click.native="newTempFile()">使用默认代码新建</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="上传">
+              <MenuItem name="1-6" @click.native="uploadGitProject()">从github导入</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="下载">
+              <MenuItem name="1-7" @click.native="download()">下载项目</MenuItem>
             </MenuGroup>
             <MenuItem name="1-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
@@ -208,6 +215,9 @@
             </MenuGroup>
             <MenuGroup title="运行" :style="{'width': '200px'}">
               <MenuItem name="4-3" @click.native="run">运行</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="调试" :style="{'width': '200px'}">
+              <MenuItem name="4-4" @click.native="debug">调试</MenuItem>
             </MenuGroup>
             <MenuItem name="4-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
@@ -339,10 +349,19 @@ export default {
   },
   methods: {
     newFile() {
-      bridge.$emit("newRootFile");
+      bridge.$emit("newRootFile", false);
     },
     newFolder() {
       bridge.$emit("newRootFolder");
+    },
+    newTempFile() {
+      bridge.$emit("newRootFile", true);
+    },
+    uploadGitProject() {
+      bridge.$emit("uploadGitProject");
+    },
+    download() {
+      api.file_download(this.projectid);
     },
     exitproject() {
       if (this.projectId != 0) {
@@ -439,6 +458,9 @@ export default {
     compilerun() {
       bridge.$emit("tocompilerun");
     },
+    debug() {
+      bridge.$emit("toDebug");
+    },
     toHelp() {
       window.open(
         "https://github.com/BUAASoftwareEngineering/vLab-Frontend/blob/master/Welcome.md"
@@ -492,6 +514,11 @@ export default {
     bridge.$off("settingProject");
     bridge.$off("currentTab");
     bridge.$off("changeAllTheme");
+    bridge.$off("toDebug");
+    bridge.$off("tocompile");
+    bridge.$off("torun");
+    bridge.$off("tocompilerun");
+    bridge.$off("uploadGitProject");
     document.body.removeAttribute("class", this.myDropTheme);
   }
 };

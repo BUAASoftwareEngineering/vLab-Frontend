@@ -335,10 +335,15 @@ export default {
           _this.$Message.error("未知错误");
         }
       });
-        
-      
-      
     }
+  },
+  mounted() {
+    bridge.$on("uploadGitProject",obj=>{
+      this.gitUrlModal = true;
+    });
+  },
+  beforeDestroy() {
+    bridge.$off("uploadGitProject");
   }
 };
 </script>

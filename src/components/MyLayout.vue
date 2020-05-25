@@ -44,14 +44,15 @@ export default {
       this.$router.push("/");
     }
     var _this = this;
+
     api.user_info(function(response) {
-      _this.$Spin.hide();
       if (response.code != 0) {
         _this.$router.push("/");
       } else {
         _this.username = response.data.name;
       }
     });
+
     api.project_enter(this.projectid, function(response) {
       // console.log(response.code)
       if (response.code != 0) {
