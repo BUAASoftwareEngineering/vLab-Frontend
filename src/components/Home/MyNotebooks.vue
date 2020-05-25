@@ -102,14 +102,14 @@
                   <a
                     style="position:absolute;left:5px;bottom:5px"
                     @click="udtProject('PYTHON3',index)"
-                    v-show="iconshow"
+                    v-show="iconshow && p3_books[index].writeable"
                   >
                     <Icon type="ios-more" />
                   </a>
                   <a
                     style="position:absolute;left:35px;bottom:5px"
                     @click="shareProject('PYTHON3',index)"
-                    v-show="iconshow"
+                    v-show="iconshow && p3_books[index].writeable"
                   >
                     <Icon type="ios-share-alt-outline" />
                   </a>
@@ -160,14 +160,14 @@
                   <a
                     style="position:absolute;left:5px;bottom:5px"
                     @click="udtProject('CPP',index)"
-                    v-show="iconshow"
+                    v-show="iconshow && cpp_books[index].writeable"
                   >
                     <Icon type="ios-more" />
                   </a>
                   <a
                     style="position:absolute;left:35px;bottom:5px"
-                    @click="udtProject('CPP',index)"
-                    v-show="iconshow"
+                    @click="shareProject('CPP',index)"
+                    v-show="iconshow && cpp_books[index].writeable"
                   >
                     <Icon type="ios-share-alt-outline" />
                   </a>

@@ -133,6 +133,14 @@ function user_logout(callback) {
     post_request(url, data, callback)
 }
 
+function user_reset(email, captcha, password, callback) {
+    var url = server + '/user/reset'
+    var data =  'email=' + encodeURIComponent(email) + 
+                '&captcha=' + encodeURIComponent(captcha) + 
+                '&password=' + encodeURIComponent(password)
+    post_request(url, data, callback)
+}
+
 function user_register(user_name, password, email, captcha, callback) {
     var url = server + '/user/register'
     var data =  'user_name=' + encodeURIComponent(user_name) + 
@@ -367,6 +375,7 @@ export default {
     user_register,
     user_info_update,
     user_info,
+    user_reset,
     project_info,
     project_info_update,
     project_new,

@@ -47,10 +47,45 @@ a {
 </style>
 <template>
   <div class="layout">
+    <Modal v-model="modal_message" title="项目分享消息" :footer-hide="true">
+    <p v-if="share_message.length==0">
+      暂无项目分享消息
+    </p>
+    <ul v-if="share_message.length != 0">
+        <div v-for="item in share_message">
+            <Card style="width:100%">
+              <p slot="title">
+                  <Icon type="md-contacts"></Icon>
+                  未处理的共享请求
+              </p>
+              <div>
+                有人向您发送了项目共享请求，您是否同意接收该项目？
+                <ul>
+                  <li style="margin-left:20px">项目名称：{{ item.name }}</li>
+                  <li style="margin-left:20px">项目类型：{{ item.imageType }}</li>
+                  <!--<li style="margin-left:20px">共享权限：{{ item.writeable ? "可写共享" : "可读共享" }}</li>-->
+                </ul>
+              </div>
+              <br>
+              <div>
+                <Button type="text" @click="refuse_share(item)" style="position:absolute;right:100px;bottom:10px">拒绝</Button>
+                <Button type="primary" @click="accept_share(item)" style="position:absolute;right:10px;bottom:10px">接收</Button>
+              </div>
+            </Card>
+            <br>
+        </div>
+    </ul>
+      
+    </Modal>
+
     <Layout style="height:100%">
       <Header>
         <div class="title">
-          <Icon ref="message" size="20" type="ios-chatboxes" color="message_color" />
+          <Tooltip content="您有未处理的项目分享消息" :always="share_message.length!=0" :disabled="share_message.length==0">
+            <a @click="handle_message">
+              <Icon ref="message" size="20" type="ios-chatboxes" color="message_color" />
+            </a>
+          </Tooltip>
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;欢迎&ensp; {{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
           <a @click="quit">注销</a>
         </div>
@@ -93,6 +128,7 @@ export default {
   data() {
     return {
       username: "",
+      modal_message: false,
       message_color: "#00FF00",
       showNotebooks: true,
       showAccount: false,
@@ -100,7 +136,9 @@ export default {
       cpp_books: [],
       p2_books: [],
       p3_books: [],
-      j_books: []
+      j_books: [],
+
+      share_message: []
     };
   },
   components: {
@@ -124,50 +162,124 @@ export default {
         _this.$router.push("/");
       } else {
         _this.username = response.data.name;
-        _this.$Spin.show();
-        api.project_info(function(response) {
-          _this.$Spin.hide();
-          if (response.code == 0) {
-            var projects = response.data;
-            for (var i = 0; i < projects.length; i++) {
-              if (projects[i].imageType == api.C) {
-                _this.c_books.push({
-                  projectId: projects[i].projectId,
-                  name: projects[i].name
-                });
-              } else if (projects[i].imageType == api.CPP) {
-                _this.cpp_books.push({
-                  projectId: projects[i].projectId,
-                  name: projects[i].name
-                });
-              } else if (projects[i].imageType == api.PYTHON2) {
-                _this.p2_books.push({
-                  projectId: projects[i].projectId,
-                  name: projects[i].name
-                });
-              } else if (projects[i].imageType == api.PYTHON3) {
-                _this.p3_books.push({
-                  projectId: projects[i].projectId,
-                  name: projects[i].name
-                });
-              } else if (projects[i].imageType == api.JAVA) {
-                _this.j_books.push({
-                  projectId: projects[i].projectId,
-                  name: projects[i].name
-                });
-              }
-            }
-          } else if (response.code == -101) {
-            _this.$Message.error("cookie验证失败");
-            _this.$router.push("/");
-          } else {
-            _this.$Message.error("未知错误");
-          }
-        });
+        _this.update_tables()
       }
     });
+    api.share_info(function(obj) {
+      console.log(obj)
+
+      if (obj.code == 0) {
+        _this.share_message = obj.data
+      } else {
+        _this.$Message.error("查询项目分享消息失败")
+      }
+    })
   },
   methods: {
+    update_tables() {
+      let _this = this
+      _this.$Spin.show();
+      api.project_info(function(response) {
+        _this.$Spin.hide();
+        console.log(response)
+        if (response.code == 0) {
+          _this.c_books.splice(0, _this.c_books.length)
+          _this.cpp_books.splice(0, _this.cpp_books.length)
+          _this.p2_books.splice(0, _this.p2_books.length)
+          _this.p3_books.splice(0, _this.p3_books.length)
+          _this.j_books.splice(0, _this.j_books.length)
+          console.log('1')
+          var projects = response.data;
+          for (var i = 0; i < projects.length; i++) {
+            if (projects[i].imageType == api.C) {
+              _this.c_books.push(projects[i]);
+            } else if (projects[i].imageType == api.CPP) {
+              _this.cpp_books.push(projects[i]);
+            } else if (projects[i].imageType == api.PYTHON2) {
+              _this.p2_books.push(projects[i]);
+            } else if (projects[i].imageType == api.PYTHON3) {
+              _this.p3_books.push(projects[i]);
+              console.log('2')
+              console.log(_this.p3_books)
+            } else if (projects[i].imageType == api.JAVA) {
+              _this.j_books.push(projects[i]);
+            }
+          }
+        } else if (response.code == -101) {
+          _this.$Message.error("cookie验证失败");
+          _this.$router.push("/");
+        } else {
+          _this.$Message.error("未知错误");
+        }
+      });
+    },
+    handle_message() {
+      this.modal_message = true
+    },
+    refuse_share(item) {
+      // this.modal_message = false
+      console.log(item)
+      let _this = this
+      this.$Modal.confirm({
+          title: '项目拒绝确认',
+          content: '<p>您确定拒绝接收该项目吗？</p>',
+          okText: '确定',
+          cancelText: '取消',
+          onOk: () => {
+            console.log('ok')
+            api.share_refuse(item.projectId, function(obj) {
+              _this.update_tables()
+              if (obj.code == 0) {
+                for (let i = 0; i < _this.share_message.length; i = i + 1) {
+                  if (_this.share_message[i].projectId == item.projectId) {
+                    _this.$Message.success("拒绝成功")
+                    _this.share_message.splice(i, 1)
+                    return
+                  }
+                }
+              } else {
+                _this.$Message.error("拒绝失败：" + obj.message)
+                return
+              }
+            })
+          },
+          onCancel: () => {
+            console.log('cancel')
+          }
+      });
+    },
+    accept_share(item) {
+      console.log(item)
+      let _this = this
+      this.$Modal.confirm({
+          title: '项目接收确认',
+          content: '<p>您确定接收该项目吗？</p>',
+          okText: '确定',
+          cancelText: '取消',
+          onOk: () => {
+            console.log('ok')
+            api.share_accept(item.projectId, function(obj) {
+              _this.update_tables()
+              if (obj.code == 0) {
+                for (let i = 0; i < _this.share_message.length; i = i + 1) {
+                  if (_this.share_message[i].projectId == item.projectId) {
+                    _this.$Message.success("接收成功")
+                    _this.share_message.splice(i, 1)
+                    
+                    return
+                  }
+                }
+              } else {
+                _this.$Message.error("接收失败：" + obj.message)
+                return
+              }
+            })
+          },
+          onCancel: () => {
+            console.log('cancel')
+          }
+      });
+    },
     ToNotebooks() {
       this.showNotebooks = true;
       this.showAccount = false;
