@@ -2,12 +2,13 @@
 <template>
   <div id="mylayout" ref="mylayout" class="layout">
     <Layout>
-      <MenuBar class="mymenu" :projectid="projectid" :projectname="projectname"></MenuBar>
+      <MenuBar class="mymenu" :projectid="projectid" :projectname="projectname" :isWriteable="isWriteable"></MenuBar>
       <ControlPanel
         class="mycontrol"
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></ControlPanel>
     </Layout>
   </div>
@@ -23,7 +24,8 @@ export default {
     return {
       username: "",
       projectid: 0,
-      projectname: ""
+      projectname: "",
+      isWriteable: true
     };
   },
   components: {
@@ -56,6 +58,11 @@ export default {
       // console.log(response.code)
       if (response.code != 0) {
         _this.$router.push("/");
+      } else {
+        _this.isWriteable = response.data.writeable
+        console.log('here')
+        console.log(_this.isWriteable)
+        console.log('yeshere')
       }
     });
   }

@@ -36,12 +36,12 @@
     <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
     <Dropdown transfer ref="contentRootMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">使用默认代码新建</DropdownItem>
-        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)" :disabled="!isWriteable">使用默认代码新建</DropdownItem>
+        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
 
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载项目</DropdownItem>
@@ -49,52 +49,52 @@
         <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
-              <DropdownItem style="width:120px">上传文件夹</DropdownItem>
+              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
         <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2">
-          <DropdownItem style="width:120px">上传文件</DropdownItem>
+          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)">使用默认代码新建</DropdownItem>
-        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)" :disabled="!isWriteable">使用默认代码新建</DropdownItem>
+        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
-        <DropdownItem @click.native="movefolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
-        <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="movefolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">剪切</DropdownItem>
+        <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">复制</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
         <Divider style="margin:0" />
-        <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
+        <DropdownItem @click.native="editTree(nodeInfo)" :disabled="!isWriteable">重命名</DropdownItem>
         <!--<DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>-->
-        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">删除</DropdownItem>
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载文件夹</DropdownItem>
 
         <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
-              <DropdownItem style="width:120px">上传文件夹</DropdownItem>
+              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
         <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles">
-          <DropdownItem style="width:120px">上传文件</DropdownItem>
+          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFileMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pp" style="min-width: 80px;">
-        <DropdownItem @click.native="movefile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
-        <DropdownItem @click.native="copyfile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="movefile_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">剪切</DropdownItem>
+        <DropdownItem @click.native="copyfile_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">复制</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
         <Divider style="margin:0" />
-        <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
-        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <DropdownItem @click.native="editTree(nodeInfo)" :disabled="!isWriteable">重命名</DropdownItem>
+        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">删除</DropdownItem>
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载</DropdownItem>
       </DropdownMenu>
@@ -117,6 +117,10 @@ export default {
     },
     projectname: {
       type: String,
+      required: true
+    },
+    isWriteable: {
+      type: Boolean,
       required: true
     }
   },
@@ -596,7 +600,7 @@ export default {
               cursor: "pointer"
             },
             attrs: {
-              draggable: "true"
+              draggable: that.isWriteable ? "true" : "false"
             },
             on: {
               dragstart: () => {
@@ -714,7 +718,7 @@ export default {
               cursor: "pointer"
             },
             attrs: {
-              draggable: "true"
+              draggable: that.isWriteable ? "true" : "false"
             },
             on: {
               dragstart: () => {

@@ -117,8 +117,8 @@
               <Icon type="ios-document" />文件
             </template>
             <MenuGroup title="新建" :style="{'width': '150px'}">
-              <MenuItem name="1-1" @click.native="newFile()">新建文件</MenuItem>
-              <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
+              <MenuItem name="1-1" @click.native="newFile()" :disabled="!isWriteable">新建文件</MenuItem>
+              <MenuItem name="1-2" @click.native="newFolder()" :disabled="!isWriteable">新建文件夹</MenuItem>
             </MenuGroup>
             <MenuItem name="1-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
@@ -127,15 +127,15 @@
               <Icon type="ios-create" />编辑
             </template>
             <MenuGroup title="修改" :style="{'width': '200px'}">
-              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])">
+              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])" :disabled="!isWriteable">
                 撤销
                 <span style="float: right">Ctrl+Z</span>
               </MenuItem>
-              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])">
+              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])" :disabled="!isWriteable">
                 恢复
                 <span style="float: right">Ctrl+Shift+Z</span>
               </MenuItem>
-              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])">
+              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])" :disabled="!isWriteable">
                 剪切
                 <span style="float: right">Ctrl+X</span>
               </MenuItem>
@@ -149,7 +149,7 @@
                 查找
                 <span style="float: right">Ctrl+F</span>
               </MenuItem>
-              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])">
+              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])" :disabled="!isWriteable">
                 替换
                 <span style="float: right">Ctrl+H</span>
               </MenuItem>
@@ -266,6 +266,10 @@ export default {
     },
     projectname: {
       type: String,
+      required: true
+    },
+    isWriteable: {
+      type: Boolean,
       required: true
     }
   },
