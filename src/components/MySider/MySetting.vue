@@ -22,9 +22,9 @@
         :value="Show[file]"
         style="margin-left:10%;"
       >
-        <label style="line-height:30px;font-family: Consolas;">{{file.split('/').reverse()[0]}}</label>
+        <label style="line-height:30px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;">{{file.split('/').reverse()[0]}}</label>
 
-        <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>
+        <div style="font-size:12px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
     </template>
 
@@ -249,7 +249,7 @@ export default {
           terminal.runcommand(command);
           //terminal.runcommand("from debugger import showLocalVars");
           //terminal.setShowable(false);
-          console.log("debug beigin");
+          //console.log("debug beigin");
           terminal.setMatch("Running 'cont'", (obj) => {
             terminal.runcommand("cont");
           });
@@ -264,7 +264,7 @@ export default {
             });
           });
           terminal.setMatch("->", (obj) => {
-            console.log(obj);
+            //console.log(obj);
             terminal.disposeMatch("->");
             terminal.setShowable(false);
             terminal.setMatch("is not", (obj) => {
@@ -300,7 +300,7 @@ export default {
           terminal.runcommand("gdb /code/fordebug");
 
           terminal.setMatch("GNU gdb", (obj) => {
-            console.log(obj);
+            //console.log(obj);
             terminal.disposeMatch("GNU gdb");
             terminal.setShowable(false);
             terminal.setMatch("Undefined command", (obj) => {
@@ -330,7 +330,7 @@ export default {
         this.Show = {};
         for (let i = 0; i < Files.length; i++) {
           var end = Files[i].split(".").reverse()[0];
-          console.log(Files[i] + "    " + end);
+          //console.log(Files[i] + "    " + end);
           if (this.pythonMark) {
             if (end == "py") {
               this.Show[Files[i]] = false;
@@ -358,11 +358,11 @@ export default {
       bridge.$on("torun", val => {
         this.run();
       }),
-      bridge.$on("todebug", val => {
-        this.debug();
-      }),
       bridge.$on("tocompilerun", val => {
         this.compileAndRun();
+      }),
+      bridge.$on("toDebug", val => {
+        this.debug();
       }),
       bridge.$on("debugStop", val => {
         this.debugRuning = false;
@@ -375,6 +375,7 @@ export default {
     bridge.$off("tocompile");
     bridge.$off("torun");
     bridge.$off("tocompilerun");
+    bridge.$off("toDebug");
     bridge.$off("readyForDebug");
     bridge.$off("debugStop");
     bridge.$off("beginDebug");
