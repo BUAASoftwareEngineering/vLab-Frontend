@@ -141,14 +141,16 @@ export default {
             function(response) {
                _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                console.log('yyy')
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
               if (response.code == 0) {
@@ -166,14 +168,15 @@ export default {
         } else if (response.code == -101) {
           _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
           _this.$Message.error("cookie验证失败");
@@ -181,14 +184,15 @@ export default {
         } else if (response.code == -102) {
           _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
           _this.$Message.error("权限不足");
@@ -196,28 +200,31 @@ export default {
             _this.files_number--;
             _this.files_conflict.push(filename)
               if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                bridge.$emit('FleshFilesTree')
+                
               }
                  
               }
           } else {
           _this.files_number--;
               if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
+                  
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                bridge.$emit('FleshFilesTree')
+                
               }
                  
               }
@@ -276,17 +283,18 @@ export default {
             function(response) {
               _this.files_number--;
               if(_this.files_number==0){
-                
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                console.log(_this.$refs.uploadFolder.uploader)
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                  
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                _this.$refs.uploadFolder.uploader.cancel()
-
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
               if (response.code == 0) {                
@@ -303,15 +311,16 @@ export default {
         } else if (response.code == -101) {
            _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                _this.$refs.uploadFolder.uploader.cancel()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }  
           _this.$Message.error("cookie验证失败");
@@ -319,15 +328,16 @@ export default {
         } else if (response.code == -102) {
            _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                _this.$refs.uploadFolder.uploader.cancel()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
           _this.$Message.error("权限不足");
@@ -335,29 +345,31 @@ export default {
           _this.files_number--
           _this.files_conflict.push(rootFile)
           if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
+                  
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                _this.$refs.uploadFolder.uploader.cancel()
-                bridge.$emit('FleshFilesTree')
               }
                 }
           } else {
            _this.files_number--;
              if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
                 // window.location.reload()
-                _this.$refs.uploadFiles.clearFiles()
-                _this.$refs.uploadFolder.uploader.cancel()
-                bridge.$emit('FleshFilesTree')
+                
               }
               }
           _this.$Message.error("未知错误");

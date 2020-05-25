@@ -46,14 +46,14 @@
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载项目</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
               <DropdownItem style="width:120px">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2">
           <DropdownItem style="width:120px">上传文件</DropdownItem>
         </Upload>
       </DropdownMenu>
@@ -75,14 +75,14 @@
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载文件夹</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
               <DropdownItem style="width:120px">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles">
           <DropdownItem style="width:120px">上传文件</DropdownItem>
         </Upload>
       </DropdownMenu>
@@ -214,7 +214,12 @@ export default {
     modal1_ok() {
       this.files_conflict = [];
       this.modal1 = false;
-      window.location.reload();
+      // window.location.reload();
+      this.$refs.treeUploadFiles.clearFiles()
+      this.$refs.treeUploadFiles2.clearFiles()
+      this.$refs.treeUploadFolder.uploader.cancel()
+      this.$refs.treeUploadFolder2.uploader.cancel()
+      bridge.$emit('FleshFilesTree')
     },
     handleFiles(file) {
       var path = this.getPath(
@@ -244,9 +249,15 @@ export default {
               _this.files_number--;
               if (_this.files_number == 0) {
                 _this.$Spin.hide();
+                _this.$refs.treeUploadFiles.clearFiles()
+                _this.$refs.treeUploadFiles2.clearFiles()
+                _this.$refs.treeUploadFolder.uploader.cancel()
+                _this.$refs.treeUploadFolder2.uploader.cancel()
+                console.log('xxx')
+                bridge.$emit('FleshFilesTree')
                 if (_this.files_conflict.length != 0) _this.modal1 = true;
                 else {
-                  window.location.reload();
+                  // window.location.reload();
                 }
               }
               if (response.code == 0) {
@@ -264,9 +275,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("cookie验证失败");
@@ -275,9 +291,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("权限不足");
@@ -286,18 +307,28 @@ export default {
           _this.files_conflict.push(filename);
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
         } else {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("未知错误");
@@ -306,6 +337,7 @@ export default {
       });
     },
     handleFolder(rootFile1, file1, response, chunk) {
+      console.log(this.$refs.treeUploadFolder.uploader)
       var path = this.getPath(
         this.rootData,
         this.nodeInfo.nodeKey,
@@ -347,9 +379,16 @@ export default {
               _this.files_number--;
               if (_this.files_number == 0) {
                 _this.$Spin.hide();
+                _this.$refs.treeUploadFiles.clearFiles()
+                _this.$refs.treeUploadFiles2.clearFiles()
+                _this.$refs.treeUploadFolder.uploader.cancel()
+                _this.$refs.treeUploadFolder2.uploader.cancel()
+                console.log('yyyyx')
+                console.log(_this.$refs.treeUploadFolder.uploader)
+                bridge.$emit('FleshFilesTree')
                 if (_this.files_conflict.length != 0) _this.modal1 = true;
                 else {
-                  window.location.reload();
+                  // window.location.reload();
                 }
               }
               if (response.code == 0) {
@@ -367,9 +406,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("cookie验证失败");
@@ -378,9 +422,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("权限不足");
@@ -389,18 +438,28 @@ export default {
           _this.files_conflict.push(rootFile);
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
         } else {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("未知错误");
