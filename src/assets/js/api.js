@@ -341,7 +341,7 @@ function util_send_captcha(email, callback) {
 function share_info(callback) {
     var url = server + '/share/info'
     var data = ''
-    post_request(url, data, callback)
+    get_request(url, callback)
 }
 
 function share_invite(project_id, user_name, writeable, callback) {
@@ -357,7 +357,7 @@ function share_invite(project_id, user_name, writeable, callback) {
 }
 
 function share_accept(project_id, callback) {
-    var url = server + '/share/accpet'
+    var url = server + '/share/accept'
     var data = 'project_id=' + encodeURIComponent(project_id)
     post_request(url, data, callback)
 }
