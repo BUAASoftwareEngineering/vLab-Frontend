@@ -341,6 +341,7 @@ export default {
             _this.data6.push({
               username: _this.shareUsernameAdd
             })
+            _this.shareUsernameAdd = ''
           } else {
             _this.$Message.error("用户名不存在")
           }
@@ -351,7 +352,7 @@ export default {
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
         }
-        _this.shareUsernameAdd = ''
+        
       })
       
     },
