@@ -415,9 +415,9 @@ export default {
     UpdateData(projectid) {
       var _this = this;
       var formerData = _this.deepcopy(_this.rootData);
-      this.$Spin.show();
+      // this.$Spin.show();
       api.file_struct(projectid, "/code/", function(response) {
-        _this.$Spin.hide();
+        // _this.$Spin.hide();
         if (response.code == 0) {
           _this.$set(_this.data4[0], "children", response.data);
 
