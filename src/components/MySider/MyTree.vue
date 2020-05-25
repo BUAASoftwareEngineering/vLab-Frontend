@@ -46,16 +46,18 @@
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载项目</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2" v-if="isWriteable">
           <uploader-drop>
-            <uploader-btn :directory="true" :single="true">
+            <uploader-btn :directory="true" :single="true" >
               <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2">
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2" v-if="isWriteable">
           <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
@@ -75,16 +77,18 @@
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载文件夹</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder" v-if="isWriteable">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
               <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles">
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles" v-if="isWriteable">
           <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFileMenu" style="display: none;" trigger="click">
@@ -471,6 +475,9 @@ export default {
       });
     },
     uploadFiles(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       var path = this.getPath(root, nodekey, data);
       bridge.$emit("uploadFiles", path);
     },
@@ -1218,6 +1225,9 @@ export default {
 
     // 复制文件夹
     copyfolder_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1226,6 +1236,9 @@ export default {
 
     // 剪切文件夹
     movefolder_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1234,6 +1247,9 @@ export default {
 
     // 复制文件
     copyfile_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1242,6 +1258,9 @@ export default {
 
     // 剪切文件
     movefile_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1251,6 +1270,9 @@ export default {
     // 粘贴文件，用一个变量区别当前行为是剪切还是复制
     // 复制到同一目录下
     paste(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       if (this.copyInfo != []) {
@@ -1280,6 +1302,9 @@ export default {
 
     // 添加文件按钮
     appendfile(root, nodekey, data, usetemp = false) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       var path = this.getPath(root, nodekey, data);
@@ -1316,6 +1341,9 @@ export default {
 
     // 添加文件夹按钮
     appendfolder(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       var path = this.getPath(root, nodekey, data);
@@ -1358,6 +1386,9 @@ export default {
 
     // 删除按钮
     remove(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
 
