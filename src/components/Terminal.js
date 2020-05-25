@@ -46,7 +46,7 @@ function initTerm() {
   }
   const term = new Terminal({
     fontSize: 14,
-    cursorBlink: true,
+    cursorBlink: that.project.writeable,
     scrollback: 800,
     tabStopWidth: 8,
     screenKeys: true,
@@ -59,6 +59,9 @@ function initTerm() {
   term.open(document.getElementById(that.div_id))
   const attachAddon = new AttachAddon(that.socket);
   const fitAddon = new FitAddon();
+  if (!that.project.writeable) {
+    AttachAddonTools.setOnlyRead()
+  }
   term.loadAddon(attachAddon);
   term.loadAddon(fitAddon);
   fitAddon.fit();
@@ -266,6 +269,49 @@ function run(submit) {
     default:
       break;
   }
+  setTimeout(function() {
+    AttachAddonTools.openSend()
+  }, 1000)
+  
+}
+
+async function compile_and_run(submit) {
+  submit.type = that.project.imageType
+  let ret = undefined
+  let command = ''
+  that.term.writeln('Compile project begin ...')
+  // ctrlc()
+  switch (submit.type) {
+    case api.CPP:
+      ret = await gen_build(that.project.projectId, that.project.name, submit.sources)
+      // console.log("4")
+      // console.log(ret)
+      // runcommand('sh /build/Compile.sh')
+      // runcommand('cmake CMakeLists.txt')
+      // runcommand('make')
+      command = '/build/' + that.project.name
+      if (submit.args) {
+        for (let i = 0; i < submit.args.length; i += 1) {
+          command += ' ' + args[i]
+        }
+      }
+      runcommand('sh /build/Compile.sh && ' + command)
+      break;
+    case api.PYTHON3:
+      command = 'python3 ' + submit.exec
+      if (submit.args) {
+        for (let i = 0; i < submit.args.length; i += 1) {
+          command += ' ' + args[i]
+        }
+      }
+      runcommand(command)
+      break;
+    default:
+      break;
+  }
+  setTimeout(function() {
+    AttachAddonTools.openSend()
+  }, 1000)
 }
 
 function ctrlc() {
@@ -276,6 +322,7 @@ function ctrlc() {
 const setShowable = AttachAddonTools.setShowable
 const setMatch = AttachAddonTools.setMatch
 const disposeMatch = AttachAddonTools.disposeMatch
+const openSend = AttachAddonTools.openSend
 
 export default {
   mounted,
@@ -288,5 +335,7 @@ export default {
   ctrlc,
   setShowable,
   setMatch,
-  disposeMatch
+  disposeMatch,
+  compile_and_run,
+  openSend
 }

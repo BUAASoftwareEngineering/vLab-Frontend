@@ -21,20 +21,33 @@
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+            :key="isWriteable"
+            :disabled="!isWriteable"
           >上传文件到根目录...</Button>
         </Upload>
       </Col>
     </Row>
     <br />
-    <Row type="flex" justify="center" align="middle">
+    <Row type="flex" justify="center" align="middle" v-if="isWriteable">
       <Col :span="24" style="text-align:center">
         <uploader @file-success="handleFolder" duplicate="true" ref="uploadFolder">
           <uploader-drop>
-            <uploader-btn :directory="true">
+            <uploader-btn :directory="true" >
               上传文件夹到根目录...
             </uploader-btn>
           </uploader-drop>
         </uploader>
+      </Col>
+    </Row>
+    <Row type="flex" justify="center" align="middle" v-if="!isWriteable">
+      <Col :span="24" style="text-align:center">
+        <Upload :before-upload="handleFiles" action="http" multiple ref="uploadFiles">
+          <Button
+            type="primary"
+            style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+            :disabled="true"
+          >上传文件夹到根目录...</Button>
+        </Upload>
       </Col>
     </Row>
     <br />
@@ -44,6 +57,8 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="gitUrlModal = true"
+          :key="isWriteable"
+          :disabled="isWriteable == true ? false : true"
         >从GitHub导入到Notebook...</Button>
       </Col>
       <Modal v-model="gitUrlModal" title="请输入git仓库的url">
@@ -105,10 +120,20 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
+  },
+  mounted() {
+      this.isWriteable = this.isWriteable
+      
+      // this.isWriteable = !this.isWriteable
   },
   methods: {
     download() {
+      
       api.file_download(this.projectid);
     },
     modal1_ok(){
