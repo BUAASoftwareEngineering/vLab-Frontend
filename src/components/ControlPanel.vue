@@ -30,7 +30,7 @@
       collapsed-width="0"
       width="250"
     >
-      <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
+      <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname" :isWriteable="isWriteable"></MyTree>
     </Sider>
     <Sider
       :style="{height: '94vh', overflow: 'auto'}"
@@ -44,6 +44,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MySetting>
     </Sider>
     <Sider
@@ -58,6 +59,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyDebugger>
     </Sider>
     <Sider
@@ -72,6 +74,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyCloudUpload>
     </Sider>
     <Sider
@@ -86,6 +89,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyCloudDownload>
     </Sider>
     <Sider
@@ -100,6 +104,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyPreference>
     </Sider>
     <Sider
@@ -114,6 +119,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyNotebook>
     </Sider>
     <Layout :style="{height: '94vh', overflow: 'hidden'}">
@@ -181,6 +187,10 @@ export default {
     },
     projectname: {
       type: String,
+      required: true
+    },
+    isWriteable: {
+      type: Boolean,
       required: true
     }
   },
@@ -392,6 +402,7 @@ export default {
     }
   },
   mounted() {
+    // console.log(this.isWriteable)
     bridge.$on("changeTree", val => {
       this.treemark = false;
       this.uploadmark = true;

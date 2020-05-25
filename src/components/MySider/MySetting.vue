@@ -101,6 +101,10 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -202,9 +206,27 @@ export default {
         this.$Message.error("python类工程下请直接选择一个python类型文件运行");
         this.openSetting();
       } else {
-        let ret = await this.compile();
-        if (ret != false) {
-          this.run();
+        let ret = "compile";
+        if (this.pythonMark) {
+          this.$Message.error("python类工程下请直接选择一个python类型文件运行");
+          this.openSetting();
+        } else {
+          let temp = {};
+          temp.sources = [];
+          for (var key in this.Show) {
+            if (this.Show[key] == true) {
+              temp.sources.push("/code/" + key);
+            }
+          }
+          if (temp.sources.length == 0) {
+            this.$Message.error(
+              "请在侧边栏的构建选项中选择至少一个cpp类型文件及相关依赖文件"
+            );
+            this.openSetting();
+            return false;
+          } else {
+            terminal.compile_and_run(temp);
+          }
         }
       }
     },
@@ -295,6 +317,9 @@ export default {
           this.openSetting();
         }
       }
+      setTimeout(function() {
+        terminal.openSend()
+      }, 1000)
     }
   },
   mounted() {

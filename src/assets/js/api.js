@@ -15,6 +15,9 @@ function get_request(url, callback) {
     http.open("GET", url, true)
     http.send()
     http.onreadystatechange = function(data) {
+        if ((http == null) || (http == undefined)) {
+            return
+        }
         if (http.readyState == 4 && http.status == 200) {
             if (url.split('?')[0] == server + '/file/download') {
                 // console.log(new Buffer(data.currentTarget.response))
@@ -41,6 +44,9 @@ function get_request(url, callback) {
                     // console.log(new Buffer(obj.data.content))
                     obj.data.content = new TextDecoder('utf-8').decode(new Buffer(obj.data.content))
                 }
+                setTimeout(function() {
+                    http = null
+                }, 500)
                 callback(obj)
             }
         } else if (http.readyState == 4) {
@@ -52,12 +58,12 @@ function get_request(url, callback) {
                 message: "Http request fail!",
                 data: {}
             }
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         }
         // console.log(obj)
-        setTimeout(function() {
-            http = null
-        }, 500)
     }
 }
 
@@ -69,6 +75,9 @@ function post_request(url, data, callback) {
     //http.setRequestHeader("Cookie","type=lpx")
     http.send(data)
     http.onreadystatechange = function(data) {
+        if ((http == null) || (http == undefined)) {
+            return
+        }
         if (http.readyState == 4 && http.status == 200) {
             // console.log('post success')
             var obj = {}
@@ -89,6 +98,9 @@ function post_request(url, data, callback) {
                 obj.data = {}
             }
             // console.log(document.cookie)
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         } else if (http.readyState == 4) {
             // console.log('post fail')
@@ -99,12 +111,12 @@ function post_request(url, data, callback) {
                 message: "Http request fail!",
                 data: {}
             }
+            setTimeout(function() {
+                http = null
+            }, 500)
             callback(obj)
         }
         // console.log(obj)
-        setTimeout(function() {
-            http = null
-        }, 500)
     }
 }
 
@@ -118,6 +130,14 @@ function user_login(user_name, password, callback) {
 function user_logout(callback) {
     var url = server + '/user/logout'
     var data = ''
+    post_request(url, data, callback)
+}
+
+function user_reset(email, captcha, password, callback) {
+    var url = server + '/user/reset'
+    var data =  'email=' + encodeURIComponent(email) + 
+                '&captcha=' + encodeURIComponent(captcha) + 
+                '&password=' + encodeURIComponent(password)
     post_request(url, data, callback)
 }
 
@@ -321,19 +341,23 @@ function util_send_captcha(email, callback) {
 function share_info(callback) {
     var url = server + '/share/info'
     var data = ''
-    post_request(url, data, callback)
+    get_request(url, callback)
 }
 
 function share_invite(project_id, user_name, writeable, callback) {
     var url = server + '/share/invite'
     var data =  'project_id=' + encodeURIComponent(project_id) +
                 '&user_name=' + encodeURIComponent(user_name) +
-                '&writeable' + encodeURIComponent(writeable)
-    post_request(url, data, callback)
+                '&writeable=' + encodeURIComponent(writeable)
+    let mycallback = function(obj) {
+        obj.username = user_name
+        callback(obj)
+    }
+    post_request(url, data, mycallback)
 }
 
 function share_accept(project_id, callback) {
-    var url = server + '/share/accpet'
+    var url = server + '/share/accept'
     var data = 'project_id=' + encodeURIComponent(project_id)
     post_request(url, data, callback)
 }
@@ -351,6 +375,7 @@ export default {
     user_register,
     user_info_update,
     user_info,
+    user_reset,
     project_info,
     project_info_update,
     project_new,
