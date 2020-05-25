@@ -1652,13 +1652,13 @@ export default {
   border-radius: 0px;
   color: #ececec;
   width: 100%;
-  font-family: Consolas;
+  font-family: "Lucida Console", Consolas, monospace, sans-serif;
 }
 .lightTree >>> .ivu-tree-title {
   border-radius: 0px;
   color: #4b4b4d;
   width: 100%;
-  font-family: Consolas;
+  font-family: "Lucida Console", Consolas, monospace, sans-serif;
 }
 .lightTree >>> .ivu-tree-title:hover {
   background: #d0ecf380;

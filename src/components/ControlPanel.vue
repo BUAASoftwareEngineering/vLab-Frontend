@@ -556,7 +556,7 @@ export default {
 
 .lightcontrol >>> .ivu-tabs-bar {
     background-color: #f0f0f0;
-    font-family: Consolas;
+    font-family: "Lucida Console", Consolas, monospace, sans-serif;
 }
 
 .lightcontrol >>> .ivu-layout {
@@ -637,7 +637,7 @@ export default {
 .darkcontrol >>> .ivu-tabs-bar {
     background-color: #404040;
     border-bottom:#222222;
-    font-family: Consolas;
+    font-family: "Lucida Console", Consolas, monospace, sans-serif;
 }
 
 .darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab {

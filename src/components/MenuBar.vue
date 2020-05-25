@@ -107,7 +107,7 @@
           active-name="1"
           style="height:100%;line-height:45px;padding: 0px;"
         >
-          <MenuItem name="10" style="pointer-events:none;font-family: Consolas;">
+          <MenuItem name="10" style="pointer-events:none;font-family: 'Lucida Console', Consolas, monospace, sans-serif;">
             <Icon type="ios-cloudy" />
             {{ this.projectname }}
           </MenuItem>
@@ -643,6 +643,6 @@ export default {
   .ivu-menu-item {
   background: #4b4b4d;
   color: #f3f3f3;
-  font-family: Consolas;
+  font-family: "Lucida Console", Consolas, monospace, sans-serif;
 }
 </style>
