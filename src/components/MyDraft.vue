@@ -3,8 +3,8 @@
   <div id="back">
   <div id="mydraft" ref="mydraft" class="MyDraft">
     <Layout style="height:100%">
-      <Sider style="background:#66ccff;" width="75px">
-      </Sider> 
+      <Sider style="background:#66ccff;" width="75">
+      </Sider>
       <Layout style="height:100%;background:#000000;width:600px">
       </Layout>
       <Layout style="height:100%;background:#ffffff;">
