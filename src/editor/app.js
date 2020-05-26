@@ -4,7 +4,8 @@ import * as appearance from './Appearances.js';
 import * as File from './File';
 import { removeUnnecessaryMenu } from './Appearances';
 import bridge from '../components/bridge';
-import { removeBreakpoint } from './Editor';
+import { removeBreakpoint, getCode, getCodeLength, addNewScratchEditor } from './Editor';
+import { defaultCode_language } from './DefaultCodes.js';
 
 import { StandaloneCodeEditorServiceImpl } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeServiceImpl.js';
 
@@ -55,6 +56,32 @@ export class MonacoApp {
 		removeBreakpoint(editor);
 		this.model2editor.delete(editor.getModel());
 		editor.getModel().dispose();
+	}
+}
+
+export class MonacoAppScratch {
+	constructor(language = "python", defaultCode = true, author = undefined) {
+		if (defaultCode == true) {
+			this.editor = addNewScratchEditor(defaultCode_language(language, author), language);
+		} else {
+			this.editor = addNewScratchEditor("", language);
+		}
+		appearance.setTheme('xcode-default');
+		removeUnnecessaryMenu();
+		removeUnnecessaryMenu();
+		removeUnnecessaryMenu();
+	}
+
+	getEditorInstance() {
+		return this.editor;
+	}
+
+	getCode() {
+		return getCode(this.editor);
+	}
+
+	getCodeLength() {
+		return getCodeLength(this.editor);
 	}
 }
 
