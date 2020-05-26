@@ -86,7 +86,18 @@ a {
               <Icon ref="message" size="20" type="ios-chatboxes" color="message_color" />
             </a>
           </Tooltip>
-          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;欢迎&ensp; {{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          &emsp;&emsp;&emsp;&emsp;    
+          <Dropdown>
+            <a href="javascript:void(0)" style="color: #f3f3f3;">
+              新草稿
+              <Icon type="arrow-down-b"></Icon>
+            </a>
+            <Dropdown-menu slot="list">
+              <Dropdown-item @click.native="newDraft('cpp')">cpp草稿</Dropdown-item>
+              <Dropdown-item @click.native="newDraft('python')">python草稿</Dropdown-item>
+            </Dropdown-menu>
+          </Dropdown>
+          &emsp;&emsp;&emsp;欢迎&ensp; {{username}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
           <a @click="quit">注销</a>
         </div>
       </Header>
@@ -298,6 +309,15 @@ export default {
         if (response.code == 0) {
           _this.$Message.success("注销成功");
           _this.$router.push("/");
+        }
+      });
+    },
+    newDraft(draftLanguage) {
+      var _this = this;
+      _this.$router.push({
+        name: "Draft",
+        query: {
+          language: draftLanguage,
         }
       });
     }

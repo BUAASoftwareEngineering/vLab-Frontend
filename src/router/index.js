@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Login from '@/components/Login/login.vue'
 import Home from '@/components/Home/home.vue'
 import Ide from '@/components/MyLayout.vue'
+import Draft from '@/components/MyDraft.vue'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
       path: '/ide',
       name: 'Ide',
       component: Ide
+    },
+    {
+      path: '/draft',
+      name: 'Draft',
+      component: Draft
     }
   ]
 })
