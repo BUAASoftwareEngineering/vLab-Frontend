@@ -13,9 +13,10 @@
           ><Icon type="android-exit"></Icon>quit</Button>
         </Sider>
         <!--编辑器-->
-        <Layout style="height:100%;background:#000000;width:600px"></Layout>
+        <Layout style="height:100%;border-right:2px inset #ababab;width:600px"></Layout>
         <!--输入输出框-->
-        <Layout style="height:100%;background:#ffffff;"></Layout>
+        
+        <Layout style="height:100%;"></Layout>
       </Layout>
     </div>
   </div>
