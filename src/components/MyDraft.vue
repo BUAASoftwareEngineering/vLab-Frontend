@@ -48,26 +48,34 @@
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
             <Row type="flex" justify="center" align="middle">
               <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="运行">运行</Button>
+                <Button  style="margin-top:5px;" title="运行">运行</Button>
               </Col>
               <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="保存到项目">保存到项目</Button>
+                <Button style="margin-top:5px;"  title="保存到项目">保存到项目</Button>
               </Col>
             </Row>
           </Layout>
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
-            <Layout style="height:80%;"></Layout>
+            <Layout style="height:80%;">
+              <p>Input</p>
+              <Divider style="margin:0"/>
+              <Input v-model="input" type="textarea" />
+            </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;" @click title="提交输入">提交输入</Button>
+                  <Button  style="margin-top:5px;"  title="提交输入">提交输入</Button>
                 </Col>
               </Row>
             </Layout>
           </Layout>
           <!--输入框-->
-          <Layout style="height:45%;width:100%"></Layout>
+          <Layout style="height:45%;width:100%">
+            <p>Output</p>
+            <Divider style="margin:0"/>
+            <Input v-model="output" readonly type="textarea"></Input>
+          </Layout>
         </Layout>
       </Layout>
     </div>
@@ -82,7 +90,9 @@ export default {
       username: "",
       notLogin: false,
       loginUsername: "",
-      loginPassword: ""
+      loginPassword: "",
+      output:"",
+      input:""
     };
   },
   beforeCreate: function() {
@@ -172,5 +182,15 @@ span:hover {
   background-color: #515a6eec;
   border-color: #515a6e;
   border: 0px solid transparent;
+}
+textarea.ivu-input{
+    border-radius:0;
+    min-height:100%
+}
+.ivu-input-wrapper{
+  height: 100%;
+}
+textarea{
+  resize: none;
 }
 </style>
