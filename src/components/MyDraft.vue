@@ -7,16 +7,41 @@
         <Sider width="75">
           <Button
             type="primary"
-            style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;float:bottom;height:10vh;"
+            style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;float:bottom;height:2vh;"
             @click="toHomePage"
-            title = "退回主页"
-          ><Icon type="android-exit"></Icon>quit</Button>
+            title="退回主页"
+          >
+            <Icon type="android-exit"></Icon>quit
+          </Button>
         </Sider>
         <!--编辑器-->
         <Layout style="height:100%;border-right:2px inset #ababab;width:600px"></Layout>
-        <!--输入输出框-->
-        
-        <Layout style="height:100%;"></Layout>
+
+        <Layout style="height:100%;">
+          <Layout style="border-bottom:2px inset #ababab;width:100%;">
+            <Row type="flex" justify="center" align="middle">
+              <Col :span="12" style="text-align:center">
+                <Button type="primary" style="margin-top:5px;" @click title="运行">运行</Button>
+              </Col>
+              <Col :span="12" style="text-align:center">
+                <Button type="primary" style="margin-top:5px;" @click title="保存到项目">保存到项目</Button>
+              </Col>
+            </Row>
+          </Layout>
+          <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
+            <!--输入框-->
+            <Layout style="height:80%;"></Layout>
+            <Layout>
+              <Row type="flex" justify="center" align="middle">
+                <Col :span="24" style="text-align:center;">
+                  <Button type="primary" style="margin-top:5px;" @click title="提交输入">提交输入</Button>
+                </Col>
+              </Row>
+            </Layout>
+          </Layout>
+          <!--输入框-->
+          <Layout style="height:45%;width:100%"></Layout>
+        </Layout>
       </Layout>
     </div>
   </div>
@@ -31,7 +56,7 @@ export default {
     };
   },
   beforeCreate: function() {
-    document.getElementsByTagName("body")[0].className = "MyLightDraft";
+    document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
   },
   methods: {
     toHomePage() {
@@ -50,7 +75,7 @@ export default {
     });
   },
   beforeDestroy() {
-    document.body.removeAttribute("class", "MyLightDraft");
+    document.body.removeAttribute("class", "MyLightDraftBody");
   }
 };
 </script>
@@ -75,8 +100,15 @@ export default {
 }
 </style>
 <style>
-.myLightDraft .ivu-select-dropdown {
+.MyLightDraftBody .ivu-select-dropdown {
   overflow: hidden;
   max-height: 1000px;
+}
+.MyLightDraftBody .ivu-btn {
+  border-radius: 3px;
+  color: #f5f7f9;
+  background-color: #515a6eec;
+  border-color: #515a6e;
+  border: 0px solid transparent;
 }
 </style>
