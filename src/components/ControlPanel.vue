@@ -485,13 +485,17 @@ export default {
         }
       }),
       bridge.$on("readyForDebug", filepath => {
-        let breaklines = getBreakpointLines(this.editorMap[filepath]);
-        for (let i = 0; i < breaklines.length; i++) {
+        if (this.editorMap[filepath]) {
+          let breaklines = getBreakpointLines(this.editorMap[filepath]);
+          for (let i = 0; i < breaklines.length; i++) {
           //let command = "b " + filepath + " " + breaklines[i];
-          let command = "b " + breaklines[i];
-          terminal.runcommand(command);
+            let command = "b " + breaklines[i];
+            terminal.runcommand(command);
+          } 
+          terminal.runcommand("okCanDebug");         
+        } else {
+          terminal.runcommand("okCanDebug");
         }
-        terminal.runcommand("okCanDebug");
         if (this.debuggermark == true) {
           this.changeDebugger();
         }
