@@ -5,6 +5,13 @@
       <br />
       <br />
       <br />
+        <Alert v-if="error1" type="error" show-icon >{{error_message1}}</Alert>
+          <Alert v-if="error2" type="error" show-icon >{{error_message2}}</Alert>
+          <Alert v-if="error3" type="error" show-icon >{{error_message3}}</Alert>
+          <Alert v-if="error4" type="error" show-icon >{{error_message4}}</Alert>
+          <Alert v-if="warning" type="warning" show-icon >我们使用vlab_team@yeah.net给您发送邮件，若未收到验证码，可能被您的邮箱视为垃圾邮件</Alert>
+
+      <br>
     </div>
     <div class="login-wrap" v-show="showLogin">
       
@@ -34,13 +41,7 @@
 
     <div class="register-wrap" v-show="showRegister">
       
-          <Alert v-if="error1" type="error" show-icon >{{error_message1}}</Alert>
-          <Alert v-if="error2" type="error" show-icon >{{error_message2}}</Alert>
-          <Alert v-if="error3" type="error" show-icon >{{error_message3}}</Alert>
-          <Alert v-if="error4" type="error" show-icon >{{error_message4}}</Alert>
-          <Alert v-if="warning" type="warning" show-icon >我们使用vlab_team@yeah.net给您发送邮件，若未收到验证码，可能被您的邮箱视为垃圾邮件</Alert>
 
-      <br>
       
       <Input  type="text" placeholder="请输入用户名" v-model="newUsername" style="width: 300px"
       @on-blur="check_username" />
@@ -114,11 +115,11 @@
       <br>
       <br>
       <Input type="text" placeholder="请输入收到的验证码" v-model="captcha" style="width:190px"
-      @on-enter="register"/>
+      @on-enter="reset"/>
       <Button  v-if="butt1" type="info" style="width:110px" ghost @click="send_captcha" >发送验证码</Button>
       <Button  v-if="butt2" type="info" style="width:110px" ghost disabled>{{time_count}}秒后可重发</Button>
       <br><br>      
-      <Button type="primary" v-on:click="" >修改密码</Button>
+      <Button type="primary" v-on:click="reset" >修改密码</Button>
       <br><br>
      <span v-on:click="ToLogin">返回登录</span>
 
@@ -174,17 +175,57 @@ export default {
   },
   methods: {
     ToRegister() {
+      this.email=""
+      this.newPassword1=""
+      this.newPassword2=""
+       this.captcha="",
+      this.time_count=60,
+      this.error1=false
+      this.error2=false
+      this.error3=false
+      this.error4=false
+      this.butt1=true,
+      this.butt2=false,
+      this.warning=false,
+      this.submit=false,
       this.showRegister = true;
       this.showLogin = false;
       this.showPassChange=false;
     },
     ToLogin() {
+            this.email=""
+
+      this.newPassword1=""
+      this.newPassword2=""
+       this.captcha="",
+      this.time_count=60,
+      this.error1=false
+      this.error2=false
+      this.error3=false
+      this.error4=false
+      this.butt1=true,
+      this.butt2=false,
+      this.warning=false,
+      this.submit=false,
       this.showRegister = false;
       this.showLogin = true;
       this.showPassChange=false;
 
     },
     ToPassChange(){
+            this.email=""
+      this.newPassword1=""
+      this.newPassword2=""
+       this.captcha="",
+      this.time_count=60,
+      this.error1=false
+      this.error2=false
+      this.error3=false
+      this.error4=false
+      this.butt1=true,
+      this.butt2=false,
+      this.warning=false,
+      this.submit=false,
       this.showRegister = false;
       this.showLogin = false;
       this.showPassChange=true;
@@ -207,6 +248,69 @@ export default {
           }
         });
       }
+    },
+    reset(){
+        var _this=this
+        if(_this.email==""){
+                  _this.error_message2="邮箱不能为空"
+                  _this.error2=true
+                }else{
+                  var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+                  if(!myreg.test(_this.email)){
+                    _this.error_message2="邮箱格式错误"
+                    _this.error2=true
+                  }else{
+                    _this.$Spin.show()
+                    api.util_check_email(_this.email,function(response){
+                        if(response.code==0){
+                          console.log(response.data)
+                          if(response.data=='true'){
+                            _this.$Spin.hide()
+                            _this.error_message2="邮箱未注册"
+                            _this.error2=true
+                          }else{
+                            _this.error2=false
+                            
+                            if (!PassIsleagal(_this.newPassword1)){
+                              _this.$Spin.hide()
+                              _this.error_message3="密码格式错误，至少6位，只能为字母数字.@#$-"
+                              _this.error3=true
+                            }else{
+                              if(_this.newPassword1!=_this.newPassword2){
+                                _this.$Spin.hide()
+                                  _this.error_message3="两次密码输入不一致"
+                                  _this.error3=true
+                                }else{
+                                  _this.error3=false
+                                  if(_this.captcha==""){
+                                    _this.$Spin.hide()
+                                    _this.error_message4="验证码不能为空"
+                                    _this.error4=true
+                                  }else{
+                                    api.user_reset(_this.email,_this.captcha,_this.newPassword1,
+                                    function(response){
+                                      _this.$Spin.hide()
+                                      if(response.code==0){
+                                        _this.$Message.success('修改密码成功，请重新登录')
+                                        _this.ToLogin()
+                                      }else{
+                                        _this.$Message.error(response.message)
+                                      }
+                                    })
+                                  }
+                                }
+                            }
+
+                          }
+                        }else{
+                          _this.$Spin.hide()
+                          _this.$Message.error('未知错误')
+                        }
+                      })
+                    }
+                  }
+            
+
     },
 
     register() {
@@ -256,8 +360,7 @@ export default {
                                     function(response){
                                       if(response.code==0){
                                         _this.$Message.success(response.message)
-                                        _this.showLogin=true
-                                        _this.showRegister=false
+                                        _this.ToLogin
                                       }else{
                                         _this.$Message.error(response.message)
                                       }
@@ -314,13 +417,24 @@ export default {
           var _this=this
           api.util_check_email(this.email,function(response){
             if(response.code==0){
-              if(response.data=='false'){
-                _this.error_message2="邮箱已被注册"
-                _this.error2=true
+              if(_this.showRegister){
+                if(response.data=='false'){
+                  _this.error_message2="邮箱已被注册"
+                  _this.error2=true
+                }else{
+                  _this.error2=false
+                  _this.butt1=true
+                  _this.butt2=false
+                }
               }else{
-                _this.error2=false
-                _this.butt1=true
-                _this.butt2=false
+                if(response.data=='true'){
+                  _this.error_message2="邮箱未被注册"
+                  _this.error2=true
+                }else{
+                  _this.error2=false
+                  _this.butt1=true
+                  _this.butt2=false
+                }
               }
             }else{
               _this.$Message.error('未知错误')
@@ -364,12 +478,14 @@ export default {
           var _this=this
           api.util_check_email(this.email,function(response){
             if(response.code==0){
-              console.log('check email')
-            console.log(typeof response.data)
-              if(response.data=='false'){
+              
+              if(_this.showRegister&&response.data=='false'){
                 _this.error_message2="邮箱已被注册"
                 _this.error2=true
 
+              }else if(_this.showPassChange&&response.data=='true'){
+                _this.error_message2="邮箱未被注册"
+                _this.error2=true
               }else{
                 if(!_this.submit){
                   _this.submit=!_this.submit
