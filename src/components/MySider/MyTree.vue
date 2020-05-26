@@ -17,7 +17,11 @@
     </Modal>
     <Row type="flex" justify="center" align="middle">
       <Col span="12">
-        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;">文件管理</p>
+        <p style="padding:4px 4px 4px 15px;height:23px;font-size:15px;float:left;">文件管理
+        <Poptip trigger="hover" title="右击项目/文件夹新建文件" content="左击文件开始编辑" transfer>
+            <Icon type="md-help-circle" />
+        </Poptip>
+        </p>
       </Col>
       <Col span="12">
         <Button
@@ -32,63 +36,69 @@
     <Tree :class="treeTheme" :data="data4" :render="renderContent"></Tree>
     <Dropdown transfer ref="contentRootMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pppp" style="min-width: 80px;">
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)" :disabled="!isWriteable">使用默认代码新建</DropdownItem>
+        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
 
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载项目</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2" v-if="isWriteable">
           <uploader-drop>
-            <uploader-btn :directory="true" :single="true">
-              <DropdownItem style="width:120px">上传文件夹</DropdownItem>
+            <uploader-btn :directory="true" :single="true" >
+              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple>
-          <DropdownItem style="width:120px">上传文件</DropdownItem>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2" v-if="isWriteable">
+          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="ppp" style="min-width: 80px;">
-        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件</DropdownItem>
-        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)">新建文件夹</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件</DropdownItem>
+        <DropdownItem @click.native="appendfile(rootData, nodeInfo.nodeKey, nodeInfo, true)" :disabled="!isWriteable">使用默认代码新建</DropdownItem>
+        <DropdownItem @click.native="appendfolder(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">新建文件夹</DropdownItem>
         <Divider style="margin:0" />
 
-        <DropdownItem @click.native="movefolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
-        <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="movefolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">剪切</DropdownItem>
+        <DropdownItem @click.native="copyfolder_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">复制</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
         <Divider style="margin:0" />
-        <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
+        <DropdownItem @click.native="editTree(nodeInfo)" :disabled="!isWriteable">重命名</DropdownItem>
         <!--<DropdownItem @click.native="uploadFiles(rootData, nodeInfo.nodeKey, nodeInfo)">上传文件</DropdownItem>-->
-        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">删除</DropdownItem>
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载文件夹</DropdownItem>
 
-        <uploader :class="treeTheme" @file-success="handleFolder">
+        <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder" v-if="isWriteable">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
-              <DropdownItem style="width:120px">上传文件夹</DropdownItem>
+              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <Upload :before-upload="handleFiles" action="http" multiple>
-          <DropdownItem style="width:120px">上传文件</DropdownItem>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles" v-if="isWriteable">
+          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
+        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFileMenu" style="display: none;" trigger="click">
       <DropdownMenu slot="list" ref="pp" style="min-width: 80px;">
-        <DropdownItem @click.native="movefile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">剪切</DropdownItem>
-        <DropdownItem @click.native="copyfile_choose(rootData, nodeInfo.nodeKey, nodeInfo)">复制</DropdownItem>
-        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)">粘贴</DropdownItem>
+        <DropdownItem @click.native="movefile_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">剪切</DropdownItem>
+        <DropdownItem @click.native="copyfile_choose(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">复制</DropdownItem>
+        <DropdownItem @click.native="paste(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">粘贴</DropdownItem>
         <Divider style="margin:0" />
-        <DropdownItem @click.native="editTree(nodeInfo)">重命名</DropdownItem>
-        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)">删除</DropdownItem>
+        <DropdownItem @click.native="editTree(nodeInfo)" :disabled="!isWriteable">重命名</DropdownItem>
+        <DropdownItem @click.native="remove(rootData, nodeInfo.nodeKey, nodeInfo)" :disabled="!isWriteable">删除</DropdownItem>
         <Divider style="margin:0" />
         <DropdownItem @click.native="download(rootData, nodeInfo.nodeKey, nodeInfo)">下载</DropdownItem>
       </DropdownMenu>
@@ -112,6 +122,10 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
   },
   watch: {
@@ -133,6 +147,7 @@ export default {
       projectId: 0,
       projectName: "",
       treeTheme: "lightTree",
+      tempMap: {},
       data4: [
         {
           title: "",
@@ -207,7 +222,12 @@ export default {
     modal1_ok() {
       this.files_conflict = [];
       this.modal1 = false;
-      window.location.reload();
+      // window.location.reload();
+      this.$refs.treeUploadFiles.clearFiles()
+      this.$refs.treeUploadFiles2.clearFiles()
+      this.$refs.treeUploadFolder.uploader.cancel()
+      this.$refs.treeUploadFolder2.uploader.cancel()
+      bridge.$emit('FleshFilesTree')
     },
     handleFiles(file) {
       var path = this.getPath(
@@ -237,9 +257,15 @@ export default {
               _this.files_number--;
               if (_this.files_number == 0) {
                 _this.$Spin.hide();
+                _this.$refs.treeUploadFiles.clearFiles()
+                _this.$refs.treeUploadFiles2.clearFiles()
+                _this.$refs.treeUploadFolder.uploader.cancel()
+                _this.$refs.treeUploadFolder2.uploader.cancel()
+                console.log('xxx')
+                bridge.$emit('FleshFilesTree')
                 if (_this.files_conflict.length != 0) _this.modal1 = true;
                 else {
-                  window.location.reload();
+                  // window.location.reload();
                 }
               }
               if (response.code == 0) {
@@ -257,9 +283,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("cookie验证失败");
@@ -268,9 +299,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("权限不足");
@@ -279,18 +315,28 @@ export default {
           _this.files_conflict.push(filename);
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
         } else {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("未知错误");
@@ -299,6 +345,7 @@ export default {
       });
     },
     handleFolder(rootFile1, file1, response, chunk) {
+      console.log(this.$refs.treeUploadFolder.uploader)
       var path = this.getPath(
         this.rootData,
         this.nodeInfo.nodeKey,
@@ -329,7 +376,7 @@ export default {
         filecontent = e.target.result;
       };
       var _this = this;
-      console.log(rootFile);
+      //console.log(rootFile);
       api.file_new(_this.projectid, path + rootFile, function(response) {
         if (response.code == 0) {
           api.file_update(
@@ -340,9 +387,16 @@ export default {
               _this.files_number--;
               if (_this.files_number == 0) {
                 _this.$Spin.hide();
+                _this.$refs.treeUploadFiles.clearFiles()
+                _this.$refs.treeUploadFiles2.clearFiles()
+                _this.$refs.treeUploadFolder.uploader.cancel()
+                _this.$refs.treeUploadFolder2.uploader.cancel()
+                console.log('yyyyx')
+                console.log(_this.$refs.treeUploadFolder.uploader)
+                bridge.$emit('FleshFilesTree')
                 if (_this.files_conflict.length != 0) _this.modal1 = true;
                 else {
-                  window.location.reload();
+                  // window.location.reload();
                 }
               }
               if (response.code == 0) {
@@ -360,9 +414,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("cookie验证失败");
@@ -371,9 +430,14 @@ export default {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("权限不足");
@@ -382,18 +446,28 @@ export default {
           _this.files_conflict.push(rootFile);
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
         } else {
           _this.files_number--;
           if (_this.files_number == 0) {
             _this.$Spin.hide();
+            _this.$refs.treeUploadFiles.clearFiles()
+            _this.$refs.treeUploadFiles2.clearFiles()
+            _this.$refs.treeUploadFolder.uploader.cancel()
+            _this.$refs.treeUploadFolder2.uploader.cancel()
+            bridge.$emit('FleshFilesTree')
             if (_this.files_conflict.length != 0) _this.modal1 = true;
             else {
-              window.location.reload();
+              // window.location.reload();
             }
           }
           _this.$Message.error("未知错误");
@@ -401,6 +475,9 @@ export default {
       });
     },
     uploadFiles(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       var path = this.getPath(root, nodekey, data);
       bridge.$emit("uploadFiles", path);
     },
@@ -408,9 +485,9 @@ export default {
     UpdateData(projectid) {
       var _this = this;
       var formerData = _this.deepcopy(_this.rootData);
-      this.$Spin.show();
+      // this.$Spin.show();
       api.file_struct(projectid, "/code/", function(response) {
-        _this.$Spin.hide();
+        // _this.$Spin.hide();
         if (response.code == 0) {
           _this.$set(_this.data4[0], "children", response.data);
 
@@ -530,7 +607,7 @@ export default {
               cursor: "pointer"
             },
             attrs: {
-              draggable: "true"
+              draggable: that.isWriteable ? "true" : "false"
             },
             on: {
               dragstart: () => {
@@ -648,7 +725,7 @@ export default {
               cursor: "pointer"
             },
             attrs: {
-              draggable: "true"
+              draggable: that.isWriteable ? "true" : "false"
             },
             on: {
               dragstart: () => {
@@ -1051,7 +1128,7 @@ export default {
                 for (let i = 0; i < leaves.length; i++) {
                   oldID = originPath + leaves[i];
                   newID = targetPath + copyInfo.title + "/" + leaves;
-                  console.log(oldID + " " + newID);
+                  //console.log(oldID + " " + newID);
                   IDmap[oldID] = [newID, "/code/"];
                 }
                 bridge.$emit("renameFloder", IDmap);
@@ -1104,6 +1181,9 @@ export default {
 
     // Tree结点修改按钮
     editTree(data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       this.inputContent = data.title;
@@ -1148,6 +1228,9 @@ export default {
 
     // 复制文件夹
     copyfolder_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1156,6 +1239,9 @@ export default {
 
     // 剪切文件夹
     movefolder_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1164,6 +1250,9 @@ export default {
 
     // 复制文件
     copyfile_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1172,6 +1261,9 @@ export default {
 
     // 剪切文件
     movefile_choose(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       this.copyInfo = data;
@@ -1181,6 +1273,9 @@ export default {
     // 粘贴文件，用一个变量区别当前行为是剪切还是复制
     // 复制到同一目录下
     paste(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       event.stopPropagation();
       this.hiddenRightMenu();
       if (this.copyInfo != []) {
@@ -1209,7 +1304,10 @@ export default {
     },
 
     // 添加文件按钮
-    appendfile(root, nodekey, data) {
+    appendfile(root, nodekey, data, usetemp = false) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       var path = this.getPath(root, nodekey, data);
@@ -1225,6 +1323,9 @@ export default {
           children.push({
             title: "新建文件"
           });
+          if (usetemp) {
+            _this.tempMap[path + "新建文件"] = true;
+          }
           _this.$set(data, "children", children);
           _this.$set(data, "expand", true);
           _this.editTree(children[children.length - 1]);
@@ -1243,6 +1344,9 @@ export default {
 
     // 添加文件夹按钮
     appendfolder(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       var path = this.getPath(root, nodekey, data);
@@ -1285,6 +1389,9 @@ export default {
 
     // 删除按钮
     remove(root, nodekey, data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
 
@@ -1394,6 +1501,10 @@ export default {
                     newID =
                       "/code/" + path + _this.inputContent + "/" + leaves[i];
                     IDmap[oldID] = [newID, "/code/" + path];
+                    if (_this.tempMap[oldID]) {
+                      _this.tempMap[newID] = _this.tempMap[oldID];
+                      _this.tempMap[oldID] = _false;
+                    }
                   }
                   // console.log(this.getLeafPath(root, nodekey));
                   bridge.$emit("renameFloder", IDmap);
@@ -1430,7 +1541,11 @@ export default {
                   var IDmap = {};
                   IDmap[oldID] = [newID, _this.inputContent, "/code/" + path];
                   bridge.$emit("renameFile", IDmap);
-
+                  if (_this.tempMap[oldID]) {
+                    _this.tempMap[newID] = _this.tempMap[oldID];
+                    _this.tempMap[oldID] = false;
+                  }
+                
                   data.title = _this.inputContent;
                   _this.$Message.info("修改成功");
                   _this.setStates(data);
@@ -1488,7 +1603,9 @@ export default {
       this.nodeInfo = data;
       if (data.children == undefined) {
         var path = this.getPath(root, nodekey, data);
-        bridge.$emit("add", [path + data.title, data.title, path]);
+        //console.log("tzjhahah");
+        //console.log(this.tempMap[path + data.title]);
+        bridge.$emit("add", [path + data.title, data.title, path, this.tempMap[path + data.title]]);
       } else {
         this.$set(data, "expand", !data.expand);
       }
@@ -1498,7 +1615,7 @@ export default {
     var _this = this;
 
     bridge.$on("newRootFile", val => {
-      _this.appendfile(_this.rootData, 0, _this.data4[0]);
+      _this.appendfile(_this.rootData, 0, _this.data4[0], val);
     });
 
     bridge.$on("newRootFolder", val => {
@@ -1632,13 +1749,13 @@ export default {
   border-radius: 0px;
   color: #ececec;
   width: 100%;
-  font-family: Consolas;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
 .lightTree >>> .ivu-tree-title {
   border-radius: 0px;
   color: #4b4b4d;
   width: 100%;
-  font-family: Consolas;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
 .lightTree >>> .ivu-tree-title:hover {
   background: #d0ecf380;

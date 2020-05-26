@@ -46,6 +46,10 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
   }
 };

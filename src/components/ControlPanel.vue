@@ -20,7 +20,6 @@
         <MenuItem name="3-1" @click.native="changeUpload">
           <Icon type="ios-cloud" />
         </MenuItem>
-       
       </Menu>
     </Sider>
 
@@ -31,7 +30,7 @@
       collapsed-width="0"
       width="250"
     >
-      <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname"></MyTree>
+      <MyTree class="mytree" :username="username" :projectid="projectid" :projectname="projectname" :isWriteable="isWriteable"></MyTree>
     </Sider>
     <Sider
       :style="{height: '94vh', overflow: 'auto'}"
@@ -45,6 +44,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MySetting>
     </Sider>
     <Sider
@@ -59,6 +59,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyDebugger>
     </Sider>
     <Sider
@@ -73,6 +74,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyCloudUpload>
     </Sider>
     <Sider
@@ -87,6 +89,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyCloudDownload>
     </Sider>
     <Sider
@@ -101,6 +104,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyPreference>
     </Sider>
     <Sider
@@ -115,6 +119,7 @@
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></MyNotebook>
     </Sider>
     <Layout :style="{height: '94vh', overflow: 'hidden'}">
@@ -133,8 +138,12 @@
             </template>
           </Tabs>
         </div>
-        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow:hidden;" >
-          <FootTerminal :class="myFootTheme" :projectid="projectid" style="width:100%;height:100%;overflow: 'auto';"></FootTerminal>
+        <div slot="bottom" class="demo-split-pane" style="width:100%;height:100%;overflow:hidden;">
+          <FootTerminal
+            :class="myFootTheme"
+            :projectid="projectid"
+            style="width:100%;height:100%;overflow: 'auto';"
+          ></FootTerminal>
         </div>
       </Split>
     </Layout>
@@ -150,7 +159,7 @@ import MyPreference from "./MySider/MyPreference";
 import MyNotebook from "./MySider/MyNotebook";
 import MyDebugger from "./MySider/MyDebugger";
 import * as editor from "../editor/app";
-import { setTheme } from "../editor/Appearances"
+import { setTheme } from "../editor/Appearances";
 import bridge from "./bridge";
 import api from "../assets/js/api.js";
 import { getBreakpointLines } from "../editor/Editor.js";
@@ -179,6 +188,10 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -202,14 +215,14 @@ export default {
       menuTheme: "light",
       myFootTheme: "lightFoot",
       controlTheme: "lightcontrol",
-      mySiderActive: "1-1",
+      mySiderActive: "1-1"
     };
   },
   methods: {
     fit() {
       terminal.fit();
     },
-    handleTabsAdd(id, label, BASE_DIR, overwrite = false) {
+    handleTabsAdd(id, label, BASE_DIR, overwrite = false, tempUse = false) {
       this.tabs.push(id);
       this.tabsMap[id] = label;
       // console.log(this.tabs);
@@ -218,7 +231,6 @@ export default {
         new_tabPane.id = this.getIDEId(id);
         new_tabPane.style.height = "100%";
         new_tabPane.style.width = "100%";
-        // console.log(id);
         document.getElementById(id).appendChild(new_tabPane);
         var _this = this;
         this.$Spin.show();
@@ -236,11 +248,23 @@ export default {
             }
             if (_this.firstInto) {
               _this.firstInto = false;
-              _this.myEditor = editor.createMonacoApp(project_now, "/code/", _this.menuTheme);
+              console.log("username:");
+              console.log(_this.username);
+              console.log("projectId:");
+              console.log(_this.projectid);
+              console.log("projectname:");
+              console.log(_this.projectname);
+              _this.myEditor = editor.createMonacoApp(
+                project_now,
+                "/code/",
+                _this.menuTheme,
+                _this.username
+              );
             }
+            //console.log(tempUse);
             var tempEditor = await _this.myEditor.addEditor(
               id,
-              false,
+              tempUse,
               new_tabPane.id
             );
 
@@ -302,7 +326,7 @@ export default {
       return "editor_" + Index;
     },
     changeTree: function() {
-      this.mySiderActive="1-1";
+      this.mySiderActive = "1-1";
       this.treemark = !this.treemark;
       this.uploadmark = true;
       this.downloadmark = true;
@@ -315,7 +339,7 @@ export default {
       if (this.settingmark) {
         bridge.$emit("AllFile");
       }
-      this.mySiderActive="2-1";
+      this.mySiderActive = "2-1";
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = true;
@@ -325,7 +349,7 @@ export default {
       this.notebookmark = true;
     },
     changeUpload: function() {
-      this.mySiderActive="3-1";
+      this.mySiderActive = "3-1";
       this.treemark = true;
       this.uploadmark = !this.uploadmark;
       this.downloadmark = true;
@@ -335,7 +359,7 @@ export default {
       this.notebookmark = true;
     },
     changeDownload: function() {
-      this.mySiderActive="4-1";
+      this.mySiderActive = "4-1";
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = !this.downloadmark;
@@ -345,7 +369,7 @@ export default {
       this.notebookmark = true;
     },
     changeDebugger: function() {
-      this.mySiderActive="5-1";
+      this.mySiderActive = "5-1";
       this.treemark = true;
       this.uploadmark = true;
       this.downloadmark = true;
@@ -378,9 +402,10 @@ export default {
     }
   },
   mounted() {
+    // console.log(this.isWriteable)
     bridge.$on("changeTree", val => {
       this.treemark = false;
-       this.uploadmark = true;
+      this.uploadmark = true;
       this.downloadmark = true;
       this.settingmark = true;
       this.preferencemark = true;
@@ -388,7 +413,13 @@ export default {
     }),
       bridge.$on("add", path_label => {
         if (!this.tabsMap.hasOwnProperty(path_label[0])) {
-          this.handleTabsAdd(path_label[0], path_label[1], path_label[2]);
+          this.handleTabsAdd(
+            path_label[0],
+            path_label[1],
+            path_label[2],
+            false,
+            path_label[3]
+          );
         }
         this.currentTab = path_label[0];
       }),
@@ -447,25 +478,28 @@ export default {
           setTheme("xcode-default");
         } else {
           this.menuTheme = "dark";
-          this.controlTheme = "darkcontrol"
+          this.controlTheme = "darkcontrol";
           this.myFootTheme = "darkFoot";
           terminal.settheme("dark");
           setTheme("tomorrow-night");
         }
       }),
       bridge.$on("readyForDebug", filepath => {
-        let breaklines = getBreakpointLines(this.editorMap[filepath]);
-        for (let i = 0; i < breaklines.length; i++) {
+        if (this.editorMap[filepath]) {
+          let breaklines = getBreakpointLines(this.editorMap[filepath]);
+          for (let i = 0; i < breaklines.length; i++) {
           //let command = "b " + filepath + " " + breaklines[i];
-          let command = "b " + breaklines[i];
-          terminal.runcommand(command);
+            let command = "b " + breaklines[i];
+            terminal.runcommand(command);
+          } 
+          terminal.runcommand("okCanDebug");         
+        } else {
+          terminal.runcommand("okCanDebug");
         }
-        terminal.runcommand("okCanDebug");
         if (this.debuggermark == true) {
           this.changeDebugger();
         }
-      });      
-
+      });
   },
   //TODO
   watch: {
@@ -512,16 +546,16 @@ export default {
   margin: -3px;
 }
 
-.lightcontrol >>> .uploader-drop{
+.lightcontrol >>> .uploader-drop {
   width: 200px;
   height: 33px;
-  background-color:#dfdfdf;
-  border:#4b4b4d;
+  background-color: #dfdfdf;
+  border: #4b4b4d;
   padding: 0;
-  margin-left:25px;
-  border-radius:2px;
+  margin-left: 25px;
+  border-radius: 2px;
 }
-.lightcontrol >>> .uploader-btn{
+.lightcontrol >>> .uploader-btn {
   border-radius: 0px;
   background-color: #dfdfdf;
   border-color: #bbbbbb;
@@ -530,11 +564,10 @@ export default {
   width: 200px;
   height: 33px;
   margin: 0px;
-  color:#4b4b4d;
+  color: #4b4b4d;
   text-align: center;
-  
 }
-.lightcontrol >>> .uploader-btn:hover{
+.lightcontrol >>> .uploader-btn:hover {
   background-color: #cccccc;
 }
 .lightcontrol >>> .ivu-tabs-content {
@@ -542,22 +575,19 @@ export default {
 }
 
 .lightcontrol >>> .ivu-layout-sider {
-    background-color: #f5f5f5;
-    color: #4b4b4d;
-    overflow-x: hidden;
+  background-color: #f5f5f5;
+  color: #4b4b4d;
+  overflow-x: hidden;
 }
 
 .lightcontrol >>> .ivu-tabs-bar {
-    background-color: #f0f0f0;
-    font-family: Consolas;
+  background-color: #f0f0f0;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
 
 .lightcontrol >>> .ivu-layout {
-   background-color: #eeeeee;
+  background-color: #eeeeee;
 }
-
-
-
 
 .darkcontrol >>> .ivu-btn {
   border-radius: 0px;
@@ -586,37 +616,33 @@ export default {
   color: #eeeeee7a;
 }
 
-
-.darkcontrol >>> .uploader-drop{
+.darkcontrol >>> .uploader-drop {
   width: 200px;
   height: 33px;
-  background-color:#464e57;
-  border:#464e57;
+  background-color: #464e57;
+  border: #464e57;
   padding: 0;
-  margin-left:25px;
-  border-radius:0px;
-
+  margin-left: 25px;
+  border-radius: 0px;
 }
-.darkcontrol >>> .uploader-btn{
+.darkcontrol >>> .uploader-btn {
   border-radius: 0px;
   border: 0px solid transparent;
   padding: 6px 16px 6px;
   width: 200px;
   height: 33px;
   margin: 0px;
-  color:#f5f7f9;
+  color: #f5f7f9;
   text-align: center;
-  
 }
-.darkcontrol >>> .uploader-btn:hover{
-  background-color:dimgrey
+.darkcontrol >>> .uploader-btn:hover {
+  background-color: dimgrey;
 }
-
 
 .darkcontrol >>> .ivu-layout-sider {
-    background-color: #333333;
-    color: #ececec;
-    overflow-x: hidden;
+  background-color: #333333;
+  color: #ececec;
+  overflow-x: hidden;
 }
 
 .darkcontrol >>> .ivu-divider {
@@ -628,47 +654,47 @@ export default {
 }
 
 .darkcontrol >>> .ivu-tabs-bar {
-    background-color: #404040;
-    border-bottom:#222222;
-    font-family: Consolas;
+  background-color: #404040;
+  border-bottom: #222222;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
 
-.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab {
-    background-color: #505050;
-    color: #ececec;
-    border: 1px solid #303030;
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {
+  background-color: #505050;
+  color: #ececec;
+  border: 1px solid #303030;
 }
-.darkcontrol >>> .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active {
-    background-color: #222222;
-    color: #ffffff;
+.darkcontrol >>> .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active {
+  background-color: #222222;
+  color: #ffffff;
 }
 .darkcontrol >>> .ivu-tabs-nav-container:focus .ivu-tabs-tab-focused {
-   border-color: #6d6d6d!important;
+  border-color: #6d6d6d !important;
 }
 .darkcontrol >>> .ivu-layout {
-   background: #333333;
-   color: #ffffff;
+  background: #333333;
+  color: #ffffff;
 }
 
 .darkcontrol >>> .demo-split-pane >>> .ivu-layout {
-   background: #ffffff;
+  background: #ffffff;
 }
 
 .darkcontrol >>> .ivu-split-trigger-horizontal {
-   background: #444444;
-   height: 7px;
+  background: #444444;
+  height: 7px;
 }
 .darkcontrol >>> .ivu-split-trigger {
-   border : 1px solid #777777;
+  border: 1px solid #777777;
 }
 .darkcontrol >>> .ivu-split-trigger-bar {
-   background: #ffffff;
+  background: #ffffff;
 }
 .lightcontrol >>> .ivu-split-trigger {
-   border : 1px solid #c0c0c0;
+  border: 1px solid #c0c0c0;
 }
 .lightcontrol >>> .ivu-split-trigger-bar {
-   background: #4b4b4d;
+  background: #4b4b4d;
 }
 
 .lightFoot >>> #myFoot {
@@ -678,7 +704,6 @@ export default {
 .darkFoot >>> #myFoot {
   background: #000000;
 }
-
 
 .layout-header-bar {
   background: #fff;
@@ -746,5 +771,4 @@ export default {
   display: inline;
   line-height: 5px;
 }
-
 </style> 

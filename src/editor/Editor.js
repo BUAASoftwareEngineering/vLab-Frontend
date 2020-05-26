@@ -10,7 +10,7 @@ import * as webapi from '../assets/js/api';
 import { filePath2lang } from './File';
 
 
-export function newEditor(container_id, code, language, filePath, fileDir, wsUrlBase) {
+export function newEditor(container_id, code, language, filePath, fileDir, wsUrlBase, readOnly) {
 	let uri = monaco.Uri.parse("file://" + filePath);
 	var model = monaco.editor.getModel(uri);
 	if (!model)
@@ -22,7 +22,8 @@ export function newEditor(container_id, code, language, filePath, fileDir, wsUrl
 		glyphMargin: true,
 		lightbulb: {
 			enabled: true
-		}
+		},
+		readOnly: readOnly
 	}, {
 		textModelService: {
 			createModelReference: function (uri) {
@@ -94,14 +95,14 @@ export function newEditor(container_id, code, language, filePath, fileDir, wsUrl
 	return editor;
 }
 
-export function addNewEditor(code, language, filePath, fileDir, wsUrlBase, elementId) {
+export function addNewEditor(code, language, filePath, fileDir, wsUrlBase, elementId, readOnly) {
 	let new_container = document.createElement("DIV");
 	new_container.id = "container-" + fileCounter.toString(10);
 	new_container.className = "container";
 	new_container.style.height = "100%"
 	new_container.style.width = "100%"
 	document.getElementById(elementId).appendChild(new_container);
-	let editor = newEditor(new_container.id, code, language, filePath, fileDir, wsUrlBase);
+	let editor = newEditor(new_container.id, code, language, filePath, fileDir, wsUrlBase, readOnly);
 	fileCounter += 1;
 	return editor;
 }

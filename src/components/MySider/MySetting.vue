@@ -2,7 +2,14 @@
   <Layout style="background-color: inherit;width:250px;color: inherit;">
     <Row type="flex" justify="center" align="middle">
       <Col span="24">
-        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;">构建设置</p>
+        <p style="padding:4px 4px 4px 15px;width:250px;height:23px;font-size:15px;float:left;">构建设置
+          <Poptip trigger="hover" title="选中单个py文件运行/调试" content="结果在右下方调试控制台中显示" v-if="pythonMark==true" transfer>
+            <Icon type="md-help-circle" />
+          </Poptip>
+          <Poptip trigger="hover" title="选中文件编译/运行/调试" content="结果在右下方调试控制台中显示" v-if="pythonMark==false" transfer>
+            <Icon type="md-help-circle" />
+          </Poptip>
+        </p>
       </Col>
     </Row>
     <Divider style="margin:10px auto" />
@@ -15,9 +22,9 @@
         :value="Show[file]"
         style="margin-left:10%;"
       >
-        <label style="line-height:30px;font-family: Consolas;">{{file.split('/').reverse()[0]}}</label>
+        <label style="line-height:30px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;">{{file.split('/').reverse()[0]}}</label>
 
-        <div style="font-size:12px;font-family: Consolas;" :title="file">{{file | ellipsis}}</div>
+        <div style="font-size:12px;font-family: Consolas, 'Lucida Console', monospace, sans-serif;" :title="file">{{file | ellipsis}}</div>
       </Checkbox>
     </template>
 
@@ -93,6 +100,10 @@ export default {
     },
     projectname: {
       type: String,
+      required: true
+    },
+    isWriteable: {
+      type: Boolean,
       required: true
     }
   },
@@ -195,9 +206,27 @@ export default {
         this.$Message.error("python类工程下请直接选择一个python类型文件运行");
         this.openSetting();
       } else {
-        let ret = await this.compile();
-        if (ret != false) {
-          this.run();
+        let ret = "compile";
+        if (this.pythonMark) {
+          this.$Message.error("python类工程下请直接选择一个python类型文件运行");
+          this.openSetting();
+        } else {
+          let temp = {};
+          temp.sources = [];
+          for (var key in this.Show) {
+            if (this.Show[key] == true) {
+              temp.sources.push("/code/" + key);
+            }
+          }
+          if (temp.sources.length == 0) {
+            this.$Message.error(
+              "请在侧边栏的构建选项中选择至少一个cpp类型文件及相关依赖文件"
+            );
+            this.openSetting();
+            return false;
+          } else {
+            terminal.compile_and_run(temp);
+          }
         }
       }
     },
@@ -220,13 +249,13 @@ export default {
           terminal.runcommand(command);
           //terminal.runcommand("from debugger import showLocalVars");
           //terminal.setShowable(false);
-          console.log("debug beigin");
+          //console.log("debug beigin");
           terminal.setMatch("Running 'cont'", (obj) => {
             terminal.runcommand("cont");
           });
           terminal.setMatch("The program finished and will be restarted", (obj) => {
             terminal.setShowable(false);
-            terminal.runcommand("import types")
+            terminal.runcommand("import types");
             terminal.runcommand("def showLocalVars(__locals_call): __exclude_keys = ['copyright', 'credits', 'False','True', 'None', 'Ellipsis', 'quit'];__exclude_valuetypes = [types.BuiltinFunctionType, types.BuiltinMethodType, types.ModuleType, types.FunctionType];return {k: v for k, v in __locals_call.items() if not (k in __exclude_keys or type(v) in __exclude_valuetypes) and k[:2] != '__'};");
             terminal.runcommand("okForDebug");
             terminal.setMatch("is not", (obj) => {
@@ -235,7 +264,7 @@ export default {
             });
           });
           terminal.setMatch("->", (obj) => {
-            console.log(obj);
+            //console.log(obj);
             terminal.disposeMatch("->");
             terminal.setShowable(false);
             terminal.setMatch("is not", (obj) => {
@@ -271,7 +300,7 @@ export default {
           terminal.runcommand("gdb /code/fordebug");
 
           terminal.setMatch("GNU gdb", (obj) => {
-            console.log(obj);
+            //console.log(obj);
             terminal.disposeMatch("GNU gdb");
             terminal.setShowable(false);
             terminal.setMatch("Undefined command", (obj) => {
@@ -288,6 +317,9 @@ export default {
           this.openSetting();
         }
       }
+      setTimeout(function() {
+        terminal.openSend()
+      }, 1000)
     }
   },
   mounted() {
@@ -298,7 +330,7 @@ export default {
         this.Show = {};
         for (let i = 0; i < Files.length; i++) {
           var end = Files[i].split(".").reverse()[0];
-          console.log(Files[i] + "    " + end);
+          //console.log(Files[i] + "    " + end);
           if (this.pythonMark) {
             if (end == "py") {
               this.Show[Files[i]] = false;
@@ -326,11 +358,11 @@ export default {
       bridge.$on("torun", val => {
         this.run();
       }),
-      bridge.$on("todebug", val => {
-        this.debug();
-      }),
       bridge.$on("tocompilerun", val => {
         this.compileAndRun();
+      }),
+      bridge.$on("toDebug", val => {
+        this.debug();
       }),
       bridge.$on("debugStop", val => {
         this.debugRuning = false;
@@ -343,6 +375,7 @@ export default {
     bridge.$off("tocompile");
     bridge.$off("torun");
     bridge.$off("tocompilerun");
+    bridge.$off("toDebug");
     bridge.$off("readyForDebug");
     bridge.$off("debugStop");
     bridge.$off("beginDebug");

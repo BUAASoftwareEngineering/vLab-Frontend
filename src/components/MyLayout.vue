@@ -2,12 +2,13 @@
 <template>
   <div id="mylayout" ref="mylayout" class="layout">
     <Layout>
-      <MenuBar class="mymenu" :projectid="projectid" :projectname="projectname"></MenuBar>
+      <MenuBar class="mymenu" :projectid="projectid" :projectname="projectname" :isWriteable="isWriteable"></MenuBar>
       <ControlPanel
         class="mycontrol"
         :username="username"
         :projectid="projectid"
         :projectname="projectname"
+        :isWriteable="isWriteable"
       ></ControlPanel>
     </Layout>
   </div>
@@ -23,7 +24,8 @@ export default {
     return {
       username: "",
       projectid: 0,
-      projectname: ""
+      projectname: "",
+      isWriteable: true
     };
   },
   components: {
@@ -34,7 +36,7 @@ export default {
     // this.username=this.$route.params.username
     // this.projectid=this.$route.params.projectId
     // this.projectname=this.$route.params.projectName
-    // this.username=this.$route.query.username
+    //this.username=this.$route.query.username;
     this.projectid = Number(this.$route.query.projectId);
     this.projectname = this.$route.query.projectName;
     if (
@@ -44,10 +46,24 @@ export default {
       this.$router.push("/");
     }
     var _this = this;
+
+    api.user_info(function(response) {
+      if (response.code != 0) {
+        _this.$router.push("/");
+      } else {
+        _this.username = response.data.name;
+      }
+    });
+
     api.project_enter(this.projectid, function(response) {
       // console.log(response.code)
       if (response.code != 0) {
         _this.$router.push("/");
+      } else {
+        _this.isWriteable = response.data.writeable
+        console.log('here')
+        console.log(_this.isWriteable)
+        console.log('yeshere')
       }
     });
   }
@@ -83,22 +99,35 @@ export default {
   visibility: hidden;
 }
 .mycontrol >>> .ivu-menu-dark.ivu-menu {
-  background:#3f3f3f;
+  background: #3f3f3f;
 }
 
-.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu) {
-  color:#ffffff;
+.mycontrol
+  >>> .ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-item-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-submenu-title-active:not(.ivu-menu-submenu) {
+  color: #ffffff;
 }
-.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
-  background:#5d5d5d;
+.mycontrol
+  >>> .ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-item-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-item-active:not(.ivu-menu-submenu):hover,
+.ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-submenu-title-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical
+  .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
+  background: #5d5d5d;
 }
-.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+.mycontrol >>> .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
   color: #ffffff;
   background: #5d5d5d75;
 }
 
 .mycontrol >>> .ivu-menu-light.ivu-menu {
-  background:#c0c0c0;
+  background: #c0c0c0;
   border: none;
 }
 
@@ -110,7 +139,7 @@ export default {
   text-align: middle;
 }
 .mymenu >>> .ivu-btn {
-  height: 4.0vh;
+  height: 4vh;
   margin-top: 0vh;
   margin-bottom: 0vh;
 }
@@ -119,27 +148,10 @@ export default {
   z-index: 999;
 }
 .mymenu >>> .ivu-menu-dark.ivu-menu-horizontal {
-  color:#ececec;
-  background:#4b4b4d;
+  color: #ececec;
+  background: #4b4b4d;
 }
 .mymenu >>> .ivu-menu-light.ivu-menu-horizontal {
-  background:#e2e2e2;
-}
-.mymenu >>> .ivu-menu-item-active {
-  color:inherit;
-  border-bottom: inherit;
-}
-.mymenu >>> .ivu-menu-item:hover {
-  border-bottom: inherit;
-}
-.mymenu >>> .ivu-menu-opened {
-  border-bottom: inherit;
-}
-.mymenu >>> .ivu-menu-submenu:hover {
-  border-bottom: inherit;
-}
-.mymenu >>> .ivu-menu-child-item-active  {
-  color:inherit;
-  border-bottom: inherit;
+  background: #e2e2e2;
 }
 </style> 

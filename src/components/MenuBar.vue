@@ -107,7 +107,10 @@
           active-name="1"
           style="height:100%;line-height:45px;padding: 0px;"
         >
-          <MenuItem name="10" style="pointer-events:none;font-family: Consolas;">
+          <MenuItem
+            name="10"
+            style="pointer-events:none;font-family:  Consolas, 'Lucida Console', monospace, sans-serif;"
+          >
             <Icon type="ios-cloudy" />
             {{ this.projectname }}
           </MenuItem>
@@ -116,9 +119,16 @@
             <template slot="title">
               <Icon type="ios-document" />文件
             </template>
-            <MenuGroup title="新建" :style="{'width': '150px'}">
-              <MenuItem name="1-1" @click.native="newFile()">新建文件</MenuItem>
-              <MenuItem name="1-2" @click.native="newFolder()">新建文件夹</MenuItem>
+            <MenuGroup title="新建" :style="{'width': '170px'}">
+              <MenuItem name="1-1" @click.native="newFile()" :disabled="!isWriteable">新建文件</MenuItem>
+              <MenuItem name="1-2" @click.native="newFolder()" :disabled="!isWriteable">新建文件夹</MenuItem>
+              <MenuItem name="1-3" @click.native="newTempFile()" :disabled="!isWriteable">使用默认代码新建</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="上传">
+              <MenuItem name="1-6" @click.native="uploadGitProject()" :disabled="!isWriteable">从github导入</MenuItem>
+            </MenuGroup>
+            <MenuGroup title="下载">
+              <MenuItem name="1-7" @click.native="download()">下载项目</MenuItem>
             </MenuGroup>
             <MenuItem name="1-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
@@ -127,15 +137,15 @@
               <Icon type="ios-create" />编辑
             </template>
             <MenuGroup title="修改" :style="{'width': '200px'}">
-              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])">
+              <MenuItem name="2-1" @click.native="undo(editorMap[currentTab])" :disabled="!isWriteable">
                 撤销
                 <span style="float: right">Ctrl+Z</span>
               </MenuItem>
-              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])">
+              <MenuItem name="2-2" @click.native="redo(editorMap[currentTab])" :disabled="!isWriteable">
                 恢复
                 <span style="float: right">Ctrl+Shift+Z</span>
               </MenuItem>
-              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])">
+              <MenuItem name="2-3" @click.native="cut(editorMap[currentTab])" :disabled="!isWriteable">
                 剪切
                 <span style="float: right">Ctrl+X</span>
               </MenuItem>
@@ -149,7 +159,7 @@
                 查找
                 <span style="float: right">Ctrl+F</span>
               </MenuItem>
-              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])">
+              <MenuItem name="2-6" @click.native="replace(editorMap[currentTab])" :disabled="!isWriteable">
                 替换
                 <span style="float: right">Ctrl+H</span>
               </MenuItem>
@@ -209,9 +219,12 @@
             <MenuGroup title="运行" :style="{'width': '200px'}">
               <MenuItem name="4-3" @click.native="run">运行</MenuItem>
             </MenuGroup>
+            <MenuGroup title="调试" :style="{'width': '200px'}">
+              <MenuItem name="4-4" @click.native="debug">调试</MenuItem>
+            </MenuGroup>
             <MenuItem name="4-9" :style="{'height':'1px', 'pointer-events':'none'}"></MenuItem>
           </Submenu>
-          <Submenu name="5" theme="dark">
+          <Submenu name="5">
             <template slot="title">
               <Icon type="ios-list" />视图
             </template>
@@ -257,7 +270,7 @@ import api from "../assets/js/api.js";
 import { bus } from "./bus.js";
 import * as Editor from "../editor/Appearances.js";
 import bridge from "./bridge.js";
-import terminal from "./Terminal.js"
+import terminal from "./Terminal.js";
 export default {
   props: {
     projectid: {
@@ -266,6 +279,10 @@ export default {
     },
     projectname: {
       type: String,
+      required: true
+    },
+    isWriteable: {
+      type: Boolean,
       required: true
     }
   },
@@ -315,6 +332,7 @@ export default {
       LineNumberOnOff: true,
       MinimapOnOff: true,
       pythonMark: false,
+      helpModal: false,
       dropmenuColor: "#ececec",
       dropmenuBack: "#4b4b4d",
       terminal: terminal
@@ -338,17 +356,38 @@ export default {
   },
   methods: {
     newFile() {
-      bridge.$emit("newRootFile");
+      if (!this.isWriteable) {
+        return
+      }
+      bridge.$emit("newRootFile", false);
     },
     newFolder() {
+      if (!this.isWriteable) {
+        return
+      }
       bridge.$emit("newRootFolder");
+    },
+    newTempFile() {
+      if (!this.isWriteable) {
+        return
+      }
+      bridge.$emit("newRootFile", true);
+    },
+    uploadGitProject() {
+      if (!this.isWriteable) {
+        return
+      }
+      bridge.$emit("uploadGitProject");
+    },
+    download() {
+      api.file_download(this.projectid);
     },
     exitproject() {
       if (this.projectId != 0) {
         var _this = this;
         this.$Spin.show();
         console.log("退出id为" + this.projectId);
-        terminal.beforeDestroy()
+        terminal.beforeDestroy();
         api.project_exit(this.projectId, function(response) {
           _this.$Spin.hide();
           console.log("response.code:" + response.code);
@@ -369,24 +408,39 @@ export default {
       }
     },
     undo(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getModel().undo();
     },
     redo(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getModel().redo();
     },
     cut(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.clipboardCutAction").run();
     },
     copy(editor) {
       editor.getAction("editor.action.clipboardCopyAction").run();
     },
     paste(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.clipboardPasteAction").run();
     },
     search(editor) {
       editor.getAction("actions.find").run();
     },
     replace(editor) {
+      if (!this.isWriteable) {
+        return
+      }
       editor.getAction("editor.action.startFindReplaceAction").run();
     },
     setLineNumberOnOff(editor) {
@@ -437,6 +491,9 @@ export default {
     },
     compilerun() {
       bridge.$emit("tocompilerun");
+    },
+    debug() {
+      bridge.$emit("toDebug");
     },
     toHelp() {
       window.open(
@@ -491,14 +548,55 @@ export default {
     bridge.$off("settingProject");
     bridge.$off("currentTab");
     bridge.$off("changeAllTheme");
+    bridge.$off("toDebug");
+    bridge.$off("tocompile");
+    bridge.$off("torun");
+    bridge.$off("tocompilerun");
+    bridge.$off("uploadGitProject");
     document.body.removeAttribute("class", this.myDropTheme);
   }
 };
 </script>
 <style>
+.myLightDrop .ivu-select-dropdown {
+  overflow: hidden;
+  max-height: 1000px;
+}
+.myLightDrop
+  .ivu-menu-light.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item-selected {
+  color: #4b4b4d;
+}
+.myLightDrop
+  .ivu-menu-light.ivu-menu-horizontal
+  .ivu-menu-submenu
+  .ivu-select-dropdown
+  .ivu-menu-item-selected:hover {
+  color: #2d8cf0;
+}
+.myLightDrop .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
+  color: #2d8cf0;
+  border: none;
+}
+.myLightDrop .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover {
+  color: #2d8cf0;
+  border: none;
+}
+.myLightDrop .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active {
+  color: #4b4b4d;
+  border: none;
+}
+.myLightDrop .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active {
+  color: #4b4b4d;
+  border: none;
+}
 .myDarkDrop .ivu-select-dropdown {
   background-color: #4b4b4d;
   color: #f3f3f3;
+  overflow: hidden;
+  max-height: 1000px;
 }
 .myDarkDrop .ivu-dropdown-item:hover {
   background: #5b5b5d;
@@ -508,19 +606,17 @@ export default {
 }
 
 .myDarkDrop .myContentClass {
-  background-color:#4b4b4d;
+  background-color: #4b4b4d;
 }
-
-.myLightDrop
-  .ivu-menu-horizontal
-  .ivu-menu-submenu
-  .ivu-select-dropdown
-  .ivu-menu-item-selected,
-.ivu-menu-horizontal
-  .ivu-menu-submenu
-  .ivu-select-dropdown
-  .ivu-menu-item-selected:hover {
-  color: #4b4b4d;
+.myDarkDrop .ivu-poptip-inner {
+  background-color: #4b4b4d;
+  color: #f3f3f3;
+}
+.myDarkDrop .ivu-poptip-title-inner {
+  color: #f3f3f3;
+}
+.myDarkDrop .ivu-poptip-body-content-inner {
+  color: #f3f3f3;
 }
 </style>
 <style scoped>
@@ -606,6 +702,5 @@ export default {
   .ivu-menu-item {
   background: #4b4b4d;
   color: #f3f3f3;
-  font-family: Consolas;
 }
 </style>

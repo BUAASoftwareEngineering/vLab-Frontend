@@ -30,11 +30,11 @@ export function filePath2lang(filePath) {
     return lang;
 }
 
-export async function openFile(project_id, filePath, fileDir, wsUrl, defaultCode = true, elmentId) {
+export async function openFile(project_id, filePath, fileDir, wsUrl, defaultCode = true, elmentId, readOnly) {
     let language = filePath2lang(filePath);
 
     if (defaultCode == true) {
-        var editor = addNewEditor(defaultCode_language(language, MonacoAppSingleton.authorName), language, filePath, fileDir, wsUrl, elmentId);
+        var editor = addNewEditor(defaultCode_language(language, MonacoAppSingleton.authorName), language, filePath, fileDir, wsUrl, elmentId, readOnly);
         saveFile(project_id, editor, filePath);
         return editor;
     } else {
@@ -45,7 +45,7 @@ export async function openFile(project_id, filePath, fileDir, wsUrl, defaultCode
                 resolve(obj);
             });
         });
-        var editor = addNewEditor(file_content.data['content'], language, filePath, fileDir, wsUrl, elmentId);
+        var editor = addNewEditor(file_content.data['content'], language, filePath, fileDir, wsUrl, elmentId, readOnly);
         return editor;
     }
 }

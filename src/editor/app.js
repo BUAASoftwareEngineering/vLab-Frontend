@@ -38,7 +38,7 @@ export class MonacoApp {
 	async addEditor(filePath, defaultCode = true, elementId) {
 		if (!overrided)
 			overrideMonaco();
-		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, defaultCode, elementId);
+		var editor = await File.openFile(this.currentProject.projectId, filePath, this.BASE_DIR, this.wsUrl, defaultCode, elementId, !this.currentProject.writeable);
 		editor.onDidChangeModelContent((e) => {
 			if (this.fileupdateTimer) {
 				clearTimeout(this.fileupdateTimer);
@@ -54,6 +54,7 @@ export class MonacoApp {
 	closeEditor(editor) {
 		removeBreakpoint(editor);
 		this.model2editor.delete(editor.getModel());
+		editor.getModel().dispose();
 	}
 }
 

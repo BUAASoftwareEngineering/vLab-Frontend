@@ -17,24 +17,37 @@
 
     <Row type="flex" justify="center" align="middle">
       <Col :span="24" style="text-align:center">
-        <Upload :before-upload="handleFiles" action="http" multiple>
+        <Upload :before-upload="handleFiles" action="http" multiple ref="uploadFiles">
           <Button
             type="primary"
             style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+            :key="isWriteable"
+            :disabled="!isWriteable"
           >上传文件到根目录...</Button>
         </Upload>
       </Col>
     </Row>
     <br />
-    <Row type="flex" justify="center" align="middle">
+    <Row type="flex" justify="center" align="middle" v-if="isWriteable">
       <Col :span="24" style="text-align:center">
-        <uploader @file-success="handleFolder">
+        <uploader @file-success="handleFolder" duplicate="true" ref="uploadFolder">
           <uploader-drop>
-            <uploader-btn :directory="true" attrs="">
+            <uploader-btn :directory="true" >
               上传文件夹到根目录...
             </uploader-btn>
           </uploader-drop>
         </uploader>
+      </Col>
+    </Row>
+    <Row type="flex" justify="center" align="middle" v-if="!isWriteable">
+      <Col :span="24" style="text-align:center">
+        <Upload :before-upload="handleFiles" action="http" multiple ref="uploadFiles">
+          <Button
+            type="primary"
+            style="border-radius: 0.4vh; margin: 0 auto; width:200px"
+            :disabled="true"
+          >上传文件夹到根目录...</Button>
+        </Upload>
       </Col>
     </Row>
     <br />
@@ -44,6 +57,8 @@
           type="primary"
           style="border-radius: 0.4vh; margin: 0 auto; width:200px"
           @click="gitUrlModal = true"
+          :key="isWriteable"
+          :disabled="isWriteable == true ? false : true"
         >从GitHub导入到Notebook...</Button>
       </Col>
       <Modal v-model="gitUrlModal" title="请输入git仓库的url">
@@ -90,7 +105,7 @@ export default {
       gitUrl: "",
       files_number:0,
       files_conflict:[],
-      modal1:false,
+      modal1:false
     };
   },
   props: {
@@ -105,17 +120,29 @@ export default {
     projectname: {
       type: String,
       required: true
+    },
+    isWriteable: {
+      type: Boolean,
+      required: true
     }
+  },
+  mounted() {
+      this.isWriteable = this.isWriteable
+      
+      // this.isWriteable = !this.isWriteable
   },
   methods: {
     download() {
+      
       api.file_download(this.projectid);
     },
     modal1_ok(){
       this.files_conflict=[]
       this.modal1=false      
-      window.location.reload()
-              
+      // window.location.reload()
+      this.$refs.uploadFiles.clearFiles()
+      this.$refs.uploadFolder.uploader.cancel()
+      bridge.$emit('FleshFilesTree')
     },
     handleFiles(file) {
        if(this.files_number==0)this.$Spin.show()
@@ -139,12 +166,16 @@ export default {
             function(response) {
                _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                console.log('yyy')
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
               if (response.code == 0) {
@@ -162,12 +193,15 @@ export default {
         } else if (response.code == -101) {
           _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
           _this.$Message.error("cookie验证失败");
@@ -175,12 +209,15 @@ export default {
         } else if (response.code == -102) {
           _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
           _this.$Message.error("权限不足");
@@ -188,24 +225,31 @@ export default {
             _this.files_number--;
             _this.files_conflict.push(filename)
               if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
                  
               }
           } else {
           _this.files_number--;
               if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
+                  
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
                  
               }
@@ -264,13 +308,18 @@ export default {
             function(response) {
               _this.files_number--;
               if(_this.files_number==0){
-                
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                console.log(_this.$refs.uploadFolder.uploader)
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                  
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
               if (response.code == 0) {                
@@ -287,12 +336,16 @@ export default {
         } else if (response.code == -101) {
            _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }  
           _this.$Message.error("cookie验证失败");
@@ -300,12 +353,16 @@ export default {
         } else if (response.code == -102) {
            _this.files_number--;
               if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
           _this.$Message.error("权限不足");
@@ -313,32 +370,45 @@ export default {
           _this.files_number--
           _this.files_conflict.push(rootFile)
           if(_this.files_number==0){
-               if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
+                if(_this.files_conflict.length!=0){
+                  
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
               }
                 }
           } else {
            _this.files_number--;
              if(_this.files_number==0){
+                _this.$Spin.hide()
+                _this.$refs.uploadFiles.clearFiles()
+                _this.$refs.uploadFolder.uploader.cancel()
+                bridge.$emit('FleshFilesTree')
                 if(_this.files_conflict.length!=0){
-                  _this.$Spin.hide()
                   _this.modal1=true
                 }
                 else{
-                window.location.reload()
+                // window.location.reload()
+                
               }
               }
           _this.$Message.error("未知错误");
         }
       });
-        
-      
-      
     }
+  },
+  mounted() {
+    bridge.$on("uploadGitProject",obj=>{
+      this.gitUrlModal = true;
+    });
+  },
+  beforeDestroy() {
+    bridge.$off("uploadGitProject");
   }
 };
 </script>

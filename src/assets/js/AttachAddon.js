@@ -3,7 +3,9 @@ import bridge from '../../components/bridge'
 var timer = undefined
 const that = {
     show: true,
-    matches: {}
+    matches: {},
+    cansend: true,
+    onlyRead: false
 }
 // Object.defineProperty(exports, "__esModule", { value: true });
 var AttachAddon = (function () {
@@ -13,6 +15,15 @@ var AttachAddon = (function () {
         this._socket.binaryType = 'arraybuffer';
         that.show = true
         that.matches = {}
+        let _this = this
+        setMatch('root@[^:]+', function(str) {
+            setMatch(str, function(str2) {
+                if (that.onlyRead) {
+                    that.cansend = false
+                }
+            })
+            disposeMatch('root@[^:]+')
+        })
         this._bidirectional = (options && options.bidirectional === false) ? false : true;
     }
     AttachAddon.prototype.activate = function (terminal) {
@@ -28,7 +39,10 @@ var AttachAddon = (function () {
                         let Reg = new RegExp(match,"g")
                         let result = ''
                         while ((result = Reg.exec(data)) !== null) {
-                            that.matches[match](result[0])
+                            if (that.matches[match]) {
+                                that.matches[match](result[0])
+                            }
+                            
                         }
                     }
                 }
@@ -49,13 +63,17 @@ var AttachAddon = (function () {
         this._disposables.push(addSocketListener(this._socket, 'error', function () { return _this.dispose(); }));
     };
     AttachAddon.prototype.dispose = function () {
+        that.show = true
+        that.matches = {}
+        that.cansend = true
+        that.onlyRead = false
         this._disposables.forEach(function (d) { return d.dispose(); });
     };
     AttachAddon.prototype._sendData = function (data) {
         if (this._socket.readyState !== 1) {
             return;
         }
-        if (that.show) {
+        if ((that.show) && (that.cansend)) {
             this._socket.send(data);
         }
     };
@@ -67,7 +85,9 @@ var AttachAddon = (function () {
         for (var i = 0; i < data.length; ++i) {
             buffer[i] = data.charCodeAt(i) & 255;
         }
-        this._socket.send(buffer);
+        if ((that.show) && (that.cansend)) {
+            this._socket.send(buffer);
+        }
     };
     return AttachAddon;
 }());
@@ -99,10 +119,20 @@ function disposeMatch(match) {
     }
 }
 
+function openSend() {
+    that.cansend = true
+}
+
+function setOnlyRead() {
+    that.onlyRead = true
+}
+
 export default {
     AttachAddon,
     setShowable,
     setMatch,
-    disposeMatch
+    disposeMatch,
+    openSend,
+    setOnlyRead
 }
 //# sourceMappingURL=AttachAddon.js.map
