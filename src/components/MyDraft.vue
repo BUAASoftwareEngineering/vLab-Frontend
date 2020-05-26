@@ -1,15 +1,19 @@
 
 <template>
+  <div id="back">
   <div id="mydraft" ref="mydraft" class="MyDraft">
-    <Layout>
-      hello world!
+    <Layout style="height:100%">
+      <Sider style="background:#66ccff;" width="75px">
+      </Sider> 
+      <Layout style="height:100%;background:#000000;width:600px">
+      </Layout>
+      <Layout style="height:100%;background:#ffffff;">
+      </Layout>
     </Layout>
+  </div>
   </div>
 </template>
 <script>
-import ControlPanel from "./ControlPanel";
-import MenuBar from "./MenuBar";
-import { initEditor } from "../editor/app";
 import bridge from "./bridge.js";
 import api from "../assets/js/api";
 export default {
@@ -28,17 +32,25 @@ export default {
       }
     });
   }
-  /*
-          destroyed(){     
-              var _this=this
-              this.$Spin.show()
-              api.project_exit(this.projectid,function(response){
-                  _this.$Spin.hide()
-                  if(response.code==0){
-                    //   console.log('exit_sucess')
-                      _this.$Message.success('退出成功')
-                  }
-              })
-          }*/
 };
 </script>
+
+<style scoped>
+#back {
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+}
+.MyDraft {
+  position: absolute;
+    left: 7%;
+    right: 7%;
+    top: 4%;
+    bottom: 10%;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    box-shadow: rgba(0, 0, 0, 0.75) 0px 2px 20px 1px;
+}
+</style>
