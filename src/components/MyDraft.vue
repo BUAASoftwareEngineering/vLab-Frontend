@@ -22,6 +22,9 @@ export default {
       username: "",
     };
   },
+  beforeCreate: function() {
+    document.getElementsByTagName("body")[0].className = "myDraft";
+  },
   mounted() {
     var _this = this;
     api.user_info(function(response) {
@@ -31,6 +34,9 @@ export default {
         _this.username = response.data.name;
       }
     });
+  },
+  beforeDestroy() {
+    document.body.removeAttribute("class", "myDraft");
   }
 };
 </script>
@@ -52,5 +58,11 @@ export default {
     border-color: initial;
     border-image: initial;
     box-shadow: rgba(0, 0, 0, 0.75) 0px 2px 20px 1px;
+}
+</style>
+<style>
+.myDraft .ivu-select-dropdown {
+  overflow: hidden;
+  max-height: 1000px;
 }
 </style>
