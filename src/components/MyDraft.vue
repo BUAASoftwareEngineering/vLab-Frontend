@@ -3,25 +3,31 @@
   <div id="back">
     <div class="MyLightDraft">
       <Layout style="height:100%">
-        <Modal 
-        v-model="notLogin"
-        :closable="false"
-        title="请登陆后使用"
+        <Modal
+          v-model="notLogin"
+          :closable="false"
+          :mask-closable="false"
+          title="请登陆后使用"
+          width="350"
         >
-          <Input type="text" placeholder="请输入用户名" v-model="loginUsername" style="width: 300px" />
-          <br />
-          <br />
-          <Input
-            password
-            type="password"
-            placeholder="请输入密码"
-            v-model="loginPassword"
-            style="width: 300px"
-            @on-enter="login"
-          />
-          <div slot="footer">
+          <div style="text-align:center">
+            <Input type="text" placeholder="请输入用户名" v-model="loginUsername" style="width: 300px;" />
+            <br />
+            <br />
+            <Input
+              password
+              type="password"
+              placeholder="请输入密码"
+              v-model="loginPassword"
+              style="width: 300px"
+              @on-enter="login"
+            />
+            <br />
+            <br />
+            <span v-on:click="cancelLogin">没有账号？前往主页注册</span>
+          </div>
+          <div slot="footer" style="text-align:center">
             <Button type="success" v-on:click="login">登录</Button>
-            <Button type="cancel" v-on:click="cancelLogin">取消</Button>
           </div>
         </Modal>
         <!--左侧菜单栏-->
@@ -76,7 +82,7 @@ export default {
       username: "",
       notLogin: false,
       loginUsername: "",
-      loginPassword: "",
+      loginPassword: ""
     };
   },
   beforeCreate: function() {
@@ -93,7 +99,9 @@ export default {
       } else {
         this.$Spin.show();
         var _this = this;
-        api.user_login(this.loginUsername, this.loginPassword, function(response) {
+        api.user_login(this.loginUsername, this.loginPassword, function(
+          response
+        ) {
           _this.$Spin.hide();
           if (response.code == 0) {
             _this.$Message.success("登录成功");
@@ -145,6 +153,12 @@ export default {
   border-color: initial;
   border-image: initial;
   box-shadow: rgba(0, 0, 0, 0.75) 0px 2px 20px 1px;
+}
+span {
+  cursor: pointer;
+}
+span:hover {
+  color: #41b883;
 }
 </style>
 <style>
