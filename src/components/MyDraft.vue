@@ -4,7 +4,14 @@
     <div class="MyLightDraft">
       <Layout style="height:100%">
         <!--左侧菜单栏-->
-        <Sider style="background:#66ccff;" width="75"></Sider>
+        <Sider width="75">
+          <Button
+            type="primary"
+            style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;float:bottom;height:10vh;"
+            @click="toHomePage"
+            title = "退回主页"
+          ><Icon type="android-exit"></Icon>quit</Button>
+        </Sider>
         <!--编辑器-->
         <Layout style="height:100%;background:#000000;width:600px"></Layout>
         <!--输入输出框-->
@@ -24,6 +31,12 @@ export default {
   },
   beforeCreate: function() {
     document.getElementsByTagName("body")[0].className = "MyLightDraft";
+  },
+  methods: {
+    toHomePage() {
+      var _this = this;
+      _this.$router.push("/home");
+    }
   },
   mounted() {
     var _this = this;
