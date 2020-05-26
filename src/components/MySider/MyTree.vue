@@ -1181,6 +1181,9 @@ export default {
 
     // Tree结点修改按钮
     editTree(data) {
+      if (!this.isWriteable) {
+        return
+      }
       this.hiddenRightMenu();
       event.stopPropagation();
       this.inputContent = data.title;
