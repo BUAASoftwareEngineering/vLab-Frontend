@@ -3,6 +3,27 @@
   <div id="back">
     <div class="MyLightDraft">
       <Layout style="height:100%">
+        <Modal 
+        v-model="notLogin"
+        :closable="false"
+        title="请登陆后使用"
+        >
+          <Input type="text" placeholder="请输入用户名" v-model="loginUsername" style="width: 300px" />
+          <br />
+          <br />
+          <Input
+            password
+            type="password"
+            placeholder="请输入密码"
+            v-model="loginPassword"
+            style="width: 300px"
+            @on-enter="login"
+          />
+          <div slot="footer">
+            <Button type="success" v-on:click="login">登录</Button>
+            <Button type="cancel" v-on:click="cancelLogin">取消</Button>
+          </div>
+        </Modal>
         <!--左侧菜单栏-->
         <Sider width="75">
           <Button
@@ -52,7 +73,10 @@ import api from "../assets/js/api";
 export default {
   data() {
     return {
-      username: ""
+      username: "",
+      notLogin: false,
+      loginUsername: "",
+      loginPassword: "",
     };
   },
   beforeCreate: function() {
@@ -62,13 +86,37 @@ export default {
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
+    },
+    login() {
+      if (this.loginUsername == "" || this.loginPassword == "") {
+        this.$Message.warning("请输入用户名或密码");
+      } else {
+        this.$Spin.show();
+        var _this = this;
+        api.user_login(this.loginUsername, this.loginPassword, function(response) {
+          _this.$Spin.hide();
+          if (response.code == 0) {
+            _this.$Message.success("登录成功");
+            _this.notLogin = false;
+            _this.username = this.loginUsername;
+          } else if (response.code == -101) {
+            _this.$Message.error("用户名或密码不正确");
+          } else {
+            _this.$Message.error("未知错误");
+          }
+        });
+      }
+    },
+    cancelLogin() {
+      var _this = this;
+      _this.$router.push("/");
     }
   },
   mounted() {
     var _this = this;
     api.user_info(function(response) {
       if (response.code != 0) {
-        _this.$router.push("/");
+        _this.notLogin = true;
       } else {
         _this.username = response.data.name;
       }
