@@ -1,16 +1,16 @@
 
 <template>
   <div id="back">
-  <div id="mydraft" ref="mydraft" class="MyDraft">
-    <Layout style="height:100%">
-      <Sider style="background:#66ccff;" width="75">
-      </Sider>
-      <Layout style="height:100%;background:#000000;width:600px">
+    <div class="MyLightDraft">
+      <Layout style="height:100%">
+        <!--左侧菜单栏-->
+        <Sider style="background:#66ccff;" width="75"></Sider>
+        <!--编辑器-->
+        <Layout style="height:100%;background:#000000;width:600px"></Layout>
+        <!--输入输出框-->
+        <Layout style="height:100%;background:#ffffff;"></Layout>
       </Layout>
-      <Layout style="height:100%;background:#ffffff;">
-      </Layout>
-    </Layout>
-  </div>
+    </div>
   </div>
 </template>
 <script>
@@ -19,11 +19,11 @@ import api from "../assets/js/api";
 export default {
   data() {
     return {
-      username: "",
+      username: ""
     };
   },
   beforeCreate: function() {
-    document.getElementsByTagName("body")[0].className = "myDraft";
+    document.getElementsByTagName("body")[0].className = "MyLightDraft";
   },
   mounted() {
     var _this = this;
@@ -36,7 +36,7 @@ export default {
     });
   },
   beforeDestroy() {
-    document.body.removeAttribute("class", "myDraft");
+    document.body.removeAttribute("class", "MyLightDraft");
   }
 };
 </script>
@@ -47,21 +47,21 @@ export default {
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
 }
-.MyDraft {
+.MyLightDraft {
   position: absolute;
-    left: 7%;
-    right: 7%;
-    top: 4%;
-    bottom: 10%;
-    border-width: initial;
-    border-style: none;
-    border-color: initial;
-    border-image: initial;
-    box-shadow: rgba(0, 0, 0, 0.75) 0px 2px 20px 1px;
+  left: 7%;
+  right: 7%;
+  top: 4%;
+  bottom: 10%;
+  border-width: initial;
+  border-style: none;
+  border-color: initial;
+  border-image: initial;
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 2px 20px 1px;
 }
 </style>
 <style>
-.myDraft .ivu-select-dropdown {
+.myLightDraft .ivu-select-dropdown {
   overflow: hidden;
   max-height: 1000px;
 }
