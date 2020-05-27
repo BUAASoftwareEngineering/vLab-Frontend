@@ -218,63 +218,73 @@ export default {
                             _this.saveDraftModal = false;
                             _this.saving = false;
                             console.log("exitOK");
-                          } else if (response.code == -101) {
-                            console.log("cookie验证失败");
-                            _this.saving = false;
-                          } else if (response.code == -102) {
-                            console.log("权限不足");
-                            _this.saving = false;
                           } else {
-                            console.log("未知错误");
                             _this.saving = false;
+                            _this.$Notice.close(
+                              "saveNotice"
+                            );
+                            if (response.code == -101) {
+                              console.log("cookie验证失败");
+                            } else if (response.code == -102) {
+                              console.log("权限不足");
+                            } else {
+                              console.log("未知错误");
+                            }
                           }
                         });
-                      } else if (response.code == -101) {
-                        _this.$Message.error("cookie验证失败");
-                        _this.notLogin = true;
-                        _this.saving = false;
-                      } else if (response.code == -102) {
-                        _this.$Message.error("权限不足");
-                        _this.saving = false;
                       } else {
-                        _this.$Message.error("未知错误");
                         _this.saving = false;
+                        _this.$Notice.close(
+                          "saveNotice"
+                        );
+                        if (response.code == -101) {
+                          _this.$Message.error("cookie验证失败");
+                          _this.notLogin = true;
+                        } else if (response.code == -102) {
+                          _this.$Message.error("权限不足");
+                        } else {
+                          _this.$Message.error("未知错误");
+                        }
                       }
                     }
                   );
-                } else if (response.code == -101) {
-                  _this.$Message.error("cookie验证失败");
-                  _this.saving = false;
-                  _this.notLogin = true;
-                  clearInterval(timer);
-                } else if (response.code == -102) {
-                  _this.$Message.error("权限不足");
-                  clearInterval(timer);
-                  _this.saving = false;
                 } else if (response.code == -301) {
                   console.log("exist");
-                  _this.$Message.error("文件名已存在");
+                  _this.$Message.error("文件名已存在,保存失败");
                   _this.saving = false;
                   api.project_exit(_this.selectProjectID);
                   clearInterval(timer);
+                  _this.$Notice.close(
+                    "saveNotice"
+                  );
                 } else if (response.code == 500) {
                 } else {
                   _this.saving = false;
-                  _this.$Message.error("未知错误");
                   clearInterval(timer);
+                  if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.notLogin = true;
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
                 }
               }
             );
           }, 3000);
-        } else if (response.code == -101) {
-          _this.$Message.error("cookie验证失败");
-          _this.saving = false;
-        } else if (response.code == -102) {
-          _this.$Message.error("权限不足");
-          _this.saving = false;
         } else {
-          _this.$Message.error("未知错误");
           _this.saving = false;
+          _this.$Notice.close(
+              "saveNotice"
+          );
+          if (response.code == -101) {
+            _this.$Message.error("cookie验证失败");
+          } else if (response.code == -102) {
+            _this.$Message.error("权限不足");
+          } else {
+            _this.$Message.error("未知错误");
+          }
         }
       });
     }
