@@ -1,7 +1,7 @@
 <template>
   <div id="back">
     <div class="MyLightDraft">
-      <Layout style="height:100%">
+      <Layout style="height:100%;border-radius:100;">
         <Modal
           v-model="notLogin"
           :closable="false"
@@ -66,10 +66,14 @@
           <MyDraftSidebar></MyDraftSidebar>
         </Sider>
         <!--编辑器-->
-        <Layout style="height:100%;border-right:2px inset #ababab;width:600px; overflow:hidden">
-          <div id="editorRoot" style="height:100%;width:100%"></div>
+        <Layout style="height:100%;width:600px; overflow:hidden">
+          <div style="height:2%;width:100%;background-color:#ffffff;border:none;"> </div>
+          <div id="editorRoot" style="height:95%;width:100%"></div>
+          <div style="height:3%;width:100%;background-color:#ececec;">
+            <div id="footLeftBar">{{draftName ? draftName :"untitled"}}({{draftLanguage}})</div>
+            <div id="footRightBar">line:{{myLineNumber}},column:{{myColNumber}}</div>
+          </div>
         </Layout>
-
         <Layout style="height:100%;">
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
             <Row type="flex" justify="center" align="middle">
@@ -112,6 +116,7 @@ import { bus } from "./bus.js";
 import api from "../assets/js/api";
 import * as editor from "../editor/app";
 import MyDraftSidebar from "./MyDraftSidebar";
+import { getCursorPosition } from '../editor/Editor';
 export default {
   data() {
     return {
@@ -126,8 +131,9 @@ export default {
       selectProjectID: "",
       projects: [],
       draftEditor: "",
-      draftLanguage: ""
-
+      draftLanguage: "",
+      ln:1,
+      rn:2,
     };
   },
   components: {
@@ -135,6 +141,14 @@ export default {
   },
   beforeCreate: function() {
     document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
+  },
+  computed: {
+    myLineNumber: function () {
+      return this.draftEditor ? getCursorPosition(this.draftEditor.getEditorInstance())["ln"] : 0;
+    },
+    myColNumber: function () {
+      return this.draftEditor ? getCursorPosition(this.draftEditor.getEditorInstance())["col"] : 0;
+    },    
   },
   methods: {
     toHomePage() {
@@ -381,5 +395,24 @@ span:hover {
   background-color: #515a6e62;
   border-color: #515a6e60;
   border: 0px solid transparent;
+}
+#footRightBar {
+  height:100%;
+  width:80%;
+  float:right;
+  text-align:right;
+  padding-right:30px;
+  font-size:13px;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
+}
+
+#footLeftBar {
+  height:100%;
+  width:20%;
+  float:left;
+  text-align:left;
+  padding-left:30px;
+  font-size:13px;
+  font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
 </style>
