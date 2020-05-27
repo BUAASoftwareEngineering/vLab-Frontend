@@ -74,21 +74,21 @@
             <div id="footRightBar">line:{{myLineNumber}},column:{{myColNumber}}</div>
           </div>
         </Layout>
-        <Layout style="height:100%;">
+        <Layout style="height:100%;width:200px;">
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
             <Row type="flex" justify="center" align="middle">
-              <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="运行">运行</Button>
-              </Col>
-              <Col :span="12" style="text-align:center">
-                <Button
-                  type="primary"
-                  style="margin-top:5px;"
-                  @click="saveDraft"
-                  title="保存到项目"
-                  :disabled = "saving"
-                >保存到项目</Button>
-              </Col>
+              <Row type="flex" justify="center" align="middle">
+                <Col :span="24" style="text-align:center;">
+                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click title="运行">运行</Button>
+                  <Button
+                    type="primary"
+                    style="margin-top:5px;margin-left:2px;"
+                    @click="saveDraft"
+                    title="保存到项目"
+                    :disabled = "saving"
+                  >保存到项目</Button>
+                </Col>
+              </Row>
             </Row>
           </Layout>
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
@@ -97,7 +97,8 @@
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;" @click title="提交输入">提交输入</Button>
+                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click title="清空输入">清空输入</Button>
+                  <Button type="primary" style="margin-top:5px;margin-left:2px;" @click title="提交输入">提交输入</Button>
                 </Col>
               </Row>
             </Layout>
@@ -132,8 +133,6 @@ export default {
       projects: [],
       draftEditor: "",
       draftLanguage: "",
-      ln:1,
-      rn:2,
     };
   },
   components: {
@@ -383,18 +382,24 @@ span:hover {
   max-height: 1000px;
 }
 .MyLightDraftBody .ivu-btn {
-  border-radius: 3px;
-  color: #f5f7f9;
-  background-color: #515a6eec;
+  color: #fcfcfc;
+  background-color: #515a6e;
   border-color: #515a6e;
   border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  border-radius: 0.4vh; 
+  margin: 0 auto; 
+  width:120px;
 }
 .MyLightDraftBody .ivu-btn:disabled {
-  border-radius: 3px;
-  color: #f5f7f9;
-  background-color: #515a6e62;
-  border-color: #515a6e60;
+  color: #fcfcfc;
+  background-color: #515a6e63;
+  border-color: #515a6e6e;
   border: 0px solid transparent;
+  padding: 6px 16px 6px;
+  border-radius: 0.4vh; 
+  margin: 0 auto; 
+  width:120px;
 }
 #footRightBar {
   height:100%;
