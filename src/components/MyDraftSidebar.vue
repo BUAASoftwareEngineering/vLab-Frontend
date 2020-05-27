@@ -1,7 +1,7 @@
 <template>
   <Menu
     active-name="mySideMenu"
-    style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;float:bottom;height:2vh;"
+    style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;height:100%;"
   >
     <MenuItem name="quit" @click.native="toHomePage" title="退回主页">
       <Icon type="md-exit" />

@@ -101,6 +101,7 @@
           <!--输入框-->
           <Layout style="height:45%;width:100%"></Layout>
         </Layout>
+        
       </Layout>
     </div>
   </div>
@@ -172,7 +173,8 @@ export default {
     },
     saveToProject() {
       var _this = this;
-      var fileContent = "";
+      var fileContent = _this.draftEditor.getCode();
+      //console.log(fileContent);
       _this.$Notice.open({
         title: '正在保存中...',
         desc: '',
@@ -205,53 +207,74 @@ export default {
                           response
                         ) {
                           if (response.code == 0) {
+                            _this.$Notice.close(
+                              "saveNotice"
+                            );
                             _this.$Notice.open({
                               title: '保存成功',
-                              desc: ''
+                              desc: '',
+                              duration: 2,
                             });
                             _this.saveDraftModal = false;
                             _this.saving = false;
                             console.log("exitOK");
                           } else if (response.code == -101) {
                             console.log("cookie验证失败");
+                            _this.saving = false;
                           } else if (response.code == -102) {
                             console.log("权限不足");
+                            _this.saving = false;
                           } else {
                             console.log("未知错误");
+                            _this.saving = false;
                           }
                         });
                       } else if (response.code == -101) {
                         _this.$Message.error("cookie验证失败");
                         _this.notLogin = true;
+                        _this.saving = false;
                       } else if (response.code == -102) {
                         _this.$Message.error("权限不足");
+                        _this.saving = false;
                       } else {
                         _this.$Message.error("未知错误");
+                        _this.saving = false;
                       }
                     }
                   );
                 } else if (response.code == -101) {
                   _this.$Message.error("cookie验证失败");
+                  _this.saving = false;
                   _this.notLogin = true;
+                  clearInterval(timer);
                 } else if (response.code == -102) {
                   _this.$Message.error("权限不足");
+                  clearInterval(timer);
+                  _this.saving = false;
                 } else if (response.code == -301) {
                   console.log("exist");
                   _this.$Message.error("文件名已存在");
+                  _this.saving = false;
+                  api.project_exit(_this.selectProjectID);
+                  clearInterval(timer);
                 } else if (response.code == 500) {
                 } else {
+                  _this.saving = false;
                   _this.$Message.error("未知错误");
-
+                  clearInterval(timer);
                 }
               }
             );
           }, 3000);
         } else if (response.code == -101) {
           _this.$Message.error("cookie验证失败");
+          _this.saving = false;
         } else if (response.code == -102) {
           _this.$Message.error("权限不足");
+          _this.saving = false;
         } else {
           _this.$Message.error("未知错误");
+          _this.saving = false;
         }
       });
     }
@@ -289,13 +312,13 @@ export default {
             _this.$Message.error("未知错误");
           }
         });
-        let scratchapp = new editor.MonacoAppScratch(
+        _this.draftEditor = new editor.MonacoAppScratch(
           _this.draftLanguage,
           true,
           _this.username
         );
-        _this.draftEditor = scratchapp.getEditorInstance();
-        bus.$emit("draftEditor", _this.draftEditor);
+        //_this.draftEditor = scratchapp.getEditorInstance();
+        bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
       }
     });
   },
