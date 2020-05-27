@@ -1,4 +1,3 @@
-
 <template>
   <div id="back">
     <div class="MyLightDraft">
@@ -63,18 +62,13 @@
           
         </Modal>
         <!--左侧菜单栏-->
-        <Sider width="75">
-          <Button
-            type="primary"
-            style="background-color:inherit;margin: 0;border:none;color:#ffffff;width:100%;float:bottom;height:2vh;"
-            @click="toHomePage"
-            title="退回主页"
-          >
-            <Icon type="android-exit"></Icon>quit
-          </Button>
+        <Sider width="68">
+          <MyDraftSidebar></MyDraftSidebar>
         </Sider>
         <!--编辑器-->
-        <Layout style="height:100%;border-right:2px inset #ababab;width:600px"></Layout>
+        <Layout style="height:100%;border-right:2px inset #ababab;width:600px; overflow:hidden">
+          <div id="editorRoot" style="height:100%;width:100%"></div>
+        </Layout>
 
         <Layout style="height:100%;">
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
@@ -113,7 +107,10 @@
 </template>
 <script>
 import bridge from "./bridge.js";
+import { bus } from "./bus.js";
 import api from "../assets/js/api";
+import * as editor from "../editor/app";
+import MyDraftSidebar from "./MyDraftSidebar";
 export default {
   data() {
     return {
@@ -126,8 +123,14 @@ export default {
       draftName: "",
       saving: false,
       selectProjectID: "",
-      projects: []
+      projects: [],
+      draftEditor: "",
+      draftLanguage: ""
+
     };
+  },
+  components: {
+    MyDraftSidebar
   },
   beforeCreate: function() {
     document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
@@ -256,11 +259,13 @@ export default {
   mounted() {
     var _this = this;
     this.language = this.$route.query.language;
+    _this.draftLanguage = _this.$route.query.language;
     api.user_info(function(response) {
       if (response.code != 0) {
-        _this.notLogin = true;
+        _this.$router.push("/");
       } else {
         _this.username = response.data.name;
+
         api.project_info(function(response) {
           console.log(response);
           if (response.code == 0) {
@@ -284,6 +289,13 @@ export default {
             _this.$Message.error("未知错误");
           }
         });
+        let scratchapp = new editor.MonacoAppScratch(
+          _this.draftLanguage,
+          true,
+          _this.username
+        );
+        _this.draftEditor = scratchapp.getEditorInstance();
+        bus.$emit("draftEditor", _this.draftEditor);
       }
     });
   },
