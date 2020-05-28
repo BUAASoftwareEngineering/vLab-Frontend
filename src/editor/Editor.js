@@ -107,6 +107,34 @@ export function addNewEditor(code, language, filePath, fileDir, wsUrlBase, eleme
 	return editor;
 }
 
+export function addNewScratchEditor(code, language) {
+	let new_container = document.createElement("DIV");
+	new_container.id = "scratch";
+	new_container.className = "container";
+	new_container.style.height = "100%"
+	new_container.style.width = "100%"
+	document.getElementById("editorRoot").appendChild(new_container);
+
+	let model = monaco.editor.createModel(code, language);
+	let editor = monaco.editor.create(document.getElementById(new_container.id), {
+		model: model,
+		automaticLayout: true,
+	});
+	// Language Client for IntelliSense
+	if (language == 'python') {
+		getPythonReady(editor);
+	}
+	if (language == 'cpp' || language == 'c') {
+		getCppReady(editor);
+	}
+	// Keyboard Shortcuts binding
+	defaultBindings(editor);
+	// Suppress CtrlCmd + S
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => { });
+
+	return editor;
+}
+
 export function getModel(editor) {
 	return editor.getModel();
 }
