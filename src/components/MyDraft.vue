@@ -134,6 +134,22 @@ export default {
     cancelLogin() {
       var _this = this;
       _this.$router.push("/");
+    },
+         insertText(obj,str) {
+        if (document.selection) {
+            var sel = document.selection.createRange();
+            sel.text = str;
+        } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+            var startPos = obj.selectionStart,
+                endPos = obj.selectionEnd,
+                cursorPos = startPos,
+                tmpStr = obj.value;
+            obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+            cursorPos += str.length;
+            obj.selectionStart = obj.selectionEnd = cursorPos;
+        } else {
+            obj.value += str;
+        }
     }
   },
   mounted() {
@@ -154,12 +170,12 @@ export default {
         bus.$emit("draftEditor", _this.draftEditor);
       }
     });
-    this.$refs.input.onkeydown=(e)=>{
-     
-      console.log('asds')
+    this.$refs.input.onkeydown=(e)=>{     
       if(e.keyCode == 9){
-        this.input+="\t"
-         e.preventDefault()
+        this.insertText(this.$refs.input,"\t")
+         if(e.preventDefault) {
+            e.preventDefault();
+         }
       }
     }
 
