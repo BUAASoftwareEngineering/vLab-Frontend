@@ -60,7 +60,9 @@
             <Layout style="height:80%;">
               <p>Input</p>
               <Divider style="margin:0"/>
-              <Input v-model="input" type="textarea" />
+              
+              <textarea ref="input" v-model="input"   />
+              
             </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
@@ -74,7 +76,7 @@
           <Layout style="height:45%;width:100%">
             <p>Output</p>
             <Divider style="margin:0"/>
-            <Input v-model="output" readonly type="textarea"></Input>
+            <textarea readonly v-model="output"   />
           </Layout>
         </Layout>
       </Layout>
@@ -99,6 +101,7 @@ export default {
     document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
   },
   methods: {
+   
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
@@ -139,6 +142,15 @@ export default {
         _this.username = response.data.name;
       }
     });
+    this.$refs.input.onkeydown=(e)=>{
+     
+      console.log('asds')
+      if(e.keyCode == 9){
+        this.input+="\t"
+         e.preventDefault()
+      }
+    }
+
   },
   beforeDestroy() {
     document.body.removeAttribute("class", "MyLightDraftBody");
@@ -192,5 +204,9 @@ textarea.ivu-input{
 }
 textarea{
   resize: none;
+  height: 100%;
+  border-radius:0;
+  -webkit-appearance:none;
+  outline:none
 }
 </style>
