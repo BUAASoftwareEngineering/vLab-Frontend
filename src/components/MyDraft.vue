@@ -42,26 +42,36 @@
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
             <Row type="flex" justify="center" align="middle">
               <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="运行">运行</Button>
+                <Button  style="margin-top:5px;" title="运行">运行</Button>
               </Col>
               <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="保存到项目">保存到项目</Button>
+                <Button style="margin-top:5px;"  title="保存到项目">保存到项目</Button>
               </Col>
             </Row>
           </Layout>
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
-            <Layout style="height:80%;"></Layout>
+            <Layout style="height:80%;">
+              <p>Input</p>
+              <Divider style="margin:0"/>
+              
+              <textarea ref="input" v-model="input"   />
+              
+            </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;" @click title="提交输入">提交输入</Button>
+                  <Button  style="margin-top:5px;"  title="提交输入">提交输入</Button>
                 </Col>
               </Row>
             </Layout>
           </Layout>
           <!--输入框-->
-          <Layout style="height:45%;width:100%"></Layout>
+          <Layout style="height:45%;width:100%">
+            <p>Output</p>
+            <Divider style="margin:0"/>
+            <textarea readonly v-model="output"   />
+          </Layout>
         </Layout>
       </Layout>
     </div>
@@ -80,8 +90,11 @@ export default {
       notLogin: false,
       loginUsername: "",
       loginPassword: "",
+      output:"",
+      input:"",
       draftEditor: "",
       draftLanguage: ""
+
     };
   },
   components: {
@@ -91,6 +104,7 @@ export default {
     document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
   },
   methods: {
+   
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
@@ -140,6 +154,15 @@ export default {
         bus.$emit("draftEditor", _this.draftEditor);
       }
     });
+    this.$refs.input.onkeydown=(e)=>{
+     
+      console.log('asds')
+      if(e.keyCode == 9){
+        this.input+="\t"
+         e.preventDefault()
+      }
+    }
+
   },
   beforeDestroy() {
     document.body.removeAttribute("class", "MyLightDraftBody");
@@ -183,5 +206,19 @@ span:hover {
   background-color: #515a6eec;
   border-color: #515a6e;
   border: 0px solid transparent;
+}
+textarea.ivu-input{
+    border-radius:0;
+    min-height:100%
+}
+.ivu-input-wrapper{
+  height: 100%;
+}
+textarea{
+  resize: none;
+  height: 100%;
+  border-radius:0;
+  -webkit-appearance:none;
+  outline:none
 }
 </style>
