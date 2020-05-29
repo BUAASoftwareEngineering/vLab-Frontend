@@ -79,7 +79,7 @@
             <Row type="flex" justify="center" align="middle">
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click title="运行">运行</Button>
+                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click="run_code" title="运行">运行</Button>
                   <Button
                     type="primary"
                     style="margin-top:5px;margin-left:2px;"
@@ -94,26 +94,26 @@
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
             <Layout style="height:80%;">
-              <p>Input</p>
+              <p><Icon type="ios-log-in" />Input</p>
               <Divider style="margin:0"/>
               
-              <textarea ref="input" v-model="input"   />
+              <Input type="textarea" placeholder="请输入您的标准输入" ref="input" v-model="input"  style="padding-top:10px;padding-right:10px;padding-bottom:10px"/>
               
             </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click title="清空输入">清空输入</Button>
-                  <Button type="primary" style="margin-top:5px;margin-left:2px;" @click title="提交输入">提交输入</Button>
+                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click="input=''" title="清空输入">清空输入</Button>
+                  <Button type="primary" style="margin-top:5px;margin-left:2px;" @click="send_io" title="提交输入">提交输入</Button>
                 </Col>
               </Row>
             </Layout>
           </Layout>
           <!--输入框-->
           <Layout style="height:45%;width:100%">
-            <p>Output</p>
+            <p><Icon type="ios-log-out" />Output</p>
             <Divider style="margin:0"/>
-            <textarea readonly v-model="output"   />
+            <Input type="textarea" :readonly="true" v-model="output"  style="padding-top:10px;padding-right:10px;padding-bottom:10px" />
           </Layout>
         </Layout>
         
@@ -128,6 +128,7 @@ import api from "../assets/js/api";
 import * as editor from "../editor/app";
 import MyDraftSidebar from "./MyDraftSidebar";
 import { getCursorPosition } from '../editor/Editor';
+import ws_tools from "../assets/js/ws-client-lib"
 export default {
   data() {
     return {
@@ -145,6 +146,9 @@ export default {
       input:"",
       draftEditor: "",
       draftLanguage: "",
+      io_ws: undefined,
+      count: 10,
+      user_id: undefined
     };
   },
   components: {
@@ -162,7 +166,66 @@ export default {
     },    
   },
   methods: {
-   
+    run_code() {
+      let type = ''
+      switch (this.language) {
+        case "python":
+          type = "PYTHON"
+          break
+        case "cpp":
+          type = api.CPP
+          break
+        default:
+          break
+      }
+      ws_tools.run_code(this.user_id, this.draftEditor.getCode(), type)
+      
+      this.output = ''
+      let _this = this
+      _this.init_io_ws()      
+      // this.init_io_ws()
+    },
+    send_io() {
+      if (this.input[-1] != '\n') {
+        this.io_ws.send(this.input+'\n')
+      } else {
+        this.io_ws.send(this.input)
+      }
+    },
+    init_io_ws() {
+      console.log('try connect')
+      if (this.io_ws) {
+        try {
+          this.io_ws.close()
+        } catch (err) {
+
+        }
+      }
+      // this.count = 10
+      this.ws_open()
+    },
+    ws_open() {
+      this.io_ws = ws_tools.create_io_ws(this.user_id, this.handle_output)
+      let _this = this
+      this.io_ws.onopen = () => {
+        console.log('open !')
+        let date = new Date().toString().split('GMT')[0]
+        _this.output = "Program start at " + date + ", please send your input!\n"
+        // this.count = -1
+      }
+      this.ws_onclose()
+    },
+    ws_onclose() {
+      let _this = this
+      this.io_ws.onclose = function() {
+        console.log('connect close!')
+        _this.output += "\nProgram terminated!"
+      }
+    },
+    handle_output(str) {
+      console.log('got!')
+      this.output += str.data
+    },
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
@@ -181,6 +244,7 @@ export default {
             _this.$Message.success("登录成功");
             _this.notLogin = false;
             _this.username = _this.loginUsername;
+            _this.user_id = response.data.id
             console.log("gugu");
             api.project_info(function(response) {
               console.log(response);
@@ -282,6 +346,7 @@ export default {
                             );
                             if (response.code == -101) {
                               console.log("cookie验证失败");
+                              _this.notLogin = true;
                             } else if (response.code == -102) {
                               console.log("权限不足");
                             } else {
@@ -337,6 +402,7 @@ export default {
           );
           if (response.code == -101) {
             _this.$Message.error("cookie验证失败");
+            _this.notLogin = true;
           } else if (response.code == -102) {
             _this.$Message.error("权限不足");
           } else {
@@ -371,7 +437,7 @@ export default {
         _this.notLogin = true;
       } else {
         _this.username = response.data.name;
-
+        _this.user_id = response.data.id
         api.project_info(function(response) {
           console.log(response);
           if (response.code == 0) {
@@ -393,6 +459,7 @@ export default {
             _this.notLogin = true;
           } else {
             _this.$Message.error("未知错误");
+            _this.notLogin = true;
           }
         });
         _this.draftEditor = new editor.MonacoAppScratch(
@@ -416,6 +483,10 @@ export default {
   },
   beforeDestroy() {
     document.body.removeAttribute("class", "MyLightDraftBody");
+    if (this.io_ws) {
+      this.io_ws.close()
+      this.io_ws = undefined
+    }
   }
 };
 </script>
