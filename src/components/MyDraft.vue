@@ -97,8 +97,9 @@
               <p>Input</p>
               <Divider style="margin:0"/>
               
-              <textarea ref="input" v-model="input"   />
-              
+             <div style="height: 100%;width:100%;">
+               <textarea ref="input" v-model="input" style="resize: none;"  />
+             </div>
             </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
@@ -490,18 +491,16 @@ span:hover {
   font-size:13px;
   font-family: Consolas, "Lucida Console", monospace, sans-serif;
 }
-textarea.ivu-input{
-    border-radius:0;
-    min-height:100%;
-}
-.ivu-input-wrapper{
-  height: 100%;
-}
 textarea{
   resize: none;
   height: 100%;
+  width:100%;
   border-radius:0;
-  -webkit-appearance:none;
-  outline:none
+  outline:none;
+  border:0;
+  
 }
+
+
 </style>
+
