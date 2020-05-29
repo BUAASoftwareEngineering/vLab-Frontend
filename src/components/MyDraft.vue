@@ -74,7 +74,7 @@
           <Layout style="border-bottom:2px inset #ababab;width:100%;">
             <Row type="flex" justify="center" align="middle">
               <Col :span="12" style="text-align:center">
-                <Button type="primary" style="margin-top:5px;" @click title="运行">运行</Button>
+                <Button  style="margin-top:5px;" title="运行">运行</Button>
               </Col>
               <Col :span="12" style="text-align:center">
                 <Button
@@ -89,17 +89,27 @@
           </Layout>
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
-            <Layout style="height:80%;"></Layout>
+            <Layout style="height:80%;">
+              <p>Input</p>
+              <Divider style="margin:0"/>
+              
+              <textarea ref="input" v-model="input"   />
+              
+            </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;" @click title="提交输入">提交输入</Button>
+                  <Button  style="margin-top:5px;"  title="提交输入">提交输入</Button>
                 </Col>
               </Row>
             </Layout>
           </Layout>
           <!--输入框-->
-          <Layout style="height:45%;width:100%"></Layout>
+          <Layout style="height:45%;width:100%">
+            <p>Output</p>
+            <Divider style="margin:0"/>
+            <textarea readonly v-model="output"   />
+          </Layout>
         </Layout>
         
       </Layout>
@@ -125,6 +135,8 @@ export default {
       saving: false,
       selectProjectID: "",
       projects: [],
+      output:"",
+      input:"",
       draftEditor: "",
       draftLanguage: ""
 
@@ -137,6 +149,7 @@ export default {
     document.getElementsByTagName("body")[0].className = "MyLightDraftBody";
   },
   methods: {
+   
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
@@ -287,6 +300,22 @@ export default {
           }
         }
       });
+    },
+      insertText(obj,str) {
+        if (document.selection) {
+            var sel = document.selection.createRange();
+            sel.text = str;
+        } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+            var startPos = obj.selectionStart,
+                endPos = obj.selectionEnd,
+                cursorPos = startPos,
+                tmpStr = obj.value;
+            obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+            cursorPos += str.length;
+            obj.selectionStart = obj.selectionEnd = cursorPos;
+        } else {
+            obj.value += str;
+        }
     }
   },
   mounted() {
@@ -331,6 +360,15 @@ export default {
         bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
       }
     });
+    this.$refs.input.onkeydown=(e)=>{     
+      if(e.keyCode == 9){
+        this.insertText(this.$refs.input,"\t")
+         if(e.preventDefault) {
+            e.preventDefault();
+         }
+      }
+    }
+
   },
   beforeDestroy() {
     document.body.removeAttribute("class", "MyLightDraftBody");
@@ -375,11 +413,26 @@ span:hover {
   border-color: #515a6e;
   border: 0px solid transparent;
 }
+
 .MyLightDraftBody .ivu-btn:disabled {
   border-radius: 3px;
   color: #f5f7f9;
   background-color: #515a6e62;
   border-color: #515a6e60;
   border: 0px solid transparent;
+
+textarea.ivu-input{
+    border-radius:0;
+    min-height:100%
+}
+.ivu-input-wrapper{
+  height: 100%;
+}
+textarea{
+  resize: none;
+  height: 100%;
+  border-radius:0;
+  -webkit-appearance:none;
+  outline:none
 }
 </style>
