@@ -94,12 +94,11 @@
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
             <Layout style="height:80%;">
-              <p><Icon type="ios-log-in" />Input</p>
+              <p style="padding-left:10px"><Icon type="ios-log-in" />Input</p>
               <Divider style="margin:0"/>
-              
-
-              <Input type="textarea" placeholder="请输入您的标准输入" ref="input" v-model="input"  style="padding-top:10px;padding-right:10px;padding-bottom:10px"/>
-              
+              <div style="height:100%;width:100%;padding-top:10px;padding-left:10px;padding-bottom:10px;padding-right:10px;">
+               <textarea ref="input" v-model="input" style="resize: none;padding-left:5px" />
+              </div>
             </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
@@ -112,9 +111,12 @@
           </Layout>
           <!--输入框-->
           <Layout style="height:45%;width:100%">
-            <p><Icon type="ios-log-out" />Output</p>
+            <p style="padding-left:10px"><Icon type="ios-log-out" />Output</p>
             <Divider style="margin:0"/>
-            <Input type="textarea" :readonly="true" v-model="output"  style="padding-top:10px;padding-right:10px;padding-bottom:10px" />
+            
+            <div style="height:100%;width:100%;padding-top:10px;padding-left:10px;padding-bottom:10px;padding-right:10px;">
+              <textarea ref="output" v-model="output" readonly="true" style="resize:none;padding-left:5px"  />
+            </div>
           </Layout>
         </Layout>
         
@@ -566,11 +568,11 @@ textarea{
   resize: none;
   height: 100%;
   width:100%;
-  border-radius:0;
-  outline:none;
-  border:0;
-  
+  /* border-radius:0; */
+  outline-color: cornflowerblue;
+  /* border:0; */
 }
+
 
 
 </style>
