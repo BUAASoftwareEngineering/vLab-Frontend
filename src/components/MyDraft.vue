@@ -29,6 +29,38 @@
             <Button type="success" v-on:click="login">登录</Button>
           </div>
         </Modal>
+        <Modal
+          v-model="saveDraftModal"
+          title="将草稿保存到项目"
+          width="350"
+        >
+          <div style="text-align:center">
+            <Select
+              v-model="selectProjectID"
+              style="width:300px;text-align:left"
+              placeholder="请选择已有项目"
+            >
+              <Option
+                v-for="item in projects"
+                :value="item.projectId"
+                :key="item.projectId"
+              >{{ item.name }}</Option>
+            </Select>
+            <!--
+            <br />
+            <br />
+            <Input type="text" placeholder="新建项目" v-model="newProjectame" style="width: 300px;" />
+            -->
+            <br />
+            <br />
+            <Input type="text" placeholder="请输入文件名" v-model="draftName" style="width: 300px" />
+          </div>
+          
+          <div slot="footer" style="text-align:center">
+            <Button v-on:click="saveToProject">保存</Button>
+          </div>
+          
+        </Modal>
         <!--左侧菜单栏-->
         <Sider width="68">
           <MyDraftSidebar></MyDraftSidebar>
@@ -45,7 +77,13 @@
                 <Button  style="margin-top:5px;" title="运行">运行</Button>
               </Col>
               <Col :span="12" style="text-align:center">
-                <Button style="margin-top:5px;"  title="保存到项目">保存到项目</Button>
+                <Button
+                  type="primary"
+                  style="margin-top:5px;"
+                  @click="saveDraft"
+                  title="保存到项目"
+                  :disabled = "saving"
+                >保存到项目</Button>
               </Col>
             </Row>
           </Layout>
@@ -73,6 +111,7 @@
             <textarea readonly v-model="output"   />
           </Layout>
         </Layout>
+        
       </Layout>
     </div>
   </div>
@@ -87,9 +126,15 @@ export default {
   data() {
     return {
       username: "",
+      language: "",
       notLogin: false,
       loginUsername: "",
       loginPassword: "",
+      saveDraftModal: false,
+      draftName: "",
+      saving: false,
+      selectProjectID: "",
+      projects: [],
       output:"",
       input:"",
       draftEditor: "",
@@ -122,7 +167,38 @@ export default {
           if (response.code == 0) {
             _this.$Message.success("登录成功");
             _this.notLogin = false;
-            _this.username = this.loginUsername;
+            _this.username = _this.loginUsername;
+            console.log("gugu");
+            api.project_info(function(response) {
+              console.log(response);
+              if (response.code == 0) {
+                _this.projects.splice(0, _this.projects.length);
+                var projects = response.data;
+                for (var i = 0; i < projects.length; i++) {
+                  if (projects[i].imageType == api.CPP && _this.language == "cpp") {
+                    _this.projects.push(projects[i]);
+                  }
+                  if (
+                    projects[i].imageType == api.PYTHON3 &&
+                    _this.language == "python"
+                  ) {
+                    _this.projects.push(projects[i]);
+                  }
+                }
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.notLogin = true;
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            });
+            _this.draftEditor = new editor.MonacoAppScratch(
+              _this.draftLanguage,
+              true,
+              _this.loginUsername
+            );
+            //_this.draftEditor = scratchapp.getEditorInstance();
+            bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
           } else if (response.code == -101) {
             _this.$Message.error("用户名或密码不正确");
           } else {
@@ -135,39 +211,184 @@ export default {
       var _this = this;
       _this.$router.push("/");
     },
-         insertText(obj,str) {
-        if (document.selection) {
-            var sel = document.selection.createRange();
-            sel.text = str;
-        } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
-            var startPos = obj.selectionStart,
-                endPos = obj.selectionEnd,
-                cursorPos = startPos,
-                tmpStr = obj.value;
-            obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
-            cursorPos += str.length;
-            obj.selectionStart = obj.selectionEnd = cursorPos;
+    saveDraft() {
+      this.draftName = "";
+      this.saveDraftModal = true;
+    },
+    saveToProject() {
+      var _this = this;
+      var fileContent = _this.draftEditor.getCode();
+      //console.log(fileContent);
+      _this.$Notice.open({
+        title: '正在保存中...',
+        desc: '',
+        name: "saveNotice",
+        duration : 0
+      });
+      _this.saveDraftModal = false;
+      _this.saving = true;
+      console.log(_this.selectProjectID);
+      console.log(_this.draftName);
+      api.project_enter(_this.selectProjectID, function(response) {
+        if (response.code == 0) {
+          console.log("enterOk");
+          var timer = setInterval(function() {
+            api.file_new(
+              _this.selectProjectID,
+              "/code/" + _this.draftName,
+              function(response) {
+                if (response.code == 0) {
+                  clearInterval(timer);
+                  console.log("newok");
+                  api.file_update(
+                    _this.selectProjectID,
+                    "/code/" + _this.draftName,
+                    new Buffer(fileContent),
+                    function(response) {
+                      if (response.code == 0) {
+                        console.log("saveOK");
+                        api.project_exit(_this.selectProjectID, function(
+                          response
+                        ) {
+                          if (response.code == 0) {
+                            _this.$Notice.close(
+                              "saveNotice"
+                            );
+                            _this.$Notice.open({
+                              title: '保存成功',
+                              desc: '',
+                              duration: 2,
+                            });
+                            _this.saveDraftModal = false;
+                            _this.saving = false;
+                            console.log("exitOK");
+                          } else {
+                            _this.saving = false;
+                            _this.$Notice.close(
+                              "saveNotice"
+                            );
+                            if (response.code == -101) {
+                              console.log("cookie验证失败");
+                            } else if (response.code == -102) {
+                              console.log("权限不足");
+                            } else {
+                              console.log("未知错误");
+                            }
+                          }
+                        });
+                      } else {
+                        _this.saving = false;
+                        _this.$Notice.close(
+                          "saveNotice"
+                        );
+                        if (response.code == -101) {
+                          _this.$Message.error("cookie验证失败");
+                          _this.notLogin = true;
+                        } else if (response.code == -102) {
+                          _this.$Message.error("权限不足");
+                        } else {
+                          _this.$Message.error("未知错误");
+                        }
+                      }
+                    }
+                  );
+                } else if (response.code == -301) {
+                  console.log("exist");
+                  _this.$Message.error("文件名已存在,保存失败");
+                  _this.saving = false;
+                  api.project_exit(_this.selectProjectID);
+                  clearInterval(timer);
+                  _this.$Notice.close(
+                    "saveNotice"
+                  );
+                } else if (response.code == 500) {
+                } else {
+                  _this.saving = false;
+                  clearInterval(timer);
+                  if (response.code == -101) {
+                    _this.$Message.error("cookie验证失败");
+                    _this.notLogin = true;
+                  } else if (response.code == -102) {
+                    _this.$Message.error("权限不足");
+                  } else {
+                    _this.$Message.error("未知错误");
+                  }
+                }
+              }
+            );
+          }, 3000);
         } else {
-            obj.value += str;
+          _this.saving = false;
+          _this.$Notice.close(
+              "saveNotice"
+          );
+          if (response.code == -101) {
+            _this.$Message.error("cookie验证失败");
+          } else if (response.code == -102) {
+            _this.$Message.error("权限不足");
+          } else {
+            _this.$Message.error("未知错误");
+          }
         }
+      });
+    },
+    insertText(obj,str) {
+      if (document.selection) {
+        var sel = document.selection.createRange();
+        sel.text = str;
+      } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+        var startPos = obj.selectionStart,
+        endPos = obj.selectionEnd,
+        cursorPos = startPos,
+        tmpStr = obj.value;
+        obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += str.length;
+        obj.selectionStart = obj.selectionEnd = cursorPos;
+      } else {
+        obj.value += str;
+      }
     }
   },
   mounted() {
     var _this = this;
-
+    this.language = this.$route.query.language;
     _this.draftLanguage = _this.$route.query.language;
     api.user_info(function(response) {
       if (response.code != 0) {
-        _this.$router.push("/");
+        _this.notLogin = true;
       } else {
         _this.username = response.data.name;
-        let scratchapp = new editor.MonacoAppScratch(
+
+        api.project_info(function(response) {
+          console.log(response);
+          if (response.code == 0) {
+            _this.projects.splice(0, _this.projects.length);
+            var projects = response.data;
+            for (var i = 0; i < projects.length; i++) {
+              if (projects[i].imageType == api.CPP && _this.language == "cpp") {
+                _this.projects.push(projects[i]);
+              }
+              if (
+                projects[i].imageType == api.PYTHON3 &&
+                _this.language == "python"
+              ) {
+                _this.projects.push(projects[i]);
+              }
+            }
+          } else if (response.code == -101) {
+            _this.$Message.error("cookie验证失败");
+            _this.notLogin = true;
+          } else {
+            _this.$Message.error("未知错误");
+          }
+        });
+        _this.draftEditor = new editor.MonacoAppScratch(
           _this.draftLanguage,
           true,
-          _this.username
+          response.data.name
         );
-        _this.draftEditor = scratchapp.getEditorInstance();
-        bus.$emit("draftEditor", _this.draftEditor);
+        //_this.draftEditor = scratchapp.getEditorInstance();
+        bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
       }
     });
     this.$refs.input.onkeydown=(e)=>{     
@@ -223,9 +444,17 @@ span:hover {
   border-color: #515a6e;
   border: 0px solid transparent;
 }
+
+.MyLightDraftBody .ivu-btn:disabled {
+  border-radius: 3px;
+  color: #f5f7f9;
+  background-color: #515a6e62;
+  border-color: #515a6e60;
+  border: 0px solid transparent;
+}
 textarea.ivu-input{
     border-radius:0;
-    min-height:100%
+    min-height:100%;
 }
 .ivu-input-wrapper{
   height: 100%;
