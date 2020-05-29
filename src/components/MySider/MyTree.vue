@@ -49,15 +49,15 @@
         <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder2" v-if="isWriteable">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true" >
-              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
+              <DropdownItem style="width:144px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <DropdownItem style="width:144px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
         <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles2" v-if="isWriteable">
-          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
+          <DropdownItem style="width:144px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
-        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
+        <DropdownItem style="width:144px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFolderMenu" style="display: none;" trigger="click">
@@ -80,15 +80,15 @@
         <uploader :class="treeTheme" @file-success="handleFolder" duplicate="true" ref="treeUploadFolder" v-if="isWriteable">
           <uploader-drop>
             <uploader-btn :directory="true" :single="true">
-              <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件夹</DropdownItem>
+              <DropdownItem style="width:144px" :disabled="!isWriteable">上传文件夹</DropdownItem>
             </uploader-btn>
           </uploader-drop>
         </uploader>
-        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
+        <DropdownItem style="width:144px" :disabled="!isWriteable" v-if="!isWriteable">上传文件夹</DropdownItem>
         <Upload :before-upload="handleFiles" action="http" multiple ref="treeUploadFiles" v-if="isWriteable">
-          <DropdownItem style="width:120px" :disabled="!isWriteable">上传文件</DropdownItem>
+          <DropdownItem style="width:144px" :disabled="!isWriteable">上传文件</DropdownItem>
         </Upload>
-        <DropdownItem style="width:120px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
+        <DropdownItem style="width:144px" :disabled="!isWriteable" v-if="!isWriteable">上传文件</DropdownItem>
       </DropdownMenu>
     </Dropdown>
     <Dropdown transfer ref="contentFileMenu" style="display: none;" trigger="click">
@@ -1776,7 +1776,7 @@ export default {
   background: #4b4b4d;
 }
 .lightTree >>> .uploader-drop {
-  width: 120px;
+  width: 144px;
   height: 33.2px;
   background-color: #ffffff;
   border: #ffffff;
@@ -1785,7 +1785,7 @@ export default {
 .lightTree >>> .uploader-btn {
   border: #ffffff;
   color: #515a6e;
-  width: 120px;
+  width: 144px;
   padding: 0;
 }
 .lightTree >>> .ivu-upload {
@@ -1801,21 +1801,21 @@ export default {
 .darkTree >>> .uploader-drop {
   background-color: #4b4b4d;
   border: #4b4b4d;
-  width: 120px;
+  width: 144px;
   height: 33.2px;
   padding: 0;
   margin: 0;
 }
 .darkTree >>> .uploader {
   border: #4b4b4d;
-  width: 120px;
+  width: 144px;
   height: 33.2px;
   padding: 0;
 }
 .darkTree >>> .uploader-btn {
   border: #4b4b4d;
   color: #4b4b4d;
-  width: 120px;
+  width: 144px;
   height: 33.2px;
   padding: 0;
 }

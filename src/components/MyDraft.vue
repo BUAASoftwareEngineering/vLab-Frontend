@@ -93,7 +93,13 @@
           </Layout>
           <Layout style="height:45%;width:100%;border-bottom:2px inset #ababab;">
             <!--输入框-->
-            <Layout style="height:80%;"></Layout>
+            <Layout style="height:80%;">
+              <p>Input</p>
+              <Divider style="margin:0"/>
+              
+              <textarea ref="input" v-model="input"   />
+              
+            </Layout>
             <Layout>
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
@@ -104,7 +110,11 @@
             </Layout>
           </Layout>
           <!--输入框-->
-          <Layout style="height:45%;width:100%"></Layout>
+          <Layout style="height:45%;width:100%">
+            <p>Output</p>
+            <Divider style="margin:0"/>
+            <textarea readonly v-model="output"   />
+          </Layout>
         </Layout>
         
       </Layout>
@@ -131,6 +141,8 @@ export default {
       saving: false,
       selectProjectID: "",
       projects: [],
+      output:"",
+      input:"",
       draftEditor: "",
       draftLanguage: "",
     };
@@ -150,6 +162,7 @@ export default {
     },    
   },
   methods: {
+   
     toHomePage() {
       var _this = this;
       _this.$router.push("/home");
@@ -167,7 +180,38 @@ export default {
           if (response.code == 0) {
             _this.$Message.success("登录成功");
             _this.notLogin = false;
-            _this.username = this.loginUsername;
+            _this.username = _this.loginUsername;
+            console.log("gugu");
+            api.project_info(function(response) {
+              console.log(response);
+              if (response.code == 0) {
+                _this.projects.splice(0, _this.projects.length);
+                var projects = response.data;
+                for (var i = 0; i < projects.length; i++) {
+                  if (projects[i].imageType == api.CPP && _this.language == "cpp") {
+                    _this.projects.push(projects[i]);
+                  }
+                  if (
+                    projects[i].imageType == api.PYTHON3 &&
+                    _this.language == "python"
+                  ) {
+                    _this.projects.push(projects[i]);
+                  }
+                }
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.notLogin = true;
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            });
+            _this.draftEditor = new editor.MonacoAppScratch(
+              _this.draftLanguage,
+              true,
+              _this.loginUsername
+            );
+            //_this.draftEditor = scratchapp.getEditorInstance();
+            bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
           } else if (response.code == -101) {
             _this.$Message.error("用户名或密码不正确");
           } else {
@@ -300,6 +344,22 @@ export default {
           }
         }
       });
+    },
+    insertText(obj,str) {
+      if (document.selection) {
+        var sel = document.selection.createRange();
+        sel.text = str;
+      } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+        var startPos = obj.selectionStart,
+        endPos = obj.selectionEnd,
+        cursorPos = startPos,
+        tmpStr = obj.value;
+        obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += str.length;
+        obj.selectionStart = obj.selectionEnd = cursorPos;
+      } else {
+        obj.value += str;
+      }
     }
   },
   mounted() {
@@ -308,7 +368,7 @@ export default {
     _this.draftLanguage = _this.$route.query.language;
     api.user_info(function(response) {
       if (response.code != 0) {
-        _this.$router.push("/");
+        _this.notLogin = true;
       } else {
         _this.username = response.data.name;
 
@@ -338,12 +398,21 @@ export default {
         _this.draftEditor = new editor.MonacoAppScratch(
           _this.draftLanguage,
           true,
-          _this.username
+          response.data.name
         );
         //_this.draftEditor = scratchapp.getEditorInstance();
         bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
       }
     });
+    this.$refs.input.onkeydown=(e)=>{     
+      if(e.keyCode == 9){
+        this.insertText(this.$refs.input,"\t")
+         if(e.preventDefault) {
+            e.preventDefault();
+         }
+      }
+    }
+
   },
   beforeDestroy() {
     document.body.removeAttribute("class", "MyLightDraftBody");
@@ -391,6 +460,7 @@ span:hover {
   margin: 0 auto; 
   width:120px;
 }
+
 .MyLightDraftBody .ivu-btn:disabled {
   color: #fcfcfc;
   background-color: #515a6e63;
@@ -419,5 +489,19 @@ span:hover {
   padding-left:30px;
   font-size:13px;
   font-family: Consolas, "Lucida Console", monospace, sans-serif;
+}
+textarea.ivu-input{
+    border-radius:0;
+    min-height:100%;
+}
+.ivu-input-wrapper{
+  height: 100%;
+}
+textarea{
+  resize: none;
+  height: 100%;
+  border-radius:0;
+  -webkit-appearance:none;
+  outline:none
 }
 </style>

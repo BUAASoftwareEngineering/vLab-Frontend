@@ -259,6 +259,7 @@ import bridge from "../bridge.js";
 export default {
   data() {
     return {
+      submit:false,
       modal1: false,
       modal2: false,
       modal3: false,
@@ -433,33 +434,46 @@ export default {
       this.modal4 = true;
     },
     new_ok() {
+      var _this = this
+       if(!_this.submit){
+          _this.submit=!_this.submit
+        }else{
+          return
+        }
       if (this.project_name == "") {
         this.$Modal.error({
           title: "创建失败",
           content: "<p>项目名不能为空</p>"
         });
+        _this.submit=!_this.submit
         return;
       }
-      var _this = this;
+      
       this.$Spin.show();
 
       api.project_new(this.project_name, this.project_type, function(response) {
         _this.$Spin.hide();
+        _this.submit=!_this.submit
         if (response.code == 0) {
           var data = response.data;
           if (data.imageType == api.C) {
-            _this.c_books.push({ projectId: data.projectId, name: data.name });
+            _this.c_books.push({ projectId: data.projectId, name: data.name,
+              writeable:true });
           } else if (data.imageType == api.CPP) {
             _this.cpp_books.push({
               projectId: data.projectId,
-              name: data.name
+              name: data.name,
+              writeable:true
             });
           } else if (data.imageType == api.PYTHON2) {
-            _this.p2_books.push({ projectId: data.projectId, name: data.name });
+            _this.p2_books.push({ projectId: data.projectId, name: data.name,
+              writeable:true });
           } else if (data.imageType == api.PYTHON3) {
-            _this.p3_books.push({ projectId: data.projectId, name: data.name });
+            _this.p3_books.push({ projectId: data.projectId, name: data.name ,
+              writeable:true});
           } else {
-            _this.j_books.push({ projectId: data.projectId, name: data.name });
+            _this.j_books.push({ projectId: data.projectId, name: data.name,
+              writeable:true });
           }
 
           _this.$Message.success("新建成功");
@@ -517,11 +531,19 @@ export default {
     },
 
     update_ok() {
+      console.log(this.submit)
+      var _this = this;
+      if(!_this.submit){
+          _this.submit=!_this.submit
+        }else{
+          return
+        }
       if (this.project_name == "") {
         this.$Modal.error({
           title: "修改失败",
           content: "<p>项目名不能为空</p>"
         });
+        _this.submit=!_this.submit
         return;
       }
       var _this = this;
@@ -539,34 +561,21 @@ export default {
       }
       this.$Spin.show();
       api.project_info_update(del_id, this.project_name, function(response) {
+        _this.submit=!_this.submit
         _this.$Spin.hide();
         //    console.log(response.code)
         if (response.code == 0) {
           if (_this.project_type == api.C) {
-            _this.c_books[_this.project_index] = {
-              projectId: del_id,
-              name: _this.project_name
-            };
+            _this.c_books[_this.project_index].name= _this.project_name
+            
           } else if (_this.project_type == api.CPP) {
-            _this.cpp_books[_this.project_index] = {
-              projectId: del_id,
-              name: _this.project_name
-            };
+            _this.cpp_books[_this.project_index].name= _this.project_name
           } else if (_this.project_type == api.PYTHON2) {
-            _this.p2_books[_this.project_index] = {
-              projectId: del_id,
-              name: _this.project_name
-            };
+            _this.p2_books[_this.project_index] .name= _this.project_name
           } else if (_this.project_type == api.PYTHON3) {
-            _this.p3_books[_this.project_index] = {
-              projectId: del_id,
-              name: _this.project_name
-            };
+            _this.p3_books[_this.project_index] .name= _this.project_name
           } else {
-            _this.j_books[_this.project_index] = {
-              projectId: del_id,
-              name: _this.project_name
-            };
+            _this.j_books[_this.project_index] .name= _this.project_name
           }
           _this.$Message.success("重命名成功");
         } else if (response.code == -101) {
@@ -686,27 +695,32 @@ export default {
             if (projects[i].imageType == api.C) {
               _this.c_books.push({
                 projectId: projects[i].projectId,
-                name: projects[i].name
+                name: projects[i].name,
+                writeable:projects[i].writeable
               });
             } else if (projects[i].imageType == api.CPP) {
               _this.cpp_books.push({
                 projectId: projects[i].projectId,
-                name: projects[i].name
+                name: projects[i].name,
+                writeable:projects[i].writeable
               });
             } else if (projects[i].imageType == api.PYTHON2) {
               _this.p2_books.push({
                 projectId: projects[i].projectId,
-                name: projects[i].name
+                name: projects[i].name,
+                writeable:projects[i].writeable
               });
             } else if (projects[i].imageType == api.PYTHON3) {
               _this.p3_books.push({
                 projectId: projects[i].projectId,
-                name: projects[i].name
+                name: projects[i].name,
+                writeable:projects[i].writeable
               });
             } else if (projects[i].imageType == api.JAVA) {
               _this.j_books.push({
                 projectId: projects[i].projectId,
-                name: projects[i].name
+                name: projects[i].name,
+                writeable:projects[i].writeable
               });
             }
           }
