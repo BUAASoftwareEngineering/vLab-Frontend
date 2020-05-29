@@ -167,7 +167,38 @@ export default {
           if (response.code == 0) {
             _this.$Message.success("登录成功");
             _this.notLogin = false;
-            _this.username = this.loginUsername;
+            _this.username = _this.loginUsername;
+            console.log("gugu");
+            api.project_info(function(response) {
+              console.log(response);
+              if (response.code == 0) {
+                _this.projects.splice(0, _this.projects.length);
+                var projects = response.data;
+                for (var i = 0; i < projects.length; i++) {
+                  if (projects[i].imageType == api.CPP && _this.language == "cpp") {
+                    _this.projects.push(projects[i]);
+                  }
+                  if (
+                    projects[i].imageType == api.PYTHON3 &&
+                    _this.language == "python"
+                  ) {
+                    _this.projects.push(projects[i]);
+                  }
+                }
+              } else if (response.code == -101) {
+                _this.$Message.error("cookie验证失败");
+                _this.notLogin = true;
+              } else {
+                _this.$Message.error("未知错误");
+              }
+            });
+            _this.draftEditor = new editor.MonacoAppScratch(
+              _this.draftLanguage,
+              true,
+              _this.loginUsername
+            );
+            //_this.draftEditor = scratchapp.getEditorInstance();
+            bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
           } else if (response.code == -101) {
             _this.$Message.error("用户名或密码不正确");
           } else {
@@ -301,21 +332,21 @@ export default {
         }
       });
     },
-      insertText(obj,str) {
-        if (document.selection) {
-            var sel = document.selection.createRange();
-            sel.text = str;
-        } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
-            var startPos = obj.selectionStart,
-                endPos = obj.selectionEnd,
-                cursorPos = startPos,
-                tmpStr = obj.value;
-            obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
-            cursorPos += str.length;
-            obj.selectionStart = obj.selectionEnd = cursorPos;
-        } else {
-            obj.value += str;
-        }
+    insertText(obj,str) {
+      if (document.selection) {
+        var sel = document.selection.createRange();
+        sel.text = str;
+      } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+        var startPos = obj.selectionStart,
+        endPos = obj.selectionEnd,
+        cursorPos = startPos,
+        tmpStr = obj.value;
+        obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += str.length;
+        obj.selectionStart = obj.selectionEnd = cursorPos;
+      } else {
+        obj.value += str;
+      }
     }
   },
   mounted() {
@@ -324,7 +355,7 @@ export default {
     _this.draftLanguage = _this.$route.query.language;
     api.user_info(function(response) {
       if (response.code != 0) {
-        _this.$router.push("/");
+        _this.notLogin = true;
       } else {
         _this.username = response.data.name;
 
@@ -354,7 +385,7 @@ export default {
         _this.draftEditor = new editor.MonacoAppScratch(
           _this.draftLanguage,
           true,
-          _this.username
+          response.data.name
         );
         //_this.draftEditor = scratchapp.getEditorInstance();
         bus.$emit("draftEditor", _this.draftEditor.getEditorInstance());
@@ -420,10 +451,10 @@ span:hover {
   background-color: #515a6e62;
   border-color: #515a6e60;
   border: 0px solid transparent;
-
+}
 textarea.ivu-input{
     border-radius:0;
-    min-height:100%
+    min-height:100%;
 }
 .ivu-input-wrapper{
   height: 100%;
