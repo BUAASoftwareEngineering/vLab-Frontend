@@ -108,6 +108,7 @@
 
 <script>
 import api from "../../assets/js/api.js";
+import { bus } from "../bus.js";
 import bridge from "../bridge";
 export default {
   props: {
@@ -203,7 +204,8 @@ export default {
       dragstartData: "", //被拖动结点Data
       files_number: 0,
       files_conflict: [],
-      modal1: false
+      modal1: false,
+      selectKey: 0
     };
   },
 
@@ -604,7 +606,8 @@ export default {
               display: "inline-block",
               lineHeight: "20px",
               width: "100%",
-              cursor: "pointer"
+              cursor: "pointer",
+              background: (data.nodeKey == that.selectKey)&&(that.treeTheme == "lightTree") ? '#d0ecf3' : (data.nodeKey == that.selectKey)&&(that.treeTheme == "darkTree") ? "#4b4b4d" : ''
             },
             attrs: {
               draggable: that.isWriteable ? "true" : "false"
@@ -722,7 +725,8 @@ export default {
               display: "inline-block",
               lineHeight: "20px",
               width: "100%",
-              cursor: "pointer"
+              cursor: "pointer",
+              background: (data.nodeKey == that.selectKey)&&(that.treeTheme == "lightTree") ? '#d0ecf3' : (data.nodeKey == that.selectKey)&&(that.treeTheme == "darkTree") ? "#4b4b4d" : ''
             },
             attrs: {
               draggable: that.isWriteable ? "true" : "false"
@@ -1599,6 +1603,7 @@ export default {
     // 点击Tree节点触发
     handleClickTreeNode(root, nodekey, data) {
       // console.log("当前点击》》"+data.title);
+      this.selectKey = nodekey;
       this.saveEdit(root);
       this.nodeInfo = data;
       if (data.children == undefined) {
@@ -1655,6 +1660,23 @@ export default {
         this.treeTheme = "lightTree";
       }
     });
+
+    bus.$on("currentTab", currentTab => {
+      _this.selectKey = 0;
+      _this.$nextTick(function() {
+        _this.UpdateData(_this.projectId);
+        for (let i = 0; i < _this.rootData.length; i++) {
+        var selectNode = _this.rootData[i].node;
+        if (selectNode.children == undefined) {
+          var selectPath = _this.getPath(_this.rootData, i, selectNode) + selectNode.title;
+          if (selectPath == currentTab) {
+            _this.selectKey = i;
+            break;
+          }
+        }
+      }
+      })
+    })
   },
 
   beforeDestroy() {
@@ -1664,6 +1686,8 @@ export default {
     bridge.$off("uploadFile");
     bridge.$off("FleshFilesTree");
     bridge.$off("changeAllTheme");
+
+    bus.$off("currentTab");
   }
 };
 </script>
