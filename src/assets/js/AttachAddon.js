@@ -127,12 +127,18 @@ function setOnlyRead() {
     that.onlyRead = true
 }
 
+function setWriteable() {
+    that.onlyRead = false
+    that.cansend = true
+}
+
 export default {
     AttachAddon,
     setShowable,
     setMatch,
     disposeMatch,
     openSend,
-    setOnlyRead
+    setOnlyRead,
+    setWriteable
 }
 //# sourceMappingURL=AttachAddon.js.map

@@ -482,7 +482,7 @@ export default {
           _this.$Message.error("cookie验证失败");
           _this.$router.push("/");
         } else {
-          _this.$Message.error("未知错误");
+          _this.$Message.error(response.message);
         }
       });
       this.modal1 = false;
@@ -524,7 +524,7 @@ export default {
         } else if (response.code == -102) {
           _this.$Message.error("权限不足");
         } else {
-          _this.$Message.error("未知错误");
+          _this.$Message.error(response.message);
         }
       });
       this.modal2 = false;
@@ -584,7 +584,7 @@ export default {
         } else if (response.code == -102) {
           _this.$Message.error("权限不足");
         } else {
-          _this.$Message.error("未知错误");
+          _this.$Message.error(response.message);
         }
       });
       this.modal3 = false;

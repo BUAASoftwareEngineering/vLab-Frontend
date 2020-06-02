@@ -1,15 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+const Vue = require('vue')
+const VueRouter = require('vue-router')
 /*引入页面*/
 import Login from '@/components/Login/login.vue'
 import Home from '@/components/Home/home.vue'
 import Ide from '@/components/MyLayout.vue'
 import Draft from '@/components/MyDraft.vue'
 
-Vue.use(Router)
+// Vue.use(VueRouter)
 
 /*配置路由*/
-export default new Router({
+export default new VueRouter({
   //mode:'history',
   base: '/dist/',
   routes: [

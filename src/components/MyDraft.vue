@@ -31,31 +31,47 @@
         </Modal>
         <Modal
           v-model="saveDraftModal"
-          title="将草稿保存到项目"
-          width="350"
+          width="400"
         >
-          <div style="text-align:center">
-            <Select
-              v-model="selectProjectID"
-              style="width:300px;text-align:left"
-              placeholder="请选择已有项目"
-            >
-              <Option
-                v-for="item in projects"
-                :value="item.projectId"
-                :key="item.projectId"
-              >{{ item.name }}</Option>
-            </Select>
-            <!--
-            <br />
-            <br />
-            <Input type="text" placeholder="新建项目" v-model="newProjectame" style="width: 300px;" />
-            -->
-            <br />
-            <br />
-            <Input type="text" placeholder="请输入文件名" v-model="draftName" style="width: 300px" />
-          </div>
-          
+          <Tabs value="haven" v-model="saveOption">
+            <TabPane label="将草稿保存到已有项目" name="haven">
+                <div style="text-align:center">
+                  <Select
+                    v-model="selectProjectID"
+                    style="width:300px;text-align:left"
+                    placeholder="请选择已有项目"
+                    transfer
+                  >
+                    <Option
+                      v-for="item in projects"
+                      :value="item.projectId"
+                      :key="item.projectId"
+                    >{{ item.name }}</Option>
+                  </Select>
+                  <!--
+                  <br />
+                  <br />
+                  <Input type="text" placeholder="新建项目" v-model="newProjectame" style="width: 300px;" />
+                  -->
+                  <br />
+                  <br />
+                  <Input type="text" placeholder="请输入文件名" v-model="draftName" style="width: 300px" />
+                </div>
+            </TabPane>
+            <TabPane label="将草稿保存到新项目" name="new">
+                <div style="text-align:center">
+                  <Input type="text" placeholder="请输入新建项目名称" v-model="projectName" style="width: 300px" />
+                  <!--
+                  <br />
+                  <br />
+                  <Input type="text" placeholder="新建项目" v-model="newProjectame" style="width: 300px;" />
+                  -->
+                  <br />
+                  <br />
+                  <Input type="text" placeholder="请输入文件名" v-model="draftName" style="width: 300px" />
+                </div>
+            </TabPane>
+          </Tabs>
           <div slot="footer" style="text-align:center">
             <Button v-on:click="saveToProject">保存</Button>
           </div>
@@ -79,7 +95,7 @@
             <Row type="flex" justify="center" align="middle">
               <Row type="flex" justify="center" align="middle">
                 <Col :span="24" style="text-align:center;">
-                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click="run_code" title="运行">运行</Button>
+                  <Button type="primary" style="margin-top:5px;margin-right:2px;" @click="run_code" title="运行" :disabled="runDisable">运行</Button>
                   <Button
                     type="primary"
                     style="margin-top:5px;margin-left:2px;"
@@ -151,7 +167,10 @@ export default {
       draftLanguage: "",
       io_ws: undefined,
       count: 10,
-      user_id: undefined
+      user_id: undefined,
+      saveOption: "haven",
+      projectName: "",
+      runDisable:false
     };
   },
   components: {
@@ -170,6 +189,18 @@ export default {
   },
   methods: {
     run_code() {
+      let _this = this
+      this.runDisable = true
+      setTimeout(function() {
+        _this.runDisable = false
+      }, 5000)
+      if (this.io_ws && (this.io_ws.readyState == 1 || this.io_ws.readyState == 0)) {
+        // this.io_ws.onclose = {}
+        this.io_ws.close()
+      }
+      if (this.run && (this.run.readyState == 1 || this.run.readyState == 0)) {
+        this.run.close()
+      }
       let type = ''
       switch (this.language) {
         case "python":
@@ -181,11 +212,11 @@ export default {
         default:
           break
       }
-      ws_tools.run_code(this.user_id, this.draftEditor.getCode(), type)
+      this.run = ws_tools.run_code(this.user_id, this.draftEditor.getCode(), type, this.init_io_ws, this)
       
       this.output = ''
-      let _this = this
-      _this.init_io_ws()      
+      
+      // _this.init_io_ws()      
       // this.init_io_ws()
     },
     send_io() {
@@ -221,6 +252,14 @@ export default {
     ws_onclose() {
       let _this = this
       this.io_ws.onclose = function() {
+        console.log(_this.run.readyState)
+        if (_this.run && (_this.run.readyState == 1)) {
+          console.log('close run')
+          _this.run.onclose = function () {
+            console.log('run is closed')
+          }
+          _this.run.close()
+        }
         console.log('connect close!')
         _this.output += "\nProgram terminated!"
       }
@@ -295,8 +334,40 @@ export default {
       this.draftName = "";
       this.saveDraftModal = true;
     },
-    saveToProject() {
+    async saveToProject() {
       var _this = this;
+      let id = this.selectProjectID
+      let filename = this.draftName
+      if (this.projectName == '' && this.saveOption == 'new') {
+        this.$Message.error("项目名不可为空")
+        return
+      }
+      if (this.draftName == '') {
+        this.$Message.error("文件名不可为空")
+        return
+      }
+      if (this.selectProjectID == '' && this.saveOption == 'haven') {
+        this.$Message.error("请选择要保存的项目")
+        return
+      }
+      if (this.saveOption == "new") {
+        id = await new Promise((resolve) => {
+          let type = _this.language == "cpp" ? api.CPP : api.PYTHON3
+          api.project_new(_this.projectName, type, function (res) {
+            if (res.code == 0) {
+              resolve(res)
+            } else {
+              _this.$Message.error(res.message)
+              resolve(res)
+            }
+          })
+        })
+        if (id.code != 0) {
+          return
+        }
+        id = id.data.projectId
+      }
+      
       var fileContent = _this.draftEditor.getCode();
       //console.log(fileContent);
       _this.$Notice.open({
@@ -307,27 +378,27 @@ export default {
       });
       _this.saveDraftModal = false;
       _this.saving = true;
-      console.log(_this.selectProjectID);
-      console.log(_this.draftName);
-      api.project_enter(_this.selectProjectID, function(response) {
+      console.log(id);
+      console.log(filename);
+      api.project_enter(id, function(response) {
         if (response.code == 0) {
           console.log("enterOk");
           var timer = setInterval(function() {
             api.file_new(
-              _this.selectProjectID,
-              "/code/" + _this.draftName,
+              id,
+              "/code/" + filename,
               function(response) {
                 if (response.code == 0) {
                   clearInterval(timer);
                   console.log("newok");
                   api.file_update(
-                    _this.selectProjectID,
-                    "/code/" + _this.draftName,
+                    id,
+                    "/code/" + filename,
                     new Buffer(fileContent),
                     function(response) {
                       if (response.code == 0) {
                         console.log("saveOK");
-                        api.project_exit(_this.selectProjectID, function(
+                        api.project_exit(id, function(
                           response
                         ) {
                           if (response.code == 0) {
@@ -377,7 +448,7 @@ export default {
                   console.log("exist");
                   _this.$Message.error("文件名已存在,保存失败");
                   _this.saving = false;
-                  api.project_exit(_this.selectProjectID);
+                  api.project_exit(id);
                   clearInterval(timer);
                   _this.$Notice.close(
                     "saveNotice"

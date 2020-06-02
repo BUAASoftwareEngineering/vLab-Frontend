@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import ViewUI from 'view-design'
+const Vue = require('vue')
+const ViewUI = require('view-design')
 
 Vue.use(ViewUI)
 
-import 'view-design/dist/styles/iview.css'
+// import 'view-design/dist/styles/iview.css'

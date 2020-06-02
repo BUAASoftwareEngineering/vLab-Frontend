@@ -2,15 +2,23 @@ let ip     = "62.234.28.61";
 let port   = "8080";
 
 
-function run_code(userId, code, type) {
+function run_code(userId, code, type, io_init, _this) {
     let ws = create_run_code_ws(userId);
     let codeFile = get_codeFile(code, type);
     let isSend = false
     ws.onopen = () => {
+        io_init()
+        ws.onclose = () => {
+            _this.outpus += '\n[Error] Something wrong happened when running your code!\n'
+            if (_this.io_ws && (_this.io_ws.readyState == 1)) {
+                _this.io_ws.close()
+            }
+        }
         ws.send(JSON.stringify(codeFile));
         isSend = true
-        ws.close();
+        // ws.close();
     }
+    return ws
 }
 
 function create_run_code_ws(userId) {

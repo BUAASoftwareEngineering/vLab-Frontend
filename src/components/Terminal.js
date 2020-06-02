@@ -61,6 +61,8 @@ function initTerm() {
   const fitAddon = new FitAddon();
   if (!that.project.writeable) {
     AttachAddonTools.setOnlyRead()
+  } else {
+    AttachAddonTools.setWriteable()
   }
   term.loadAddon(attachAddon);
   term.loadAddon(fitAddon);
