@@ -360,7 +360,7 @@ export default {
                                     function(response){
                                       if(response.code==0){
                                         _this.$Message.success(response.message)
-                                        _this.ToLogin
+                                        _this.ToLogin()
                                       }else{
                                         _this.$Message.error(response.message)
                                       }

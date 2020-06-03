@@ -287,13 +287,13 @@ export default {
         for (var key in this.Show) {
           if (this.Show[key] == true) {
             count++;
-            filepath = "/code/" + key;
+            filepath += "/code/" + key + ' '
           }
         }
         if (count == 0) {
-          this.$Message.error("请在侧边栏的构建选项中选择一个cpp类型文件");
+          this.$Message.error("请在侧边栏的构建选项中选择至少一个cpp类型文件");
           this.openSetting();
-        } else if (count == 1) {
+        } else if (count > 0) {
           terminal.runcommand("");
           let command = "g++ -g " + filepath + " -o /code/fordebug";
           terminal.runcommand(command);
@@ -312,10 +312,7 @@ export default {
             bridge.$emit("readyForDebug", filepath);
           });
           this.debugRuning = true;
-        } else if (count > 1) {
-          this.$Message.error("cpp类型debug调试目前只支持一个入口，请取消多余勾选");
-          this.openSetting();
-        }
+        } 
       }
       setTimeout(function() {
         terminal.openSend()
