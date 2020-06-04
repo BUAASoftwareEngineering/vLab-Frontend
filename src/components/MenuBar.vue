@@ -501,11 +501,11 @@ export default {
       );
     },
     toDocs() {
-      window.open("https://www.cnblogs.com/--undefined/p/12804624.html");
+      window.open("https://www.cnblogs.com/--undefined/p/13040581.html");
     },
     toIssue() {
       window.open(
-        "https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues/53"
+        "https://github.com/BUAASoftwareEngineering/vLab-Frontend/issues/135"
       );
     },
     changeTheme(status) {
