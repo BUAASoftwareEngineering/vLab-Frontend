@@ -484,21 +484,40 @@ export default {
           setTheme("tomorrow-night");
         }
       }),
-      bridge.$on("readyForDebug", filepath => {
-        if (this.editorMap[filepath]) {
-          let breaklines = getBreakpointLines(this.editorMap[filepath]);
-          for (let i = 0; i < breaklines.length; i++) {
-          //let command = "b " + filepath + " " + breaklines[i];
-            let command = "b " + breaklines[i];
-            terminal.runcommand(command);
-          } 
-          terminal.runcommand("okCanDebug");         
+      bridge.$on("readyForDebug", filepaths => {
+        
+        
+        if (filepaths.length == 1) {
+          if (this.editorMap[filepaths[0]]) {
+            let breaklines = getBreakpointLines(this.editorMap[filepaths[0]]);
+            for (let i = 0; i < breaklines.length; i++) {
+            //let command = "b " + filepath + " " + breaklines[i];
+              let command = "b " + breaklines[i];
+              terminal.runcommand(command);
+            } 
+            terminal.runcommand("okCanDebug");         
+          } else {
+            terminal.runcommand("okCanDebug");
+          }
         } else {
-          terminal.runcommand("okCanDebug");
+          for (let f = 0; f < filepaths.length; f++) {
+            if (this.editorMap[filepaths[f]]) {
+              let breaklines = getBreakpointLines(this.editorMap[filepaths[f]]);
+              for (let i = 0; i < breaklines.length; i++) {
+              //let command = "b " + filepath + " " + breaklines[i];
+                let command = "b " +  filepaths[f] + ":" + breaklines[i];
+                console.log(command);
+                terminal.runcommand(command);
+              }
+            }
+          }
+          console.log("okCanDebug");
+          terminal.runcommand("okCanDebug");  
         }
         if (this.debuggermark == true) {
           this.changeDebugger();
         }
+        
       });
   },
   //TODO

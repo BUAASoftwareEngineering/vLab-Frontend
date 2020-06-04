@@ -232,12 +232,12 @@ export default {
     },
     async debug() {
       if (this.pythonMark) {
-        let filepath = "";
+        let filepath = [];
         let count = 0;
         for (var key in this.Show) {
           if (this.Show[key] == true) {
             count++;
-            filepath = "/code/" + key;
+            filepath.push("/code/" + key);
           }
         }
         if (count == 0) {
@@ -245,7 +245,7 @@ export default {
           this.openSetting();
         } else if (count == 1) {
           terminal.runcommand("");
-          let command = "python3 -m pdb " + filepath;
+          let command = "python3 -m pdb " + filepath[0];
           terminal.runcommand(command);
           //terminal.runcommand("from debugger import showLocalVars");
           //terminal.setShowable(false);
@@ -283,11 +283,13 @@ export default {
         }
       } else {
         let filepath = "";
+        let files = [];
         let count = 0;
         for (var key in this.Show) {
           if (this.Show[key] == true) {
             count++;
-            filepath += "/code/" + key + ' '
+            filepath += "/code/" + key + ' ';
+            files.push("/code/" + key);
           }
         }
         if (count == 0) {
@@ -309,7 +311,7 @@ export default {
               terminal.disposeMatch("Undefined command");
               bridge.$emit("beginDebug");
             });
-            bridge.$emit("readyForDebug", filepath);
+            bridge.$emit("readyForDebug", files);
           });
           this.debugRuning = true;
         } 
